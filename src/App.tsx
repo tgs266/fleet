@@ -1,7 +1,7 @@
 import React from 'react'
 
 const App = () => {
-    return <p>app</p>
+    return <p>NEON</p>
 }
 
 export default App
