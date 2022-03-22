@@ -1,29 +1,18 @@
-const data = require('./.eslintrc.typescript.js')
+const path = require('path')
 
 module.exports = {
-    root: true,
+    files: ['**/*.ts', '**/*.tsx'],
+    extends: [
+        'eslint:recommended',
+        'plugin:@typescript-eslint/eslint-recommended',
+        'plugin:@typescript-eslint/recommended',
+    ],
+    plugins: ['react', 'import', '@typescript-eslint'],
+    parser: '@typescript-eslint/parser',
     parserOptions: {
-        ecmaFeatures: {
-            jsx: true,
-        },
-        ecmaVersion: 12,
         sourceType: 'module',
+        project: path.join(__dirname, 'tsconfig.json'),
     },
-    env: {
-        browser: true,
-        es6: true,
-        node: true,
-        commonjs: true,
-        jest: true,
-    },
-    settings: {
-        react: {
-            version: 'detect',
-        },
-    },
-    extends: ['plugin:react/recommended', 'eslint:recommended', 'plugin:react/jsx-runtime'],
-    plugins: ['react', 'import'],
-
     rules: {
         'prefer-template': 'error',
         'prefer-const': [
@@ -44,6 +33,4 @@ module.exports = {
         'react/no-unescaped-entities': 'off',
         'react/jsx-uses-vars': 'error',
     },
-
-    overrides: [data],
 }
