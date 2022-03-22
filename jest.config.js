@@ -1,15 +1,18 @@
 module.exports = {
-    transform: {
-        "^.+\\.(js|jsx)$": "babel-jest",
-        "^.+\\.tsx?$": "ts-jest"
+    moduleNameMapper: {
+        '\\.css$': 'identity-obj-proxy',
+        '\\.less$': 'identity-obj-proxy',
     },
-    testEnvironment: "jsdom",
+    transform: {
+        '^.+\\.tsx?$': 'ts-jest',
+    },
+    testEnvironment: 'jsdom',
     coverageThreshold: {
         global: {
-          "branches": 80,
-          "functions": 80,
-          "lines": 80,
-          "statements": 80
-        }
-    }
-}
+            branches: 80,
+            functions: 80,
+            lines: 80,
+            statements: 80,
+        },
+    },
+};

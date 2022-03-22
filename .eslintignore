@@ -3,3 +3,6 @@ webpack.config.js
 .eslintrc.js
 coverage/
 src/index.html
+build/*
+*.css
+*.less

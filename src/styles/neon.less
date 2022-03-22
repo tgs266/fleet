@@ -1,0 +1,84 @@
+@import "../../node_modules/@blueprintjs/core/lib/less/variables.less";
+
+::-webkit-scrollbar {
+    width: 0.5em;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: rgba(92, 112, 128, 0.3);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(92, 112, 128, 0.3)
+}
+
+html {
+    background: @gray4;
+}
+
+.neon.neon-blueprint-theme {
+    background: @light-gray5;
+    height: 100%;
+
+    .sidebar {
+        background-color: @dark-gray5;
+        width: 4em !important;
+        height: 100vh;
+        position: sticky;
+        top: 0;
+        display: flex;
+        flex-flow: column;
+        align-items: center;
+        z-index: 101;
+
+        .sidebar-icon-logo {
+            color: white;
+            height: 3.5em;
+            margin-top: 1em;
+        }
+        .sidebar-icon {
+            color: @gray3;
+            padding: calc((4em - 22px) / 2);
+        }
+        .sidebar-icon:hover {
+            background-color: @dark-gray3;
+            color: white
+        }
+
+    }
+  
+    .@{ns}-button {
+        outline: none;
+    }
+
+    .neon-header {
+        background: @dark-gray5;
+        color: @white;
+
+        .@{ns}-navbar-divider {
+            background-color: @white;
+        }
+
+        .@{ns}-button {
+            color: @white;
+            .@{ns}-icon {
+                color: @white;
+            }
+        }
+        
+        .@{ns}-button:hover {
+            background-color: @dark-gray3;
+        }
+        
+    }
+
+    .@{ns}-card {
+        background-color: @white;
+    }
+
+}

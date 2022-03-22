@@ -4,9 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "serve": "webpack --node-env=development --mode development --watch",
-    "build-dev": "webpack --node-env=development --mode development",
-    "build": "webpack --node-env=production --mode production",
+    "start": "webpack serve --open",
     "test": "jest --coverage",
     "prepare": "husky install",
     "pre-commit": "lint-staged"
@@ -33,6 +31,7 @@
     "eslint-plugin-react": "^7.29.4",
     "html-webpack-plugin": "^5.5.0",
     "husky": "^7.0.0",
+    "identity-obj-proxy": "^3.0.0",
     "jest": "^27.5.1",
     "lint-staged": "^12.3.7",
     "mini-css-extract-plugin": "^2.6.0",
@@ -44,10 +43,15 @@
     "webpack-dev-server": "^4.7.4"
   },
   "dependencies": {
+    "@blueprintjs/core": "^4.0.0",
     "eslint": "^8.11.0",
+    "less-loader": "^10.2.0",
     "prettier": "^2.6.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-router-dom": "^6.2.2"
+    "react-router": "^6.2.2",
+    "react-router-dom": "^6.2.2",
+    "style-loader": "^3.3.1",
+    "ts-loader": "^9.2.8"
   }
 }
