@@ -1,6 +1,6 @@
 import React from 'react'
 
-const App = () => {
+function App() {
     return <p>NEON</p>
 }
 
