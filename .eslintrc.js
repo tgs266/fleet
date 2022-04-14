@@ -11,6 +11,11 @@ module.exports = {
         '@typescript-eslint/indent': ['error', 4],
         'jsx-a11y/no-static-element-interactions': 'off',
         'jsx-a11y/click-events-have-key-events': 'off',
+
+        'react/jsx-props-no-spreading': 'off',
+        'react/require-default-props': 'off',
+        'react/no-access-state-in-setstate': 'off',
+        'react/destructuring-assignment': 'off',
     },
     env: {
         browser: true,
