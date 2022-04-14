@@ -1,5 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
     entry: './src/index.tsx',
@@ -17,6 +18,11 @@ module.exports = {
     },
     module: {
         rules: [
+            {
+                test: /worker-.*\.js/,
+                include: [/node_modules\/ace-build/],
+                type: 'asset/resource',
+            },
             {
                 test: /\.(ts|tsx)$/,
                 loader: 'ts-loader',
@@ -54,6 +60,9 @@ module.exports = {
     plugins: [
         new HtmlWebpackPlugin({
             template: path.resolve(__dirname, 'src', 'index.html'),
+        }),
+        new CopyWebpackPlugin({
+            patterns: [{ from: path.resolve(__dirname, 'src', 'assets', 'gidole'), to: 'assets' }],
         }),
     ],
 };
