@@ -1,0 +1,262 @@
+/*
+ * Copied from blueprintjs
+ * Needed to copy to fix `Error evaluating function `floor`: .div is undefined`
+ * Copyright 2021 Palantir Technologies, Inc. All rights reserved.
+ */
+
+ @black: #111418;
+
+ @dark-gray1: #1c2127;
+ @dark-gray2: #252a31;
+ @dark-gray3: #2f343c;
+ @dark-gray4: #383e47;
+ @dark-gray5: #404854;
+ 
+ @gray1: #5f6b7c;
+ @gray2: #738091;
+ @gray3: #8f99a8;
+ @gray4: #abb3bf;
+ @gray5: #c5cbd3;
+ 
+ @light-gray1: #d3d8de;
+ @light-gray2: #dce0e5;
+ @light-gray3: #e5e8eb;
+ @light-gray4: #edeff2;
+ @light-gray5: #f6f7f9;
+ 
+ @white: #ffffff;
+ 
+ @blue1: #184a90;
+ @blue2: #215db0;
+ @blue3: #2d72d2;
+ @blue4: #4c90f0;
+ @blue5: #8abbff;
+ 
+ @green1: #165a36;
+ @green2: #1c6e42;
+ @green3: #238551;
+ @green4: #32a467;
+ @green5: #72ca9b;
+ 
+ @orange1: #77450d;
+ @orange2: #935610;
+ @orange3: #c87619;
+ @orange4: #ec9a3c;
+ @orange5: #fbb360;
+ 
+ @red1: #8e292c;
+ @red2: #ac2f33;
+ @red3: #cd4246;
+ @red4: #e76a6e;
+ @red5: #fa999c;
+ 
+ @vermilion1: #96290d;
+ @vermilion2: #b83211;
+ @vermilion3: #d33d17;
+ @vermilion4: #eb6847;
+ @vermilion5: #ff9980;
+ 
+ @rose1: #a82255;
+ @rose2: #c22762;
+ @rose3: #db2c6f;
+ @rose4: #f5498b;
+ @rose5: #ff66a1;
+ 
+ @violet1: #5c255c;
+ @violet2: #7c327c;
+ @violet3: #9d3f9d;
+ @violet4: #bd6bbd;
+ @violet5: #d69fd6;
+ 
+ @indigo1: #5642a6;
+ @indigo2: #634dbf;
+ @indigo3: #7961db;
+ @indigo4: #9881f3;
+ @indigo5: #bdadff;
+ 
+ @cerulean1: #1f4b99;
+ @cerulean2: #2458b3;
+ @cerulean3: #2965cc;
+ @cerulean4: #4580e6;
+ @cerulean5: #669eff;
+ 
+ @turquoise1: #004d46;
+ @turquoise2: #007067;
+ @turquoise3: #00a396;
+ @turquoise4: #13c9ba;
+ @turquoise5: #7ae1d8;
+ 
+ @forest1: #1d7324;
+ @forest2: #238c2c;
+ @forest3: #29a634;
+ @forest4: #43bf4d;
+ @forest5: #62d96b;
+ 
+ @lime1: #43501b;
+ @lime2: #5a701a;
+ @lime3: #8eb125;
+ @lime4: #b6d94c;
+ @lime5: #d4f17e;
+ 
+ @gold1: #5c4405;
+ @gold2: #866103;
+ @gold3: #d1980b;
+ @gold4: #f0b726;
+ @gold5: #fbd065;
+ 
+ @sepia1: #5e4123;
+ @sepia2: #7a542e;
+ @sepia3: #946638;
+ @sepia4: #af855a;
+ @sepia5: #d0b090;
+ @pt-intent-primary: @blue3;
+ @pt-intent-success: @green3;
+ @pt-intent-warning: @orange3;
+ @pt-intent-danger: @red3;
+ 
+ @pt-app-background-color: @light-gray5;
+ @pt-dark-app-background-color: @dark-gray3;
+ 
+ @pt-outline-color: fade(@blue3, 60%);
+ 
+ @pt-text-color: @dark-gray1;
+ @pt-text-color-muted: @gray1;
+ @pt-text-color-disabled: fade(@pt-text-color-muted, 60%);
+ @pt-heading-color: @pt-text-color;
+ @pt-link-color: @blue2;
+ @pt-dark-text-color: @light-gray5;
+ @pt-dark-text-color-muted: @gray4;
+ @pt-dark-text-color-disabled: fade(@pt-dark-text-color-muted, 60%);
+ @pt-dark-heading-color: @pt-dark-text-color;
+ @pt-dark-link-color: @blue5;
+ @pt-text-selection-color: rgba(125, 188, 255, 60%);
+ 
+ @pt-icon-color: @pt-text-color-muted;
+ @pt-icon-color-hover: @pt-text-color;
+ @pt-icon-color-disabled: @pt-text-color-disabled;
+ @pt-icon-color-selected: @pt-intent-primary;
+ @pt-dark-icon-color: @pt-dark-text-color-muted;
+ @pt-dark-icon-color-hover: @pt-dark-text-color;
+ @pt-dark-icon-color-disabled: @pt-dark-text-color-disabled;
+ @pt-dark-icon-color-selected: @pt-intent-primary;
+ 
+ @pt-divider-black: fade(@black, 15%);
+ @pt-dark-divider-black: fade(@black, 40%);
+ @pt-dark-divider-white: fade(@white, 15%);
+ 
+ @pt-code-text-color: @pt-text-color-muted;
+ @pt-dark-code-text-color: @pt-dark-text-color-muted;
+ @pt-code-background-color: fade(@white, 70%);
+ @pt-dark-code-background-color: fade(@black, 30%);
+ @use "sass:math";
+ @ns: bp4;
+ @bp-ns: @ns;
+ 
+ @pt-grid-size: 10px;
+ 
+ @icons16-family: "blueprint-icons-16";
+ @icons20-family: "blueprint-icons-20";
+ 
+ @pt-icon-size-standard: 16px;
+ @pt-icon-size-large: 20px;
+ 
+ @pt-font-family: -apple-system,
+                  "BlinkMacSystemFont",
+                  "Segoe UI",
+                  "Roboto",
+                  "Oxygen",
+                  "Ubuntu",
+                  "Cantarell",
+                  "Open Sans",
+                  "Helvetica Neue",
+                  @icons16-family,                  sans-serif;
+ 
+ @pt-font-family-monospace: monospace;
+ 
+ @pt-font-size: @pt-grid-size * 1.4;
+ @pt-font-size-large: @pt-grid-size * 1.6;
+ @pt-font-size-small: @pt-grid-size * 1.2;
+ 
+ @pt-line-height: (@pt-grid-size * 1.8 / @pt-font-size) + 0.0001;
+ 
+ @pt-border-radius: floor(@pt-grid-size / 3);
+ 
+ @pt-button-height: @pt-grid-size * 3;
+ @pt-button-height-small: @pt-grid-size * 2.4;
+ @pt-button-height-smaller: @pt-grid-size * 2;
+ @pt-button-height-large: @pt-grid-size * 4;
+ 
+ @pt-input-height: @pt-grid-size * 3;
+ @pt-input-height-large: @pt-grid-size * 4;
+ @pt-input-height-small: @pt-grid-size * 2.4;
+ 
+ @pt-navbar-height: @pt-grid-size * 5;
+ 
+ @pt-z-index-base: 0;
+ @pt-z-index-content: @pt-z-index-base + 10;
+ @pt-z-index-overlay: @pt-z-index-content + 10;
+ @pt-z-index-dialog-header: @pt-z-index-overlay + 10;
+ 
+ @pt-border-shadow-opacity: 0.1;
+ @pt-drop-shadow-opacity: 0.2;
+ @pt-dark-border-shadow-opacity: @pt-border-shadow-opacity * 2;
+ @pt-dark-drop-shadow-opacity: @pt-drop-shadow-opacity * 2;
+ 
+ @pt-elevation-shadow-0: 0 0 0 1px @pt-divider-black,
+                         0 0 0 fade(@black, 0%),
+                         0 0 0 fade(@black, 0%);
+ @pt-elevation-shadow-1: 0 0 0 1px fade(@black, @pt-border-shadow-opacity * 100%),
+                         0 0 0 fade(@black, 0%),
+                         0 1px 1px fade(@black, @pt-drop-shadow-opacity * 100%);
+ @pt-elevation-shadow-2: 0 0 0 1px fade(@black, @pt-border-shadow-opacity * 100%),
+                         0 1px 1px fade(@black, @pt-drop-shadow-opacity * 100%),
+                         0 2px 6px fade(@black, @pt-drop-shadow-opacity * 100%);
+ @pt-elevation-shadow-3: 0 0 0 1px fade(@black, @pt-border-shadow-opacity * 100%),
+                         0 2px 4px fade(@black, @pt-drop-shadow-opacity * 100%),
+                         0 8px 24px fade(@black, @pt-drop-shadow-opacity * 100%);
+ @pt-elevation-shadow-4: 0 0 0 1px fade(@black, @pt-border-shadow-opacity * 100%),
+                         0 4px 8px fade(@black, @pt-drop-shadow-opacity * 100%),
+                         0 18px 46px 6px fade(@black, @pt-drop-shadow-opacity * 100%);
+ 
+ @pt-dark-elevation-shadow-0: 0 0 0 1px @pt-dark-divider-black,
+                              0 0 0 fade(@black, 0%),
+                              0 0 0 fade(@black, 0%);
+ @pt-dark-elevation-shadow-1: 0 0 0 1px fade(@black, @pt-dark-border-shadow-opacity * 100%),
+                              0 0 0 fade(@black, 0%),
+                              0 1px 1px fade(@black, @pt-dark-drop-shadow-opacity * 100%);
+ @pt-dark-elevation-shadow-2: 0 0 0 1px fade(@black, @pt-dark-border-shadow-opacity * 100%),
+                              0 1px 1px fade(@black, @pt-dark-drop-shadow-opacity * 100%),
+                              0 2px 6px fade(@black, @pt-dark-drop-shadow-opacity * 100%);
+ @pt-dark-elevation-shadow-3: 0 0 0 1px fade(@black, @pt-dark-border-shadow-opacity * 100%),
+                              0 2px 4px fade(@black, @pt-dark-drop-shadow-opacity * 100%),
+                              0 8px 24px fade(@black, @pt-dark-drop-shadow-opacity * 100%);
+ @pt-dark-elevation-shadow-4: 0 0 0 1px fade(@black, @pt-dark-border-shadow-opacity * 100%),
+                              0 4px 8px fade(@black, @pt-dark-drop-shadow-opacity * 100%),
+                              0 18px 46px 6px fade(@black, @pt-dark-drop-shadow-opacity * 100%);
+ 
+ @pt-transition-ease: cubic-bezier(0.4, 1, 0.75, 0.9);
+ @pt-transition-ease-bounce: cubic-bezier(0.54, 1.12, 0.38, 1.11);
+ @pt-transition-duration: 100ms;
+ 
+ @pt-input-box-shadow: inset 0 0 0 1px fade(@black, 20%),
+                       inset 0 1px 1px fade(@black, 50%);
+ 
+ @pt-dialog-box-shadow: @pt-elevation-shadow-4;
+ @pt-popover-box-shadow: @pt-elevation-shadow-3;
+ @pt-tooltip-box-shadow: @pt-popover-box-shadow;
+ 
+ @pt-dark-input-box-shadow: inset 0 1px 0 0 fade(@black, 60%),
+                            inset -1px 0 0 fade(@black, 60%),
+                            inset 1px 0 0 fade(@black, 60%),
+                            inset 0 -1px 0 0 @gray3;
+ 
+ @pt-dark-dialog-box-shadow: @pt-dark-elevation-shadow-4;
+ @pt-dark-popover-box-shadow: @pt-dark-elevation-shadow-3;
+ @pt-dark-tooltip-box-shadow: @pt-dark-popover-box-shadow;
+ @pt-dark-input-intent-box-shadow-colors: (
+   "primary": @blue4,
+   "success": @green4,
+   "warning": @orange4,
+   "danger" : @red4,
+);
+ 
