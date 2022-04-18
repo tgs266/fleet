@@ -3,7 +3,7 @@ import axios, { AxiosResponse } from 'axios';
 import { SystemResources } from '../models/system.model';
 
 export default class System {
-    static base = 'http://localhost:51115/api/v1/system';
+    static base = 'http://localhost:8000/api/v1/system';
 
     static getResources(): Promise<AxiosResponse<SystemResources>> {
         return axios.get(`${System.base}/resources`);

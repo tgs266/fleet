@@ -6,7 +6,7 @@ import { Pod, PodMeta } from '../../models/pod.model';
 import api from '../axios.service';
 
 export default class Pods {
-    static base = 'http://localhost:51115/api/v1/pods';
+    static base = 'http://localhost:8000/api/v1/pods';
 
     static getPod(podName: string, namespace?: string): Promise<AxiosResponse<Pod>> {
         return api.get(`${Pods.base}/${namespace}/${podName}`);
@@ -42,14 +42,14 @@ export default class Pods {
         callback: (event: MessageEvent<string>) => void
     ): WebSocket {
         const ws = new WebSocket(
-            `ws://localhost:51115/ws/v1/pods/${namespace}/${pod}/events?pollInterval=${pollInterval}`
+            `ws://localhost:8000/ws/v1/pods/${namespace}/${pod}/events?pollInterval=${pollInterval}`
         );
         ws.onmessage = callback;
         return ws;
     }
 
     static getRawPod(pod: string, namespace: string): Promise<AxiosResponse<JSONObject>> {
-        return api.get(`http://localhost:51115/api/v1/raw/pods/${namespace}/${pod}`);
+        return api.get(`http://localhost:8000/api/v1/raw/pods/${namespace}/${pod}`);
     }
 
     static updateRawPod(
@@ -57,6 +57,6 @@ export default class Pods {
         namespace: string,
         p: JSONObject
     ): Promise<AxiosResponse<JSONObject>> {
-        return axios.put(`http://localhost:51115/api/v1/raw/pods/${namespace}/${pod}`, p);
+        return axios.put(`http://localhost:8000/api/v1/raw/pods/${namespace}/${pod}`, p);
     }
 }

@@ -5,7 +5,7 @@ import { Node, NodeMeta } from '../../models/node.model';
 import api from '../axios.service';
 
 export default class Nodes {
-    static base = 'http://localhost:51115/api/v1/nodes';
+    static base = 'http://localhost:8000/api/v1/nodes';
 
     static getNodes(): Promise<AxiosResponse<NodeMeta[]>> {
         return api.get(`${Nodes.base}/`);
