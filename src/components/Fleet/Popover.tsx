@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/indent */
 import { Button, Intent, Tag } from '@blueprintjs/core';
 import { Popover2 } from '@blueprintjs/popover2';
 import React, { useState } from 'react';

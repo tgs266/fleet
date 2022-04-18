@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/indent */
 import * as React from 'react';
 import { Icon, Position, IconName } from '@blueprintjs/core';
 import { useLocation, useNavigate } from 'react-router';

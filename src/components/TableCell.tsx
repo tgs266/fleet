@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/indent */
 import * as React from 'react';
 import PropTypes from 'prop-types'; // ES6
 import { Alignment } from '@blueprintjs/core';

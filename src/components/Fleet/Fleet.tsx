@@ -1,5 +1,4 @@
 /* eslint-disable import/no-cycle */
-/* eslint-disable @typescript-eslint/indent */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-continue */
 /* eslint-disable no-bitwise */

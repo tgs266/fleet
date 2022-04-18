@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/indent */
 /* eslint-disable import/no-cycle */
 /* eslint-disable react/no-unused-class-component-methods */
 /* eslint-disable react/no-unstable-nested-components */

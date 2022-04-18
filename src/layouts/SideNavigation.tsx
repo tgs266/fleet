@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/indent */
 import * as React from 'react';
 import SideNavButton, { NavButton } from './SideNavButton';
 

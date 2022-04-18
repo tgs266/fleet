@@ -8,7 +8,7 @@ module.exports = {
         indent: ['error', 4],
         'react/jsx-indent': ['error', 4],
         'react/jsx-indent-props': ['error', 4],
-        '@typescript-eslint/indent': ['error', 4],
+        '@typescript-eslint/indent': 'off',
         'jsx-a11y/no-static-element-interactions': 'off',
         'jsx-a11y/click-events-have-key-events': 'off',
 

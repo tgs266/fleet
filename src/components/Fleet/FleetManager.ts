@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/indent */
 /* eslint-disable no-bitwise */
 /* eslint-disable no-continue */
 /* eslint-disable import/no-cycle */

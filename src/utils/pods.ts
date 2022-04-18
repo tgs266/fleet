@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/indent */
 /* eslint-disable import/prefer-default-export */
 import { Colors } from '@blueprintjs/core';
 import { PodMeta } from '../models/pod.model';

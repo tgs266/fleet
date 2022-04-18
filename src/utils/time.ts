@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/indent */
 /* eslint-disable import/prefer-default-export */
 
 export const millisecondsToHumanReadable = (ms: number): string => {
