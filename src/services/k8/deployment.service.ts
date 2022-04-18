@@ -46,32 +46,6 @@ export default class Deployments {
         );
     }
 
-    // static updateDeployment(deployment: string, namespace: string, data: JSONObject): Promise<AxiosResponse<JSONObject>> {
-    //     return api.put(`${Deployments.base}/${namespace}/${deployment}`, data);
-    // }
-
-    // static getAppDetailsAsJSON(deployment: string, namespace: string): Promise<AxiosResponse<JSONObject>> {
-    //     return axios.get(`${Deployments.base}/${namespace}/${deployment}/json`);
-    // }
-
-    // static pauseApp(deployment: string, namespace: string): Promise<AxiosResponse<any>> {
-    //     return axios.put(`${Deployments.base}/${namespace}/${deployment}`, {
-    //         pause: true
-    //     });
-    // }
-
-    // static resumeApp(deployment: string, namespace: string): Promise<AxiosResponse<any>> {
-    //     return axios.put(`${Apps.base}/${namespace}/${deployment}`, {
-    //         pause: false
-    //     });
-    // }
-
-    // static changeNamepsace(deployment: string, namespace: string, newNamespace: string): Promise<AxiosResponse<any>> {
-    //     return axios.put(`${Apps.base}/${namespace}/${deployment}/namespace`, {
-    //         namespace: newNamespace
-    //     });
-    // }
-
     static restartApp(deployment: string, namespace: string): Promise<AxiosResponse<any>> {
         return api.put(`${Deployments.base}/${namespace}/${deployment}/restart`);
     }
@@ -88,10 +62,6 @@ export default class Deployments {
         );
     }
 
-    // static getContainerSpec(deployment: string, namespace: string, specName: string): Promise<AxiosResponse<ContainerSpec>> {
-    //     return axios.get(`${Apps.base}/${namespace}/${deployment}/container-specs/${specName}`);
-    // }
-
     static createDeployment(dep: CreateDeployment): Promise<AxiosResponse<any>> {
         return api.post(`${Deployments.base}/`, {
             namespace: dep.namespace,
@@ -105,11 +75,15 @@ export default class Deployments {
         return api.delete(`${Deployments.base}/${namespace}/${deployment}`);
     }
 
-    // static scaleApp(deployment: string, namespace: string, replicas: number): Promise<AxiosResponse<any>> {
-    //     return axios.put(`${Apps.base}/${namespace}/${deployment}`, {
-    //         replicas
-    //     })
-    // }
+    static scale(
+        deployment: string,
+        namespace: string,
+        replicas: number
+    ): Promise<AxiosResponse<any>> {
+        return axios.put(`${Deployments.base}/${namespace}/${deployment}/scale`, {
+            replicas,
+        });
+    }
 
     static openEventWebsocket(
         deployment: string,

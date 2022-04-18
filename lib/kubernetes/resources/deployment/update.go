@@ -114,6 +114,24 @@ func UpdateDeployment(K8 *kubernetes.K8Client, namespace, name string, dep *v1a.
 	// SaveSpec(d)
 }
 
+func ScaleDeployment(K8 *kubernetes.K8Client, namespace, name string, newCount int) error {
+	logging.INFOf("scaling deployment %s/%s to %d replicas", namespace, name, newCount)
+
+	dep, err := getInternal(K8, namespace, name, metaV1.GetOptions{})
+	if err != nil {
+		return errors.ParseInternalError(err)
+	}
+
+	dep.Spec.Replicas = shared.Int32Ptr(int32(newCount))
+
+	_, e := K8.K8.AppsV1().Deployments(namespace).Update(context.TODO(), dep, metaV1.UpdateOptions{})
+	if e != nil {
+		return errors.ParseInternalError(e)
+	}
+	return nil
+	// SaveSpec(d)
+}
+
 func UpdateContainerSpec(K8 *kubernetes.K8Client, namespace string, name string, specName string, containerSpec container.ContainerSpec) error {
 	logging.INFOf("updating container spec %s/%s/%s", namespace, name, specName)
 	deployment, err := getInternal(K8, namespace, name, metaV1.GetOptions{})

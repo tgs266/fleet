@@ -45,22 +45,6 @@ func GetDeployment(c *fiber.Ctx, client *client.ClientManager) error {
 	return c.Status(fiber.StatusOK).JSON(dep)
 }
 
-// func GetDeploymentAsJson(c *fiber.Ctx, client *client.ClientManager) error {
-// 	K8, err := client.Client()
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	namespace := shared.GetNamespace(c.Params("namespace"))
-// 	name := c.Params("name")
-
-// 	dep, err := deployment.GetJson(K8, namespace, name)
-// 	if err != nil {
-// 		return err
-// 	}
-// 	return c.Status(fiber.StatusOK).JSON(dep)
-// }
-
 func UpdateDeploymentFromJson(c *fiber.Ctx, client *client.ClientManager) error {
 	K8, err := client.Client()
 	if err != nil {
@@ -175,4 +159,27 @@ func DeploymentEventStream(c *websocket.Conn, client *client.ClientManager) {
 	pollInterval, _ := strconv.Atoi(c.Query("pollInterval", "5000"))
 
 	deployment.StreamDeploymentEvents(K8, namespace, name, c, pollInterval)
+}
+
+type scaleDeploymentBody struct {
+	Replicas int `json:"replicas"`
+}
+
+func ScaleDeployment(c *fiber.Ctx, client *client.ClientManager) error {
+	K8, err := client.Client()
+	if err != nil {
+		panic(err)
+	}
+
+	namespace := shared.GetNamespace(c.Params("namespace"))
+	name := c.Params("name")
+	body := new(scaleDeploymentBody)
+
+	if err := c.BodyParser(body); err != nil {
+		return err
+	}
+
+	deployment.ScaleDeployment(K8, namespace, name, body.Replicas)
+
+	return c.SendStatus(fiber.StatusNoContent)
 }

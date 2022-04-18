@@ -63,6 +63,7 @@ func main() {
 	app.Get("/api/v1/deployments/:namespace", controllers.GetDeploymentStubList)
 	app.Get("/api/v1/deployments/:namespace/:name", controllers.GetDeployment)
 	app.Delete("/api/v1/deployments/:namespace/:name", controllers.DeleteDeployment)
+	app.Put("/api/v1/deployments/:namespace/:name/scale", controllers.ScaleDeployment)
 	app.Put("/api/v1/deployments/:namespace/:name/restart", controllers.RestartDeployment)
 	app.Put("/api/v1/deployments/:namespace/:name/container-specs/:specName", controllers.UpdateDeploymentContainerSpec)
 	app.WebsocketGet("/ws/v1/deployments/:namespace/:name/events", controllers.DeploymentEventStream)
