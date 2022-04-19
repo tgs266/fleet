@@ -4,7 +4,7 @@ import { Container } from '../../models/container.model';
 import api from '../axios.service';
 
 export default class Containers {
-    static base = 'http://localhost:8000/api/v1';
+    static base = '/api/v1';
 
     static getContainer(
         podName: string,
@@ -23,7 +23,7 @@ export default class Containers {
         callback: (event: MessageEvent<string>) => void
     ): WebSocket {
         const ws = new WebSocket(
-            `ws://localhost:8000/ws/v1/pods/${namespace}/${podName}/containers/${containerName}/logs`
+            `ws://localhost:9095/ws/v1/pods/${namespace}/${podName}/containers/${containerName}/logs`
         );
         ws.onmessage = callback;
         return ws;

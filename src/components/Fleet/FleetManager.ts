@@ -195,7 +195,7 @@ export default class FleetManager {
             this.groups = {};
             this.width = 0;
         }
-        this.ws = new WebSocket('ws://localhost:8000/ws/v1/fleet');
+        this.ws = new WebSocket('ws://localhost:9095/ws/v1/fleet');
         this.ws.onopen = () => {
             this.ws.send(
                 JSON.stringify({

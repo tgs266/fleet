@@ -1,12 +1,9 @@
 package fleet
 
 import (
-	"path/filepath"
-
 	"github.com/gofiber/websocket/v2"
 	"github.com/tgs266/fleet/lib/api"
 	"github.com/tgs266/fleet/lib/client"
-	"k8s.io/client-go/util/homedir"
 )
 
 func AddRoutes(app *api.API) {
@@ -14,7 +11,12 @@ func AddRoutes(app *api.API) {
 }
 
 func Websocket(c *websocket.Conn, cl *client.ClientManager) {
-	manager := client.NewClientManager(filepath.Join(homedir.HomeDir(), ".kube", "config"))
+	defer func() {
+		if r := recover(); r != nil {
+			c.Close()
+		}
+	}()
+	manager := client.NewClientManager()
 
 	K8, err := manager.Client()
 	if err != nil {
@@ -23,16 +25,4 @@ func Websocket(c *websocket.Conn, cl *client.ClientManager) {
 
 	Run(c, K8, 1000)
 
-	// body := new(FleetRequest)
-	// if err := c.BodyParser(body); err != nil {
-	// 	c.Close()
-	// }
-
-	// fm, err := BuildFleet(K8, body)
-	// body := new(FleetRequest)
-	// if err := c.BodyParser(body); err != nil {
-	// 	c.Close()
-	// }
-
-	// fm, err := BuildFleet(K8, body)
 }

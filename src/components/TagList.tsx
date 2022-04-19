@@ -1,8 +1,8 @@
 import * as React from 'react';
-import PropTypes from 'prop-types'; // ES6
+import { Tag } from '@blueprintjs/core';
 
 export default function TagList(props: {
-    children: PropTypes.ReactNodeArray;
+    children: any;
     chipStyle?: React.CSSProperties;
     style?: React.CSSProperties;
     spacing?: string;
@@ -17,7 +17,7 @@ export default function TagList(props: {
                 alignItems: 'center',
             }}
         >
-            {props.children.map((child, idx) => (
+            {props.children.map((child: Tag, idx: number) => (
                 <div
                     style={{
                         ...props.chipStyle,

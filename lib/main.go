@@ -2,8 +2,6 @@ package main
 
 import (
 	"flag"
-	"os"
-	"path/filepath"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -14,7 +12,6 @@ import (
 	"github.com/tgs266/fleet/lib/controllers"
 	"github.com/tgs266/fleet/lib/fleet"
 	"github.com/tgs266/fleet/lib/logging"
-	"k8s.io/client-go/util/homedir"
 )
 
 func createFiberConfig() fiber.Config {
@@ -33,7 +30,7 @@ func main() {
 
 	flag.Parse()
 
-	manager := client.NewClientManager(filepath.Join(homedir.HomeDir(), ".kube", "config"))
+	manager := client.NewClientManager()
 	app := api.New(manager, createFiberConfig())
 	logging.INFO("api created")
 
@@ -98,11 +95,13 @@ func main() {
 
 	if src != nil {
 		logging.INFO("serving frontend")
-		ex, _ := os.Executable()
-		exPath := filepath.Dir(ex)
-		path := filepath.Join(exPath, *src)
+		// ex, _ := os.Executable()
+		// exPath := filepath.Dir(ex)
+		// path := filepath.Join(exPath, *src)
+		path := *src
+		logging.INFO(path)
 		app.Static("/", path)
 	}
 
-	app.Listen(":8000")
+	app.Listen(":9095")
 }

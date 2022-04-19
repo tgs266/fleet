@@ -5,7 +5,7 @@ export default function IconSwapButton(props: {
     btnProps: ButtonProps;
     otherIcon: IconName | MaybeElement;
 }) {
-    const [icon, setIcon] = React.useState(props.btnProps.icon);
+    const [icon, setIcon] = React.useState<IconName | MaybeElement>(props.btnProps.icon);
     const [isOther, setIsOther] = React.useState(false);
 
     return (

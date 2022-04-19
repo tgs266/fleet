@@ -25,7 +25,7 @@ export default class K8 {
     static namespaces = Namespaces;
 
     static getFilterProperties(): Promise<AxiosResponse<JSONObjectType<string>>> {
-        return api.get('http://localhost:8000/api/v1/filters/properties');
+        return api.get('/api/v1/filters/properties');
     }
 
     static poll(

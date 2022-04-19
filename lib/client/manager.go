@@ -1,11 +1,17 @@
 package client
 
 import (
+	errs "errors"
+	"os"
+	"path/filepath"
+
 	"github.com/tgs266/fleet/lib/errors"
 	"github.com/tgs266/fleet/lib/kubernetes"
+	"github.com/tgs266/fleet/lib/logging"
 	"github.com/tgs266/fleet/lib/raw"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
+	"k8s.io/client-go/util/homedir"
 )
 
 type ClientManager struct {
@@ -17,7 +23,12 @@ type ClientManager struct {
 	clusterConfig *rest.Config
 }
 
-func NewClientManager(kubeConfigPath string) *ClientManager {
+func NewClientManager() *ClientManager {
+
+	kubeConfigPath := filepath.Join(homedir.HomeDir(), ".kube", "config")
+	if _, err := os.Stat(kubeConfigPath); errs.Is(err, os.ErrNotExist) {
+		kubeConfigPath = ""
+	}
 
 	client := &ClientManager{
 		kubeConfigPath: kubeConfigPath,
@@ -35,8 +46,10 @@ func (client *ClientManager) initClusterConfig() {
 	if client.kubeConfigPath != "" {
 		return
 	}
+	logging.INFO("attempting in-cluster config")
 	cfg, err := rest.InClusterConfig()
 	if err != nil {
+		logging.ERROR("in-cluster config failed")
 		return
 	}
 	client.clusterConfig = cfg

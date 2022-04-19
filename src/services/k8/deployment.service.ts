@@ -8,7 +8,7 @@ import { JSONObject } from '../../models/json.model';
 import api from '../axios.service';
 
 export default class Deployments {
-    static base = 'http://localhost:8000/api/v1/deployments';
+    static base = '/api/v1/deployments';
 
     static getDeployments(
         namespace?: string,
@@ -32,7 +32,7 @@ export default class Deployments {
         deployment: string,
         namespace: string
     ): Promise<AxiosResponse<JSONObject>> {
-        return api.get(`http://localhost:8000/api/v1/raw/deployments/${namespace}/${deployment}`);
+        return api.get(`/api/v1/raw/deployments/${namespace}/${deployment}`);
     }
 
     static updateRawDeployment(
@@ -40,10 +40,7 @@ export default class Deployments {
         namespace: string,
         dep: JSONObject
     ): Promise<AxiosResponse<JSONObject>> {
-        return axios.put(
-            `http://localhost:8000/api/v1/raw/deployments/${namespace}/${deployment}`,
-            dep
-        );
+        return axios.put(`/api/v1/raw/deployments/${namespace}/${deployment}`, dep);
     }
 
     static restartApp(deployment: string, namespace: string): Promise<AxiosResponse<any>> {
@@ -92,7 +89,7 @@ export default class Deployments {
         callback: (event: MessageEvent<string>) => void
     ): WebSocket {
         const ws = new WebSocket(
-            `ws://localhost:8000/ws/v1/deployments/${namespace}/${deployment}/events?pollInterval=${pollInterval}`
+            `ws://localhost:9095/ws/v1/deployments/${namespace}/${deployment}/events?pollInterval=${pollInterval}`
         );
         ws.onmessage = callback;
         return ws;

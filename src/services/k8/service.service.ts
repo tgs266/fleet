@@ -5,7 +5,7 @@ import { Service, ServiceMeta } from '../../models/service.model';
 import api from '../axios.service';
 
 export default class Services {
-    static base = 'http://localhost:8000/api/v1/services';
+    static base = '/api/v1/services';
 
     static getService(serviceName: string, namespace?: string): Promise<AxiosResponse<Service>> {
         return api.get(`${Services.base}/${namespace}/${serviceName}`);

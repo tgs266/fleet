@@ -1,17 +1,29 @@
-FROM golang:latest
+FROM node:16.13.0-bullseye AS stage1
 
-RUN curl -O https://nodejs.org/dist/v16.13.0/node-v16.13.0.tar.gz
-RUN tar -xvf node-v16.13.0.tar.gz && rm node-v16.13.0.tar.gz
-RUN cd node-v16.13.0 && ./configure && make && make install
-RUN npm install -g api-console-cli && npm install -g bower
+RUN apt -y update
+RUN apt -y install wget bc
+RUN wget https://dl.google.com/go/go1.17.9.linux-amd64.tar.gz
+RUN tar -C /usr/local -xzf go1.17.9.linux-amd64.tar.gz
 
-RUN cd tools
-RUN ./build.sh 
+ENV PATH="${PATH}:/usr/local/go/bin"
 
-RUN cd ../build
+WORKDIR /app
+COPY . .
 
-EXPOSE 9090 8443
-ENTRYPOINT ["fleet-cli"]
+WORKDIR /app/tools
+RUN chmod +x build.sh
+
+WORKDIR /app
+RUN ./tools/build.sh
+
+FROM ubuntu:latest as stage2
+
+COPY --from=stage1 /app/build/* /app/
+
+WORKDIR /app
+EXPOSE 9095
+
+ENTRYPOINT [ "./lib", "-src", "./" ]
 
 
 

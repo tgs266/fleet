@@ -1,13 +1,12 @@
 import React from 'react';
-import PropTypes from 'prop-types'; // ES6
 import { Card } from '@blueprintjs/core';
 
 export default function TitledCard(props: {
-    title: PropTypes.ReactNodeLike;
+    title: React.ReactNode;
     rightElement?: React.ReactNode;
     style?: React.CSSProperties;
     titleMarginBottom?: string;
-    children?: PropTypes.ReactNodeLike;
+    children?: React.ReactNode;
 }) {
     return (
         <Card style={{ ...props.style }}>
