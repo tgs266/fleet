@@ -5,7 +5,7 @@ Fleet is a Kubernetes fleet management tool built for any workload size, from si
 
 ## Features
 
-- Easy to use kubernetes management of resources
+- Easy to use management of kubernetes resources
   - Deployments
   - Pods
   - Services
