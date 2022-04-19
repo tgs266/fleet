@@ -18,11 +18,11 @@ Fleet is a Kubernetes fleet management tool built for any workload size, from si
 - User authentication
 - User settings store
 
-View more of what is being worked on [here](https://app.clickup.com/36714921/v/l/5-102851183-1?pr=54807993)
+View more of what is being worked on [here](https://sharing.clickup.com/36714921/l/h/5-102851183-1/3cc95c97bb6e6f9)
 
 ## Issues
 
-You can report issues here on github or in the clickup [issue tracker](https://app.clickup.com/36714921/v/l/6-174722300-1)
+You can report issues here on github or in the clickup [issue tracker](https://sharing.clickup.com/36714921/l/h/6-174722300-1/b57699073ad365e)
 
 ## Install and Run Fleet
 
