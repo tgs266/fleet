@@ -18,7 +18,7 @@ Then just fire up a proxy
 kubectl proxy
 ```
 
-And then go to [http://localhost:8001/api/v1/namespaces/fleet/services/fleet/proxy/#/]
+And then go to <http://localhost:8001/api/v1/namespaces/fleet/services/fleet/proxy/#/>
 
 ### From source
 
@@ -54,4 +54,4 @@ Start the server
   cd lib && go run main.go --src=../build
 ```
 
-Then navigate to [localhost:9095]
+Then navigate to <localhost:9095>
