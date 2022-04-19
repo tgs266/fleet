@@ -3,6 +3,27 @@
 
 Fleet is a Kubernetes fleet management tool built for any workload size, from single node deployments to massive multi-node deployments.
 
+## Features
+
+- Easy to use kubernetes management of resources
+  - Deployments
+  - Pods
+  - Services
+  - etc.
+- Fleet view ([screenshot](figures/fleet-view.png))
+
+## Roadmap
+
+- Graphical deployment creator
+- User authentication
+- User settings store
+
+View more of what is being worked on [here](https://app.clickup.com/36714921/v/l/5-102851183-1?pr=54807993)
+
+## Issues
+
+You can report issues here on github or in the clickup [issue tracker](https://app.clickup.com/36714921/v/l/6-174722300-1)
+
 ## Install and Run Fleet
 
 ### In Kubernetes
