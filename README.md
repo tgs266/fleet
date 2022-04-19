@@ -54,4 +54,4 @@ Start the server
   cd lib && go run main.go --src=../build
 ```
 
-Then navigate to <localhost:9095>
+Then navigate to <http://localhost:9095>
