@@ -1,8 +1,7 @@
 /* eslint-disable indent */
 import * as React from 'react';
 import { Colors, Card, Button, Position, Menu, MenuItem } from '@blueprintjs/core';
-import { Popover2, Tooltip2 } from '@blueprintjs/popover2';
-import { TOOLTIP2_INDICATOR } from '@blueprintjs/popover2/lib/esm/classes';
+import { Classes, Popover2, Tooltip2 } from '@blueprintjs/popover2';
 import { Link } from 'react-router-dom';
 import { createdAtToHumanReadable, createdAtToOrigination } from '../../utils/time';
 import Accordion from '../../components/Accordion';
@@ -20,7 +19,7 @@ const createAccordionTitle = (service: Service): JSX.Element => (
         </div>
         <div style={{ flexBasis: '27.5%', marginRight: '0.5%', marginLeft: '0.5%' }}>
             <Tooltip2
-                className={TOOLTIP2_INDICATOR}
+                className={Classes.TOOLTIP2_INDICATOR}
                 content={createdAtToOrigination(service.createdAt)}
             >
                 <div>Age: {createdAtToHumanReadable(service.createdAt)}</div>

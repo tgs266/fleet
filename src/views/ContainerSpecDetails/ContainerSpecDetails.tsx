@@ -64,7 +64,9 @@ class ImageDetails extends React.Component<IWithRouterProps, IContainerSpecDetai
             ] as IBreadcrumb[],
             buttons: [
                 <Button
+                    key="refresh"
                     icon="refresh"
+                    data-testid="refresh"
                     onClick={() => {
                         K8.deployments
                             .getDeployment(
@@ -133,6 +135,7 @@ class ImageDetails extends React.Component<IWithRouterProps, IContainerSpecDetai
         return (
             <div>
                 <TwoButtonDialog
+                    id="update-dialog"
                     isOpen={this.state.isDialogOpen}
                     successText="Ok"
                     failureText="Cancel"
@@ -153,6 +156,7 @@ class ImageDetails extends React.Component<IWithRouterProps, IContainerSpecDetai
                             <Button
                                 intent={Intent.PRIMARY}
                                 disabled={!this.state.edited}
+                                data-testid="spec-edited-btn"
                                 onClick={() => {
                                     this.setState({ isDialogOpen: true });
                                 }}

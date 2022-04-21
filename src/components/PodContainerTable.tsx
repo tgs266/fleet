@@ -71,7 +71,7 @@ export default function PodContainerTable(props: { pod: Pod; accordion?: boolean
                                               )} MB`
                                             : '-'}
                                     </TableCell>
-                                    <TableCell alingment={Alignment.RIGHT}>
+                                    <TableCell alignment={Alignment.RIGHT}>
                                         <Tooltip2 content={`Status: ${container.state}`}>
                                             <Icon
                                                 style={{ marginRight: '1em' }}

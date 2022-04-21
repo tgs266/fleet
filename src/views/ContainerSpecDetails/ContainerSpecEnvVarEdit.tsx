@@ -23,9 +23,10 @@ export default function ContainerSpecEnvVarEdit(props: {
                     <TableHeader>
                         <TableCell>Name</TableCell>
                         <TableCell>Value</TableCell>
-                        <TableCell alingment={Alignment.RIGHT}>
+                        <TableCell alignment={Alignment.RIGHT}>
                             <Button
                                 icon="add"
+                                data-testid="env-add-btn"
                                 minimal
                                 onClick={() => {
                                     onChange('envVars', [
@@ -45,6 +46,7 @@ export default function ContainerSpecEnvVarEdit(props: {
                                 <TableCell>
                                     <InputGroup
                                         value={env.name}
+                                        data-testid={`${idx}-env-name`}
                                         onChange={(e) =>
                                             onChange(`envVars[${idx}].name`, e.target.value)
                                         }
@@ -53,14 +55,16 @@ export default function ContainerSpecEnvVarEdit(props: {
                                 <TableCell>
                                     <InputGroup
                                         value={env.value}
+                                        data-testid={`${idx}-env-value`}
                                         onChange={(e) =>
                                             onChange(`envVars[${idx}].value`, e.target.value)
                                         }
                                     />
                                 </TableCell>
-                                <TableCell alingment={Alignment.RIGHT}>
+                                <TableCell alignment={Alignment.RIGHT}>
                                     <Button
                                         icon="trash"
+                                        data-testid="env-delete-btn"
                                         minimal
                                         onClick={() => {
                                             onChange(

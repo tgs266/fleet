@@ -6,7 +6,7 @@ export default function SideNavigation() {
         {
             target: '/',
             icon: 'home',
-            name: null,
+            name: 'Home',
             activeSelector: (pathname: string) =>
                 pathname.startsWith('/') && pathname.endsWith('/') && pathname.length === 1,
         },
@@ -40,7 +40,7 @@ export default function SideNavigation() {
         <div style={{ WebkitUserSelect: 'none' }}>
             <div className="sidebar">
                 {navBtns.map((btn) => (
-                    <SideNavButton {...btn} />
+                    <SideNavButton key={btn.name} {...btn} />
                 ))}
             </div>
         </div>

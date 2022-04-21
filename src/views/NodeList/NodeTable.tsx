@@ -1,6 +1,5 @@
 import { Card, Tag } from '@blueprintjs/core';
-import { Tooltip2 } from '@blueprintjs/popover2';
-import { TOOLTIP2_INDICATOR } from '@blueprintjs/popover2/lib/esm/classes';
+import { Classes, Tooltip2 } from '@blueprintjs/popover2';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import Table from '../../components/Table';
@@ -69,7 +68,7 @@ class NodeTable extends React.Component<unknown, INodeTableState> {
                                 </TableCell>
                                 <TableCell>
                                     <Tooltip2
-                                        className={TOOLTIP2_INDICATOR}
+                                        className={Classes.TOOLTIP2_INDICATOR}
                                         content={createdAtToOrigination(node.createdAt)}
                                     >
                                         {createdAtToHumanReadable(node.createdAt)}

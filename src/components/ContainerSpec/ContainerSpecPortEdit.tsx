@@ -26,10 +26,11 @@ export default function ContainerSpecPortEdit(props: {
                         <TableCell>Host Port</TableCell>
                         <TableCell>Container Port</TableCell>
                         <TableCell>Protocol</TableCell>
-                        <TableCell alingment={Alignment.RIGHT}>
+                        <TableCell alignment={Alignment.RIGHT}>
                             <Button
                                 icon="add"
                                 minimal
+                                data-testid="port-add-btn"
                                 onClick={() => {
                                     onChange('ports', [
                                         ...containerSpec.ports,
@@ -49,6 +50,7 @@ export default function ContainerSpecPortEdit(props: {
                             <TableRow key={idx}>
                                 <TableCell>
                                     <InputGroup
+                                        data-testid={`${idx}-hostIp`}
                                         value={port.hostIp}
                                         onChange={(e) =>
                                             onChange(`ports[${idx}].hostIp`, e.target.value)
@@ -58,6 +60,7 @@ export default function ContainerSpecPortEdit(props: {
                                 <TableCell>
                                     <InputGroup
                                         type="number"
+                                        data-testid={`${idx}-hostPort`}
                                         value={port.hostPort.toString()}
                                         onChange={(e) =>
                                             onChange(
@@ -70,6 +73,7 @@ export default function ContainerSpecPortEdit(props: {
                                 <TableCell>
                                     <InputGroup
                                         type="number"
+                                        data-testid={`${idx}-containerPort`}
                                         value={port.containerPort.toString()}
                                         onChange={(e) =>
                                             onChange(
@@ -113,9 +117,10 @@ export default function ContainerSpecPortEdit(props: {
                                         }}
                                     />
                                 </TableCell>
-                                <TableCell alingment={Alignment.RIGHT}>
+                                <TableCell alignment={Alignment.RIGHT}>
                                     <Button
                                         icon="trash"
+                                        data-testid="port-delete-btn"
                                         minimal
                                         onClick={() => {
                                             onChange(

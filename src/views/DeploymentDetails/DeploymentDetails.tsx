@@ -72,9 +72,9 @@ class DeploymentDetails extends React.Component<IWithRouterProps, IDeploymentDet
                 },
             ] as IBreadcrumb[],
             buttons: [
-                <Button icon="refresh" onClick={this.refresh} />,
-                <Button icon="changes" onClick={this.toggleScaleDialog} />,
-                <Button icon="edit" onClick={this.getJson} />,
+                <Button key="refresh" data-testid="refresh" icon="refresh" onClick={this.refresh} />,
+                <Button key="scale" data-testid="scale" icon="changes" onClick={this.toggleScaleDialog} />,
+                <Button key="edit" data-testid="edit" icon="edit" onClick={this.getJson} />,
             ],
             menu: this.getMenu(),
         });
@@ -122,7 +122,7 @@ class DeploymentDetails extends React.Component<IWithRouterProps, IDeploymentDet
                         });
                     }}
                 />
-                <MenuItem icon="trash" text="Delete" onClick={this.toggleDialog} />
+                <MenuItem id="delete-btn" icon="trash" text="Delete" onClick={this.toggleDialog} />
             </Menu>
         );
     };
@@ -135,7 +135,7 @@ class DeploymentDetails extends React.Component<IWithRouterProps, IDeploymentDet
                 this.props.navigate('/deployments');
             })
             .catch(() => {
-                Toaster.show({ message: 'Failed to delete app', intent: Intent.DANGER });
+                Toaster.show({ message: 'Failed to delete deployment', intent: Intent.DANGER });
             });
     };
 
@@ -184,6 +184,7 @@ class DeploymentDetails extends React.Component<IWithRouterProps, IDeploymentDet
                     onSuccess={this.toggleScaleDialog}
                 />
                 <TwoButtonDialog
+                    id="delete-dialog"
                     isOpen={this.state.isDialogOpen}
                     onFailure={this.toggleDialog}
                     onSuccess={this.delete}

@@ -3,13 +3,13 @@
 /* eslint-disable no-bitwise */
 /* eslint-disable no-restricted-syntax */
 // eslint-disable-next-line max-classes-per-file
-import { Container, Texture } from 'pixi.js';
+import { Container, Texture } from 'pixi.js-legacy';
 // import * as crypto from "crypto";
 import * as TimSort from 'timsort';
 import { FleetChild } from './model';
 import { Operation } from './Fleet';
 import FleetManager from './FleetManager';
-import { BOX_MARGIN, BOX_SIZE, FONT_SIZE, RED } from './helper';
+import { BOX_MARGIN, BOX_SIZE, RED } from './helper';
 import { JSONObjectType } from '../../models/json.model';
 import { LinkedList } from '../../utils/linkedList';
 
@@ -154,24 +154,6 @@ export default class FleetGroup {
         this.allIds.unshift(id);
     }
 
-    // consolidate(manager: FleetManager) {
-    //     const pos = this.openPositions.shift()
-    //     const id = this.allIds.pop()
-    //     manager.operations.push({
-    //         opId: getUUID(),
-    //         mode: "UPDATE",
-    //         id,
-    //         group: this.uid,
-    //         position: pos,
-    //         alpha: 1,
-    //         progress: 0,
-    //         stepSize: this.getStepSize(TRANSITION_TIME),
-    //     })
-    //     this.openPositions.push(this.positions[id])
-    //     this.positions[id] = pos
-    //     this.allIds.unshift(id)
-    // }
-
     createNewOperation(data: FleetChild): Operation {
         this.allIds.push(data.meta.uid);
         const pos = this.findOpenPosition();
@@ -187,48 +169,6 @@ export default class FleetGroup {
             progress: 0,
             stepSize: this.getStepSize(TRANSITION_TIME),
             tint: data.status.color,
-        };
-    }
-
-    createTextOperation(parentUid: string, text: string, scale: number): Operation {
-        // this.allIds.push(data.meta.uid)
-        // const pos = this.findOpenPosition()
-        // this.positions[data.meta.uid] = pos
-        return {
-            opId: getUUID(),
-            mode: 'TEXT',
-            text,
-            id: parentUid,
-            group: parentUid,
-            position: {
-                x: this.startPosition.x + FONT_SIZE,
-                y: this.startPosition.y - FONT_SIZE - BOX_MARGIN,
-            },
-            fontSize: 10 * scale,
-            alpha: 1,
-            progress: 0,
-            stepSize: this.getStepSize(TRANSITION_TIME),
-        };
-    }
-
-    createHighlighterOperation(parentUid: string, width: number): Operation {
-        // this.allIds.push(data.meta.uid)
-        // const pos = this.findOpenPosition()
-        // this.positions[data.meta.uid] = pos
-        return {
-            opId: getUUID(),
-            mode: 'CREATE-HIGHLIGHTER',
-            id: parentUid,
-            group: parentUid,
-            width,
-            position: {
-                x: this.startPosition.x + BOX_SIZE + BOX_MARGIN,
-                y: this.startPosition.y - BOX_MARGIN,
-            },
-            tint: [0, 0, 0],
-            alpha: 1,
-            progress: 0,
-            stepSize: this.getStepSize(TRANSITION_TIME),
         };
     }
 
@@ -308,25 +248,4 @@ export default class FleetGroup {
         }
         return out;
     }
-    // getClearOps() {
-    //     const out: Operation[] = []
-    //     for (const id of this.allIds) {
-    //         out.push(this.createDeleteOperation({
-    //             ownerUID: this.uid,
-    //             meta: {
-    //                 uid: id,
-    //                 name: null,
-    //                 namespace: null,
-    //                 details: null
-    //             },
-    //             dimension: null,
-    //             status: {
-    //                 reason: "",
-    //                 value: "Terminated",
-    //                 color: RED,
-    //             },
-    //         }, () => {}))
-    //     }
-    //     return out
-    // }
 }

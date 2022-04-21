@@ -2,12 +2,12 @@ import React from 'react';
 import './App.css';
 import './styles/fleet.less';
 import { Route, Routes } from 'react-router';
-import Deployments from './views/Deployment/Deployment';
+import DeploymentList from './views/DeploymentList/DeploymentList';
 import ContainerSpecDetails from './views/ContainerSpecDetails/ContainerSpecDetails';
-import PodDetails from './views/PodDetails.tsx/PodDetails';
+import PodDetails from './views/PodDetails/PodDetails';
 import Layout from './layouts/Layout';
 import DeploymentDetails from './views/DeploymentDetails/DeploymentDetails';
-import CreateDeployment from './views/CreateApp/CreateDeployment';
+import CreateDeployment from './views/CreateDeployment/CreateDeployment';
 import PodContainerDetails from './views/PodContainerDetails/PodContainerDetails';
 import ServiceDetails from './views/ServiceDetails/ServiceDetails';
 import Home from './views/Home/Home';
@@ -23,7 +23,7 @@ function App() {
         <Routes>
             <Route path="/" element={<Layout />}>
                 <Route path="" element={<Home />} />
-                <Route path="deployments" element={<Deployments />} />
+                <Route path="deployments" element={<DeploymentList />} />
                 <Route path="nodes" element={<NodeList />} />
                 <Route path="create-deployment" element={<CreateDeployment />} />
                 <Route path="deployments/:namespace/:deployment" element={<DeploymentDetails />} />

@@ -1,6 +1,5 @@
 import { Alignment, Tag } from '@blueprintjs/core';
-import { Tooltip2 } from '@blueprintjs/popover2';
-import { TOOLTIP2_INDICATOR } from '@blueprintjs/popover2/lib/esm/classes';
+import { Classes, Tooltip2 } from '@blueprintjs/popover2';
 import * as React from 'react';
 import LabeledText from '../../components/LabeledText';
 import SpinnerWrapper from '../../components/SpinnerWrapper';
@@ -33,7 +32,7 @@ const createSpinnerBottomLabel = (label: string, usage?: number, capacity?: numb
                 {usage >= 0 ? (
                     usage.toFixed(2)
                 ) : (
-                    <Tooltip2 content="No usage found" className={TOOLTIP2_INDICATOR}>
+                    <Tooltip2 content="No usage found" className={Classes.TOOLTIP2_INDICATOR}>
                         ?
                     </Tooltip2>
                 )}{' '}

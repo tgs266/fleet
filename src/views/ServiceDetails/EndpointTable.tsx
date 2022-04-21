@@ -18,7 +18,7 @@ function EndpointTableRow(props: { endpoint: Endpoint }) {
                 <TableCell>{props.endpoint.nodeName}</TableCell>
                 <TableCell>{props.endpoint.host}</TableCell>
                 <TableCell>{props.endpoint.ready.toString()}</TableCell>
-                <TableCell alingment={Alignment.RIGHT}>
+                <TableCell alignment={Alignment.RIGHT}>
                     <Button
                         minimal
                         icon={icon}
@@ -79,7 +79,7 @@ export default function EndpointTable(props: { endpoints: Endpoint[] }) {
                         <TableCell>Node Name</TableCell>
                         <TableCell>Host</TableCell>
                         <TableCell>Ready</TableCell>
-                        <TableCell alingment={Alignment.RIGHT} />
+                        <TableCell alignment={Alignment.RIGHT} />
                     </TableHeader>
                     <tbody>
                         {props.endpoints.map((e, idx) => (

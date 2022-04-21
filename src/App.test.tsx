@@ -1,10 +1,15 @@
-// import * as React from 'react';
-// import { configure, shallow } from 'enzyme';
-// import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-// import App from './App';
+import * as React from 'react';
+import { MemoryRouter, Route, Routes } from 'react-router';
+import { render } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import App from './App';
 
-// configure({ adapter: new Adapter() });
-
-// it('renders without crashing', async () => {
-//     shallow(<App />);
-// });
+test('renders without crashing', async () => {
+    render(
+        <MemoryRouter initialEntries={['/']}>
+            <Routes>
+                <Route path="*" element={<App />} />
+            </Routes>
+        </MemoryRouter>
+    );
+});

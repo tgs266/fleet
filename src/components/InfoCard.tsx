@@ -26,7 +26,9 @@ export default function InfoCard(props: {
         <TitledCard
             title={
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <h3 style={{ margin: 0, marginRight: '0.25em' }}>{props.title}</h3>
+                    <h3 data-testid="infocard-title" style={{ margin: 0, marginRight: '0.25em' }}>
+                        {props.title}
+                    </h3>
                     {props.statuColor && getStatusIndicator()}
                 </div>
             }
