@@ -10,6 +10,7 @@ export default function IconSwapButton(props: {
 
     return (
         <Button
+            data-testid="btn-swap-icon"
             {...props.btnProps}
             icon={icon}
             onClick={(e) => {

@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { FormGroup, Slider, SliderProps } from '@blueprintjs/core';
-import random from '../utils/random';
 
 interface ILabelSliderProps extends SliderProps {
     label: React.ReactNode;
     labelInfo?: string;
+    id?: string
+    testid?: string
 }
 
 class LabelSlider extends React.Component<ILabelSliderProps, unknown> {
@@ -12,7 +13,7 @@ class LabelSlider extends React.Component<ILabelSliderProps, unknown> {
 
     constructor(props: ILabelSliderProps) {
         super(props);
-        this.idString = Math.floor(random.randUniform() * 1000000000).toString();
+        this.idString = Math.floor(Math.random() * 1000000000).toString();
     }
 
     render() {
@@ -23,7 +24,7 @@ class LabelSlider extends React.Component<ILabelSliderProps, unknown> {
                 labelInfo={this.props.labelInfo ? this.props.labelInfo : ''}
             >
                 <div id={this.idString}>
-                    <Slider {...this.props} />
+                    <Slider data-testid={this.props.testid} id={this.props.id} {...this.props} />
                 </div>
             </FormGroup>
         );

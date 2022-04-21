@@ -1,11 +1,11 @@
-import { Dialog } from '@blueprintjs/core';
-import { DIALOG_BODY } from '@blueprintjs/core/lib/esm/common/classes';
+import { Classes, Dialog } from '@blueprintjs/core';
 import * as React from 'react';
 
 export default function BaseDialog(props: {
     maxWidth?: 'xs' | 'md' | 'lg' | 'xl' | string;
     title?: string;
     children: React.ReactNode;
+    id?: string;
     isOpen: boolean;
     onClose: () => void;
 }) {
@@ -29,7 +29,7 @@ export default function BaseDialog(props: {
             isOpen={isOpen}
             onClose={props.onClose}
         >
-            <div className={DIALOG_BODY}>{children}</div>
+            <div className={Classes.DIALOG_BODY} id={props.id}>{children}</div>
         </Dialog>
     );
 }

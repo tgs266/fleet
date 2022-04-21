@@ -1,6 +1,5 @@
 import { Alignment, Icon } from '@blueprintjs/core';
-import { Tooltip2 } from '@blueprintjs/popover2';
-import { TOOLTIP2_INDICATOR } from '@blueprintjs/popover2/lib/esm/classes';
+import { Classes, Tooltip2 } from '@blueprintjs/popover2';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { PodMeta } from '../models/pod.model';
@@ -68,7 +67,7 @@ export default function PodTable(props: {
                     const statusHtml = <Icon color={statusColor} icon="full-circle" size={14} />;
                     return (
                         <TableRow key={p.uid}>
-                            <TableCell alingment={Alignment.CENTER}>
+                            <TableCell alignment={Alignment.CENTER}>
                                 <Tooltip2 content={p.status.reason}>{statusHtml}</Tooltip2>
                             </TableCell>
                             <TableCell>
@@ -78,7 +77,7 @@ export default function PodTable(props: {
                             <TableCell>{p.nodeName}</TableCell>
                             <TableCell>
                                 <Tooltip2
-                                    className={TOOLTIP2_INDICATOR}
+                                    className={Classes.TOOLTIP2_INDICATOR}
                                     content={createdAtToOrigination(p.createdAt)}
                                 >
                                     <AgeText hr value={p.createdAt} />

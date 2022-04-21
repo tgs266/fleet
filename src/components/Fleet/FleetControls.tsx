@@ -12,6 +12,7 @@ interface IFleetControlsProps {
     toggle: (arg0: boolean) => void;
     isOpen: boolean;
     hovering: string;
+    manager?: FleetManager
 }
 
 interface IFleetControlsState {
@@ -29,7 +30,11 @@ export default class FleetControls extends React.Component<
 > {
     constructor(props: IFleetControlsProps) {
         super(props);
-        this.state = {};
+        if (this.props.manager) {
+            this.state = { manager: this.props.manager, dim1: this.props.manager.dim1, dim0: this.props.manager.dim0 }
+        } else {
+            this.state = {}
+        }
     }
 
     setManager = (manager: FleetManager) => {
@@ -37,6 +42,9 @@ export default class FleetControls extends React.Component<
     };
 
     render() {
+        if (!this.state.manager) {
+            return null
+        }
         return (
             <div style={{ position: 'relative' }}>
                 <TitledCard
@@ -50,6 +58,7 @@ export default class FleetControls extends React.Component<
                             </Text>
                             <Button
                                 minimal
+                                data-testid="controls-open"
                                 icon={this.props.isOpen ? 'caret-down' : 'caret-up'}
                                 onClick={() => {
                                     this.props.toggle(!this.props.isOpen);
@@ -59,6 +68,7 @@ export default class FleetControls extends React.Component<
                     }
                 >
                     <Button
+                        data-testid="save-btn"
                         onClick={() => {
                             this.state.manager.setDim0(this.state.dim0);
                             this.state.manager.setDim1(this.state.dim1);

@@ -86,6 +86,7 @@ class ServiceDetails extends React.Component<IWithRouterProps, IPodDetailsState>
                                                     <Tag
                                                         style={{ marginRight: '0.25em' }}
                                                         intent={Intent.NONE}
+                                                        key={key}
                                                         round
                                                     >
                                                         <Text small>
@@ -108,6 +109,7 @@ class ServiceDetails extends React.Component<IWithRouterProps, IPodDetailsState>
                                                         style={{ marginRight: '0.25em' }}
                                                         intent={Intent.NONE}
                                                         round
+                                                        key={key}
                                                     >
                                                         <Text small>
                                                             {key}: {service.annotations[key]}

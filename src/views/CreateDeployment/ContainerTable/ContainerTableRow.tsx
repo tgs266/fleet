@@ -26,6 +26,7 @@ export default function ContainerTableRow(props: {
                 <TableCell>
                     <InputGroup
                         fill
+                        data-testid={`${props.idx}-row-name-input`}
                         value={spec.name}
                         onChange={(e) => {
                             innerOnChange('name', e.target.value);
@@ -35,7 +36,7 @@ export default function ContainerTableRow(props: {
                 <TableCell>
                     <ImageList onChange={innerOnChange} containerSpec={spec} />
                 </TableCell>
-                <TableCell alingment={Alignment.RIGHT}>
+                <TableCell alignment={Alignment.RIGHT}>
                     <Button
                         minimal
                         icon={isOpen ? 'arrow-up' : 'arrow-down'}

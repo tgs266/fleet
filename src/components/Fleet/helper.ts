@@ -1,4 +1,4 @@
-import { Sprite } from 'pixi.js';
+import { Sprite } from 'pixi.js-legacy';
 import { FleetChild } from './model';
 
 export const FONT_SIZE = 25;

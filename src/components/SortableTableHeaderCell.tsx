@@ -12,11 +12,11 @@ export default function SortableTableHeaderCell(props: {
     sortableId: string;
     onSortChange?: (sort: TableSort) => void;
     colspan?: number;
-    alingment?: Alignment;
+    alignment?: Alignment;
     style?: React.CSSProperties;
     children?: PropTypes.ReactNodeLike;
 }) {
-    const { sort, sortableId, children, alingment, colspan } = props;
+    const { sort, sortableId, children, alignment, colspan } = props;
     let { style } = props;
     if (!style) {
         style = { display: 'table-cell', verticalAlign: 'middle' };
@@ -26,8 +26,9 @@ export default function SortableTableHeaderCell(props: {
 
     const innerStyle: React.CSSProperties = {};
 
-    if (alingment) {
-        switch (alingment) {
+    if (alignment) {
+        // eslint-disable-next-line default-case
+        switch (alignment) {
             case Alignment.RIGHT:
                 innerStyle.float = 'right';
                 break;
@@ -36,8 +37,6 @@ export default function SortableTableHeaderCell(props: {
                 break;
             case Alignment.CENTER:
                 style.textAlign = 'center';
-                break;
-            default:
                 break;
         }
     }

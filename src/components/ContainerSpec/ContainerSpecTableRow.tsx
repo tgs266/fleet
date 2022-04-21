@@ -52,7 +52,7 @@ export default function ContainerSpecTableRow(props: {
                 <TableCell>
                     <PortTags ports={spec.ports} />
                 </TableCell>
-                <TableCell alingment={Alignment.RIGHT}>
+                <TableCell alignment={Alignment.RIGHT}>
                     {props.showDelete && (
                         <Button
                             icon="trash"

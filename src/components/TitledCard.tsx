@@ -17,7 +17,7 @@ export default function TitledCard(props: {
                     alignItems: 'center',
                 }}
             >
-                <h3 style={{ margin: 0 }}>{props.title}</h3>
+                <h3 data-testid="titledcard-title" style={{ margin: 0 }}>{props.title}</h3>
                 <div style={{ flexGrow: 1 }} />
                 {props.rightElement}
             </div>

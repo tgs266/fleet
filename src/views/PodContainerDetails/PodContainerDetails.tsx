@@ -80,7 +80,9 @@ class PodContainer extends React.Component<IWithRouterProps, IPodContainerState>
 
     componentWillUnmount() {
         clearInterval(this.state.pollId);
-        this.state.ws.close();
+        if (this.state.ws) {
+            this.state.ws.close();
+        }
     }
 
     render() {
@@ -88,23 +90,11 @@ class PodContainer extends React.Component<IWithRouterProps, IPodContainerState>
             return null;
         }
         const { container } = this.state;
-        // const statusColor = getStatusColor(pod)
         return (
             <div>
                 <div style={{ margin: '1em', marginBottom: '0' }}>
                     <PodContainerInfoCard container={container} />
                 </div>
-                {/* <Card style={{fontFamily: "monospace", backgroundColor: "black", maxHeight: "40em", maxWidth: "100%", width: "100%", overflow: "auto"}}>
-                    {this.state.logLines.map(m => <div style={{color: "white"}}>{m}</div>)}
-                </Card> */}
-
-                {/* <div style={{margin: "1em", marginBottom: 0}}>
-                    <div style={{marginBottom: "1em"}}>
-                        <TitledCard title="Containers">
-                            <PodContainerTable containers={pod.containers} />
-                        </TitledCard>
-                    </div>
-                </div> */}
                 <div style={{ margin: '1em' }}>
                     <Accordion title={<h3 style={{ margin: '0' }}>Logs</h3>}>
                         <div className="log-container">

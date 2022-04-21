@@ -5,7 +5,7 @@ import { useNavContext } from '../../layouts/Navigation';
 import setOnce from '../../utils/breadcrumbs';
 import DeploymentTable from './DeploymentTable';
 
-export default function Deployments() {
+export default function DeploymentList() {
     const [, setState] = useNavContext();
     setOnce(setState, {
         breadcrumbs: [

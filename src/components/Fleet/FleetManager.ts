@@ -7,12 +7,11 @@ import {
     Application,
     ParticleContainer,
     Container,
-    Text,
     Texture,
     Graphics,
     DisplayObject,
     Ticker,
-} from 'pixi.js';
+} from 'pixi.js-legacy';
 import { Filter } from '../../models/base';
 import { JSONObjectType } from '../../models/json.model';
 import { LinkedList } from '../../utils/linkedList';
@@ -345,56 +344,6 @@ export default class FleetManager {
         op.progress += op.stepSize;
     };
 
-    // eslint-disable-next-line class-methods-use-this
-    handleText = (op: Operation) => {
-        if (op.progress >= 1) {
-            // this.operations = this.operations.filter(n => n.opId !== op.opId)
-            return true;
-        }
-
-        let child = this.getText(op.id) as Text;
-
-        if (!child) {
-            // child = new BitmapText(op.text, { fontName: "Gidole", fontSize: FONT_SIZE });
-            child = new Text(op.text, {
-                fontFamily: 'Gidole',
-                fontSize: 10,
-                fill: 0x000000,
-                align: 'center',
-            });
-            child.roundPixels = true;
-            child.updateText(true);
-            child.alpha = 0;
-            child.resolution = window.devicePixelRatio;
-            if (op.position) {
-                child.x = op.position.x;
-                child.y = op.position.y;
-            }
-            if (op.tint && op.tint.length === 3) {
-                child.tint = rgbToTint(op.tint);
-            }
-            child.name = op.id;
-            child = this.addChildText(child) as Text;
-        }
-
-        const change = easeInOutCubic(op.progress);
-
-        const distanceAlpha = op.alpha - child.alpha;
-
-        child.alpha += distanceAlpha * change;
-
-        if (op.position) {
-            const distanceX = op.position.x - child.x;
-            const distanceY = op.position.y - child.y;
-            child.x += distanceX * change;
-            child.y += distanceY * change;
-        }
-
-        op.progress += op.stepSize;
-
-        return false;
-    };
-
     handleDeleteOperation = (op: Operation): boolean => {
         if (op.progress >= 1) {
             this.operations.shift();
@@ -467,34 +416,6 @@ export default class FleetManager {
         return false;
     };
 
-    handleCreateHighlighter = (op: Operation, idx: number) => {
-        if (op.progress >= 1) {
-            this.removeOp(idx);
-            return true;
-        }
-
-        let child = this.getChildByName(op.id) as FleetSprite;
-        if (!child) {
-            child = FleetSprite.from(this.lineTexture) as FleetSprite;
-            child.width = op.width;
-            // child = new FleetSprite(this.texture)
-            child.alpha = 0;
-            if (op.position) {
-                child.x = op.position.x;
-                child.y = op.position.y;
-            }
-
-            if (op.tint && op.tint.length === 3) {
-                child.tint = rgbToTint(op.tint);
-            }
-            child.name = op.id;
-            child = this.addChild(child) as FleetSprite;
-        }
-
-        this.handleFinalUpdate(op, child);
-        return false;
-    };
-
     runOps = () => {
         let runOpCount = Math.min(this.operations.length, MAX_OPERATION_COUNT);
         let { head } = this.operations;
@@ -508,14 +429,8 @@ export default class FleetManager {
                 case 'NEW':
                     del = this.handleNewOrUpdateOperation(op, i);
                     break;
-                case 'CREATE-HIGHLIGHTER':
-                    del = this.handleCreateHighlighter(op, i);
-                    break;
                 case 'DELETE':
                     del = this.handleDeleteOperation(op);
-                    break;
-                case 'TEXT':
-                    del = this.handleText(op);
                     break;
                 default:
                     del = this.handleNewOrUpdateOperation(op, i);
@@ -536,7 +451,9 @@ export default class FleetManager {
 
     destroy() {
         this.app.destroy(true, true);
-        this.ws.close();
+        if (this.ws) {
+            this.ws.close();
+        }
     }
 
     addChild(sprite: DisplayObject): DisplayObject {
@@ -547,14 +464,6 @@ export default class FleetManager {
 
     getChildByName(name: string) {
         return this.children[name];
-    }
-
-    getText(name: string) {
-        return this.textContainer.getChildByName(name);
-    }
-
-    addChildText(data: Text) {
-        return this.textContainer.addChild(data);
     }
 
     removeChild(sprite: FleetSprite) {

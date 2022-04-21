@@ -25,6 +25,7 @@ export default function SideNavButton(props: NavButton) {
     const inner = (
         <div
             className={`sidebar-icon no-outline ${active ? 'sidebar-active' : ''}`}
+            id={props.name}
             onClick={() => {
                 navigate(props.target);
             }}

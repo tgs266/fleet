@@ -49,6 +49,7 @@ class PodDetails extends React.Component<IWithRouterProps, IPodDetailsState> {
     }
 
     componentDidMount() {
+        console.log(this.props.params)
         const [, setState] = this.context;
         setState({
             breadcrumbs: [
@@ -61,12 +62,12 @@ class PodDetails extends React.Component<IWithRouterProps, IPodDetailsState> {
                 },
             ] as IBreadcrumb[],
             buttons: [
-                <Button icon="refresh" onClick={this.pull} />,
-                <Button icon="edit" onClick={this.getJson} />,
+                <Button key="refresh" data-testid="refresh" icon="refresh" onClick={this.pull} />,
+                <Button key="edit" data-testid="edit" icon="edit" onClick={this.getJson} />,
             ],
             menu: (
-                <Menu>
-                    <MenuItem icon="trash" text="Delete" onClick={this.toggleDialog} />
+                <Menu id="top-menu">
+                    <MenuItem id="menu-delete" data-testid="menu-delete" icon="trash" text="Delete" onClick={this.toggleDialog} />
                 </Menu>
             ),
         });
@@ -174,6 +175,7 @@ class PodDetails extends React.Component<IWithRouterProps, IPodDetailsState> {
                     title="Are You Sure?"
                     successText="Yes"
                     failureText="No"
+                    id="delete-dialog"
                 >
                     <Text large>Are you sure you want to delete this deployment?</Text>
                     <Text large code codePrefix="This action is identical to: ">
