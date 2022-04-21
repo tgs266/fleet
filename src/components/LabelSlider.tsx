@@ -4,8 +4,8 @@ import { FormGroup, Slider, SliderProps } from '@blueprintjs/core';
 interface ILabelSliderProps extends SliderProps {
     label: React.ReactNode;
     labelInfo?: string;
-    id?: string
-    testid?: string
+    id?: string;
+    testid?: string;
 }
 
 class LabelSlider extends React.Component<ILabelSliderProps, unknown> {

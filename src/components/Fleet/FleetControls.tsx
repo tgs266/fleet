@@ -12,7 +12,7 @@ interface IFleetControlsProps {
     toggle: (arg0: boolean) => void;
     isOpen: boolean;
     hovering: string;
-    manager?: FleetManager
+    manager?: FleetManager;
 }
 
 interface IFleetControlsState {
@@ -31,9 +31,13 @@ export default class FleetControls extends React.Component<
     constructor(props: IFleetControlsProps) {
         super(props);
         if (this.props.manager) {
-            this.state = { manager: this.props.manager, dim1: this.props.manager.dim1, dim0: this.props.manager.dim0 }
+            this.state = {
+                manager: this.props.manager,
+                dim1: this.props.manager.dim1,
+                dim0: this.props.manager.dim0,
+            };
         } else {
-            this.state = {}
+            this.state = {};
         }
     }
 
@@ -43,7 +47,7 @@ export default class FleetControls extends React.Component<
 
     render() {
         if (!this.state.manager) {
-            return null
+            return null;
         }
         return (
             <div style={{ position: 'relative' }}>

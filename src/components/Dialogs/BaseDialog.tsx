@@ -29,7 +29,9 @@ export default function BaseDialog(props: {
             isOpen={isOpen}
             onClose={props.onClose}
         >
-            <div className={Classes.DIALOG_BODY} id={props.id}>{children}</div>
+            <div className={Classes.DIALOG_BODY} id={props.id}>
+                {children}
+            </div>
         </Dialog>
     );
 }

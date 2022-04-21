@@ -16,7 +16,13 @@ export default function TwoButtonDialog(props: {
     const { maxWidth, title, children, onSuccess, onFailure, successText, failureText, isOpen } =
         props;
     return (
-        <BaseDialog id={props.id} isOpen={isOpen} onClose={onFailure} title={title} maxWidth={maxWidth}>
+        <BaseDialog
+            id={props.id}
+            isOpen={isOpen}
+            onClose={onFailure}
+            title={title}
+            maxWidth={maxWidth}
+        >
             {children}
             <div style={{ marginTop: '1em', display: 'flex' }}>
                 <div style={{ flexGrow: 1 }} />

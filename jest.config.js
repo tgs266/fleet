@@ -1,5 +1,5 @@
 module.exports = {
-    "preset": "ts-jest",
+    preset: 'ts-jest',
     moduleNameMapper: {
         '\\.css$': 'identity-obj-proxy',
         '\\.less$': 'identity-obj-proxy',
@@ -8,8 +8,8 @@ module.exports = {
         '^.+\\.(j|t)sx?': 'ts-jest',
         '^.+\\.(j|t)s?': 'ts-jest',
     },
-    setupFiles: ["jest-canvas-mock"],
-    setupFilesAfterEnv: ["<rootDir>/src/testing/setup.js"],
+    setupFiles: ['jest-canvas-mock'],
+    setupFilesAfterEnv: ['<rootDir>/src/testing/setup.js'],
     testEnvironment: 'jsdom',
     coverageThreshold: {
         global: {

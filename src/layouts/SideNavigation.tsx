@@ -6,7 +6,7 @@ export default function SideNavigation() {
         {
             target: '/',
             icon: 'home',
-            name: "Home",
+            name: 'Home',
             activeSelector: (pathname: string) =>
                 pathname.startsWith('/') && pathname.endsWith('/') && pathname.length === 1,
         },

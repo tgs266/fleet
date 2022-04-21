@@ -127,7 +127,7 @@ export default function PodContainerTable(props: { pod: Pod; accordion?: boolean
                                         </TableRow>
                                     </>
                                 )}
-                            </>                        
+                            </>
                         );
                     })}
                 </tbody>
