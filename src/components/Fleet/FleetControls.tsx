@@ -52,7 +52,7 @@ export default class FleetControls extends React.Component<
         return (
             <div style={{ position: 'relative' }}>
                 <TitledCard
-                    title={`Fleet Controls | Showing ${this.state.dim0} by ${this.state.dim1}`}
+                    title={`Fleet Controls | Showing ${this.state.dim1} by ${this.state.dim0}`}
                     titleMarginBottom="20px"
                     style={{ width: '100%', height: '400px' }}
                     rightElement={
