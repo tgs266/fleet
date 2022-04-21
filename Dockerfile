@@ -9,6 +9,7 @@ ENV PATH="${PATH}:/usr/local/go/bin"
 
 COPY . /app
 WORKDIR /app
+RUN chmod +x tools/build.sh
 RUN tools/build.sh
 
 FROM ubuntu:latest as stage2
