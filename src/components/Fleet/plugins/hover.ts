@@ -1,18 +1,20 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable import/no-cycle */
 /* eslint-disable no-restricted-syntax */
-import { Point } from 'pixi.js';
+import { Point } from 'pixi.js-legacy';
 import FleetManager from '../FleetManager';
 import { BOX_MARGIN, BOX_SIZE } from '../helper';
 
 export default function hover(
     manager: FleetManager,
     center: { x: number; y: number },
-    callback?: (uid: string) => void
+    callback?: (uid: string) => void,
+    worldPoint?: Point
 ) {
     const point = new Point();
     manager.app.renderer.plugins.interaction.mapPositionToPoint(point, center.x, center.y);
 
-    const worldPoint = manager.app.stage.toLocal(point);
+    worldPoint = worldPoint || manager.app.stage.toLocal(point);
 
     for (const m of Object.keys(manager.groupRegions)) {
         if (

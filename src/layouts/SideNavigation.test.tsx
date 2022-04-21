@@ -1,31 +1,27 @@
-// import * as React from 'react';
-// import { configure, mount } from 'enzyme';
-// import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-// import { MemoryRouter, Route, Routes } from 'react-router';
-// import SideNavigation from './SideNavigation';
+import * as React from 'react';
+import { MemoryRouter, Route, Routes } from 'react-router';
+import { render, fireEvent } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import SideNavigation from './SideNavigation';
 
-// configure({ adapter: new Adapter() });
+test('renders without crashing', async () => {
+    render(
+        <MemoryRouter initialEntries={['/']}>
+            <Routes>
+                <Route path="*" element={<SideNavigation />} />
+            </Routes>
+        </MemoryRouter>
+    );
+});
 
-// it('renders without crashing', async () => {
-//     mount(
-//         <MemoryRouter initialEntries={['/']}>
-//             <Routes>
-//                 <Route path="*" element={<SideNavigation />} />
-//             </Routes>
-//         </MemoryRouter>
-//     );
-// });
-
-// it('can navigate to home', async () => {
-//     const wrapper = mount(
-//         <MemoryRouter initialEntries={['/']}>
-//             <Routes>
-//                 <Route path="*" element={<SideNavigation />} />
-//             </Routes>
-//         </MemoryRouter>
-//     );
-
-//     const element = wrapper.find(SideNavigation).childAt(0);
-//     const btn = element.find('.sidebar-icon').first();
-//     btn.simulate('click');
-// });
+test('can navigate to home', async () => {
+    const wrapper = render(
+        <MemoryRouter initialEntries={['/']}>
+            <Routes>
+                <Route path="*" element={<SideNavigation />} />
+            </Routes>
+        </MemoryRouter>
+    );
+    fireEvent(wrapper.container.querySelector('#Home'), new MouseEvent('click'));
+    expect(window.location.pathname).toBe('/');
+});

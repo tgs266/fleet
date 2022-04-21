@@ -1,8 +1,7 @@
 /* eslint-disable indent */
 import * as React from 'react';
 import { Colors, Card, Icon, Button, Position, Menu, MenuItem } from '@blueprintjs/core';
-import { Popover2, Tooltip2 } from '@blueprintjs/popover2';
-import { TOOLTIP2_INDICATOR } from '@blueprintjs/popover2/lib/esm/classes';
+import { Classes, Popover2, Tooltip2 } from '@blueprintjs/popover2';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { Pod } from '../models/pod.model';
 import { createdAtToHumanReadable, createdAtToOrigination } from '../utils/time';
@@ -22,7 +21,7 @@ const createAccordionTitle = (pod: Pod): JSX.Element => {
             </div>
             <div style={{ flexBasis: '25%', marginRight: '0.5%', marginLeft: '0.5%' }}>
                 <Tooltip2
-                    className={TOOLTIP2_INDICATOR}
+                    className={Classes.TOOLTIP2_INDICATOR}
                     content={createdAtToOrigination(pod.createdAt).toLocaleString()}
                 >
                     <div>Age: {createdAtToHumanReadable(pod.createdAt)}</div>

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useParams } from 'react-router';
 import { useNavContext } from '../../layouts/Navigation';
 import setOnce from '../../utils/breadcrumbs';
-import DeploymentTable from '../Deployment/DeploymentTable';
+import DeploymentTable from '../DeploymentList/DeploymentTable';
 import PodListTable from '../PodList/PodListTable';
 
 export default function Namespace() {

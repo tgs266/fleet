@@ -16,7 +16,7 @@ export default function DeploymentScaleDialog(props: {
 
     return (
         <Dialog isOpen={props.isOpen} onClose={props.onClose} title="Scale">
-            <div className={Classes.DIALOG_BODY}>
+            <div className={Classes.DIALOG_BODY} id="scale-dialog">
                 <LabelInputGroup
                     type="number"
                     min={0}
@@ -38,6 +38,7 @@ export default function DeploymentScaleDialog(props: {
                     <Button
                         intent={Intent.PRIMARY}
                         text="Save"
+                        id="save-scale-btn"
                         onClick={() => {
                             K8.deployments
                                 .scale(

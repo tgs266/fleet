@@ -32,6 +32,7 @@ export default function TableBody(props: {
                                 </Text>
                                 <ButtonGroup>
                                     <Button
+                                        data-testid="prev-page"
                                         icon="chevron-left"
                                         onClick={() =>
                                             paginationProps.onPageChange(paginationProps.page - 1)
@@ -39,6 +40,7 @@ export default function TableBody(props: {
                                         disabled={paginationProps.page === 0}
                                     />
                                     <Button
+                                        data-testid="next-page"
                                         icon="chevron-right"
                                         onClick={() =>
                                             paginationProps.onPageChange(paginationProps.page + 1)

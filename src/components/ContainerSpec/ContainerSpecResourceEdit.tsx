@@ -69,7 +69,7 @@ export default function ContainerSpecResourceEdit(props: {
     const { containerSpec, onChange } = props;
 
     const createLabelAndTag = (labelText: string, tagText: string) => (
-        <div style={{ display: 'flex' }}>
+        <div data-testid={`${labelText}-${tagText}`} style={{ display: 'flex' }}>
             <div style={{ marginRight: '0.5em' }}>{labelText}</div>
             <Tag minimal>{tagText}</Tag>
         </div>
@@ -78,7 +78,6 @@ export default function ContainerSpecResourceEdit(props: {
     const b =
         containerSpec.memLimit < containerSpec.memRequests ||
         containerSpec.cpuLimit < containerSpec.cpuRequests;
-
     return (
         <Card style={{ margin: '1em' }}>
             <div style={{ display: 'flex', alignItems: 'center' }}>

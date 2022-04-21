@@ -4,11 +4,11 @@ import { Alignment } from '@blueprintjs/core';
 
 export default function TableCell(props: {
     colspan?: number;
-    alingment?: Alignment;
+    alignment?: Alignment;
     style?: React.CSSProperties;
     children?: PropTypes.ReactNodeLike;
 }) {
-    const { children, alingment, colspan } = props;
+    const { children, alignment, colspan } = props;
     let { style } = props;
     if (!style) {
         style = { display: 'table-cell', verticalAlign: 'middle' };
@@ -18,8 +18,8 @@ export default function TableCell(props: {
 
     const innerStyle: React.CSSProperties = {};
 
-    if (alingment) {
-        switch (alingment) {
+    if (alignment) {
+        switch (alignment) {
             case Alignment.RIGHT:
                 innerStyle.float = 'right';
                 break;

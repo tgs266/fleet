@@ -25,8 +25,8 @@ export default function ContainerTable(props: {
                     <TableHeader>
                         <TableCell>Name</TableCell>
                         <TableCell>Image</TableCell>
-                        <TableCell alingment={Alignment.RIGHT}>
-                            <Button minimal icon="add" onClick={props.addRow} />
+                        <TableCell alignment={Alignment.RIGHT}>
+                            <Button minimal icon="add" onClick={props.addRow} data-testid="add-new-row" />
                         </TableCell>
                     </TableHeader>
                     <tbody>

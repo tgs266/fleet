@@ -73,7 +73,7 @@ export default function Navigation() {
                 {state.buttons}
                 {state.menu && (
                     <Popover2 content={state.menu} position={Position.BOTTOM_LEFT}>
-                        <Button icon="more" />
+                        <Button id="top-menu-more" icon="more" />
                     </Popover2>
                 )}
             </ButtonGroup>

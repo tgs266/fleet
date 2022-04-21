@@ -3,7 +3,6 @@ import { Button, Intent } from '@blueprintjs/core';
 import _ from 'lodash';
 import * as React from 'react';
 import axios, { AxiosError } from 'axios';
-import TopNav from '../../layouts/Toolbar';
 import { CreateDeployment as CD } from '../../models/deployment.model';
 import {} from '../../models/container.model';
 import Toaster, { showToastWithActionInterval } from '../../services/toast.service';
@@ -11,12 +10,17 @@ import { IWithRouterProps, withRouter } from '../../utils/withRouter';
 import BasicDetails from './BasicDetails';
 import ContainerTable from './ContainerTable/ContainerTable';
 import K8 from '../../services/k8.service';
+import { IBreadcrumb, NavContext } from '../../layouts/Navigation';
+import TitledCard from '../../components/TitledCard';
 
 interface ICreateDeploymentState {
     deployment: CD;
 }
 
 class CreateDeployment extends React.Component<IWithRouterProps, ICreateDeploymentState> {
+    // eslint-disable-next-line react/static-property-placement
+    static contextType = NavContext;
+
     constructor(props: IWithRouterProps) {
         super(props);
         this.state = {
@@ -27,6 +31,19 @@ class CreateDeployment extends React.Component<IWithRouterProps, ICreateDeployme
                 containerSpecs: [],
             },
         };
+    }
+
+    componentDidMount() {
+        const [, setState] = this.context;
+        setState({
+            breadcrumbs: [
+                {
+                    text: 'Create Deployment',
+                },
+            ] as IBreadcrumb[],
+            buttons: [],
+            menu: null,
+        });
     }
 
     addContainerRow = () => {
@@ -143,25 +160,19 @@ class CreateDeployment extends React.Component<IWithRouterProps, ICreateDeployme
 
     render() {
         return (
-            <>
-                <TopNav
-                    leftElement={<h2 style={{ margin: 0 }}>Create Deployment</h2>}
-                    buttons={[<Button intent={Intent.PRIMARY} text="Save" onClick={this.submit} />]}
-                />
-                <div style={{ margin: '1em', marginBottom: '1em' }}>
-                    <div style={{ marginBottom: '1em' }}>
-                        <BasicDetails app={this.state.deployment} onChange={this.onAppChange} />
-                    </div>
-                    <div style={{ marginBottom: '1em' }}>
-                        <ContainerTable
-                            containerSpecs={this.state.deployment.containerSpecs}
-                            addRow={this.addContainerRow}
-                            deleteRow={this.deleteContainerRow}
-                            onChange={this.onContainerSpecChange}
-                        />
-                    </div>
+            <div style={{ margin: '1em', marginBottom: '1em' }}>
+                <TitledCard title="Create Deployment" rightElement={<Button data-testid="save-btn" intent={Intent.PRIMARY} text="Save" onClick={this.submit} />}>
+                    <BasicDetails app={this.state.deployment} onChange={this.onAppChange} />
+                </TitledCard>
+                <div style={{ marginBottom: '1em' }}>
+                    <ContainerTable
+                        containerSpecs={this.state.deployment.containerSpecs}
+                        addRow={this.addContainerRow}
+                        deleteRow={this.deleteContainerRow}
+                        onChange={this.onContainerSpecChange}
+                    />
                 </div>
-            </>
+            </div>
         );
     }
 }

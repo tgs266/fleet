@@ -1,6 +1,6 @@
 /* eslint-disable import/no-cycle */
 /* eslint-disable no-param-reassign */
-import { Point } from 'pixi.js';
+import { Point } from 'pixi.js-legacy';
 import FleetManager from '../FleetManager';
 
 export function modifyZoom(

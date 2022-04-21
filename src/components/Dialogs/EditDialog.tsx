@@ -22,6 +22,8 @@ export default function TextEditDialog(props: {
 
     return (
         <TwoButtonDialog
+            data-testid="edit-dialog"
+            id="edit-dialog"
             maxWidth="md"
             title="Edit"
             isOpen={isOpen}
@@ -32,7 +34,10 @@ export default function TextEditDialog(props: {
             successText="Save"
             failureText="Cancel"
         >
-            <Card style={{ width: '100%', height: '25em', marginBottom: '1em', padding: 0 }}>
+            <Card
+                id="edit-dialog"
+                style={{ width: '100%', height: '25em', marginBottom: '1em', padding: 0 }}
+            >
                 <JSONTextEditor value={value} onChange={setValue} />
             </Card>
             {/* {error && <Callout intent="danger">
