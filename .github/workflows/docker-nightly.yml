@@ -16,7 +16,7 @@ jobs:
       name: Prepare
       id: prep
       run: |
-        DOCKER_IMAGE=tgs266/fleet
+        DOCKER_IMAGE="tgs266/fleet"
         VERSION=nightly-$(date -u +'%Y-%m-%dT%H:%M:%SZ')
         TAG="${DOCKER_IMAGE}:${VERSION}"
         echo ::set-output name=version::${VERSION}
