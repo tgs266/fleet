@@ -30,7 +30,7 @@ export default function ContainerSpecPortEdit(props: {
                             <Button
                                 icon="add"
                                 minimal
-                                data-testid="add-btn"
+                                data-testid="port-add-btn"
                                 onClick={() => {
                                     onChange('ports', [
                                         ...containerSpec.ports,
@@ -120,7 +120,7 @@ export default function ContainerSpecPortEdit(props: {
                                 <TableCell alignment={Alignment.RIGHT}>
                                     <Button
                                         icon="trash"
-                                        data-testid="delete-btn"
+                                        data-testid="port-delete-btn"
                                         minimal
                                         onClick={() => {
                                             onChange(
