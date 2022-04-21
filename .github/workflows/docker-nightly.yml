@@ -16,8 +16,8 @@ jobs:
       name: Prepare
       id: prep
       run: |
-        TAG="tgs266/fleet:nightly-$(date +%Y-%m-%d-%H-%M)"
-        echo ::set-output name=version::nightly-$(date +%Y-%m-%d-%H-%M)
+        TAG="tgs266/fleet:nightly-$(date +%Y-%m-%d)"
+        echo ::set-output name=version::nightly-$(date +%Y-%m-%d)
         echo ::set-output name=tags::${TAG}
       
     - name: Log in to Docker Hub
