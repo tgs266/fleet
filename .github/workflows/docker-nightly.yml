@@ -16,12 +16,9 @@ jobs:
       name: Prepare
       id: prep
       run: |
-        DOCKER_IMAGE="tgs266/fleet"
-        VERSION=nightly
-        TAG="${DOCKER_IMAGE}:${VERSION}"
-        echo ::set-output name=version::${VERSION}
+        TAG="tgs266/fleet:nightly-$(date +%Y-%m-%d-%H-%M)"
+        echo ::set-output name=version::nightly-$(date +%Y-%m-%d-%H-%M)
         echo ::set-output name=tags::${TAG}
-        echo ::set-output name=created::$(date -u +'%Y-%m-%dT%H:%M:%SZ')
       
     - name: Log in to Docker Hub
       uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
