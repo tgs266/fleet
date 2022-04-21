@@ -1,8 +1,5 @@
 #!/bin/bash 
 
-# ./build-frontend.sh
-# ./build-backend.sh
-# ./build-cli.sh
 set -e
 
 ROOT_DIR="$(cd $(dirname "${BASH_SOURCE}")/.. && pwd -P)"

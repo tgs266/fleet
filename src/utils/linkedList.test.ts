@@ -1,4 +1,4 @@
-import { LinkedList } from './LinkedList';
+import { LinkedList } from './linkedList';
 
 test('test 1', () => {
     const ll = new LinkedList<number>();

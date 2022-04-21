@@ -7,14 +7,9 @@ RUN tar -C /usr/local -xzf go1.17.9.linux-amd64.tar.gz
 
 ENV PATH="${PATH}:/usr/local/go/bin"
 
+COPY . /app
 WORKDIR /app
-COPY . .
-
-WORKDIR /app/tools
-RUN chmod +x build.sh
-
-WORKDIR /app
-RUN ./tools/build.sh
+RUN tools/build.sh
 
 FROM ubuntu:latest as stage2
 
