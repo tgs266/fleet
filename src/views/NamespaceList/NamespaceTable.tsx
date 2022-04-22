@@ -27,7 +27,7 @@ class NamespaceTable extends React.Component<unknown, INamespaceTableState> {
             this.setState({
                 namespaces: response.data.items,
                 pollId: K8.poll(
-                    5000,
+                    process.env.JEST_WORKER_ID ? 1 : 5000,
                     () => K8.namespaces.getNamespaces(),
                     (rs) => {
                         this.setState({ namespaces: rs.data.items });
