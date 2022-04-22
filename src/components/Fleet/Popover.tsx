@@ -59,7 +59,12 @@ export default function FleetPopover(props: { type: string; child: FleetSprite }
                         {child.data.meta.details && (
                             <TagList>
                                 {Object.keys(child.data.meta.details).map((key) => (
-                                    <Tag style={{ marginRight: '0.25' }} intent={Intent.NONE} round>
+                                    <Tag
+                                        key={key}
+                                        style={{ marginRight: '0.25' }}
+                                        intent={Intent.NONE}
+                                        round
+                                    >
                                         <Text small>
                                             {key}: {child.data.meta.details[key]}
                                         </Text>

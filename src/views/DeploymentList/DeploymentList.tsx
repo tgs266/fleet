@@ -14,7 +14,7 @@ export default function DeploymentList() {
             },
         ],
         buttons: [
-            <Link to="/create-deployment">
+            <Link key="add" to="/create-deployment">
                 <Button icon="add" />
             </Link>,
         ],

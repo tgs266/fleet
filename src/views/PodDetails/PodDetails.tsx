@@ -49,7 +49,7 @@ class PodDetails extends React.Component<IWithRouterProps, IPodDetailsState> {
     }
 
     componentDidMount() {
-        console.log(this.props.params)
+        console.log(this.props.params);
         const [, setState] = this.context;
         setState({
             breadcrumbs: [
@@ -67,7 +67,13 @@ class PodDetails extends React.Component<IWithRouterProps, IPodDetailsState> {
             ],
             menu: (
                 <Menu id="top-menu">
-                    <MenuItem id="menu-delete" data-testid="menu-delete" icon="trash" text="Delete" onClick={this.toggleDialog} />
+                    <MenuItem
+                        id="menu-delete"
+                        data-testid="menu-delete"
+                        icon="trash"
+                        text="Delete"
+                        onClick={this.toggleDialog}
+                    />
                 </Menu>
             ),
         });
@@ -213,7 +219,7 @@ class PodDetails extends React.Component<IWithRouterProps, IPodDetailsState> {
                                     <Label label="LABELS">
                                         <TagList>
                                             {Object.keys(pod.labels).map((key) => (
-                                                <Tag intent={Intent.NONE} round>
+                                                <Tag key={key} intent={Intent.NONE} round>
                                                     <Text small>
                                                         {key}: {pod.labels[key]}
                                                     </Text>
@@ -228,7 +234,7 @@ class PodDetails extends React.Component<IWithRouterProps, IPodDetailsState> {
                                     <Label label="ANNOTATIONS">
                                         <TagList>
                                             {Object.keys(pod.annotations).map((key) => (
-                                                <Tag intent={Intent.NONE} round>
+                                                <Tag key={key} intent={Intent.NONE} round>
                                                     <Text small>
                                                         {key}: {pod.annotations[key]}
                                                     </Text>

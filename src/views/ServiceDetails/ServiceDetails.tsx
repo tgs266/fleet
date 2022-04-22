@@ -138,6 +138,7 @@ class ServiceDetails extends React.Component<IWithRouterProps, IPodDetailsState>
                                                 <Tag
                                                     style={{ marginRight: '0.25em' }}
                                                     intent={Intent.NONE}
+                                                    key={key}
                                                     round
                                                 >
                                                     <Text small>

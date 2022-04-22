@@ -44,7 +44,12 @@ export default function DeploymentInfoCard(props: { deployment: Deployment }) {
                         {deployment.labels && (
                             <TagList>
                                 {Object.keys(deployment.labels).map((key) => (
-                                    <Tag style={{ marginRight: '0.25' }} intent={Intent.NONE} round>
+                                    <Tag
+                                        key={key}
+                                        style={{ marginRight: '0.25' }}
+                                        intent={Intent.NONE}
+                                        round
+                                    >
                                         <Text small>
                                             {key}: {deployment.labels[key]}
                                         </Text>
@@ -59,7 +64,12 @@ export default function DeploymentInfoCard(props: { deployment: Deployment }) {
                         {deployment.annotations && (
                             <TagList>
                                 {Object.keys(deployment.annotations).map((key) => (
-                                    <Tag style={{ marginRight: '0.25' }} intent={Intent.NONE} round>
+                                    <Tag
+                                        key={key}
+                                        style={{ marginRight: '0.25' }}
+                                        intent={Intent.NONE}
+                                        round
+                                    >
                                         <Text small>
                                             {key}: {deployment.annotations[key]}
                                         </Text>

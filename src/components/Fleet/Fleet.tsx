@@ -64,6 +64,7 @@ export default function Fleet() {
             menu: null,
             buttons: [
                 <IconSwapButton
+                    key="pause"
                     btnProps={{
                         icon: 'pause',
                         onClick: () => {
@@ -72,9 +73,9 @@ export default function Fleet() {
                     }}
                     otherIcon="play"
                 />,
-                <Button icon="zoom-to-fit" onClick={manager.zoomFit} />,
-                <Button icon="plus" onClick={manager.zoomIn} />,
-                <Button icon="minus" onClick={manager.zoomOut} />,
+                <Button key="zoom-to-fit" icon="zoom-to-fit" onClick={manager.zoomFit} />,
+                <Button key="plus" icon="plus" onClick={manager.zoomIn} />,
+                <Button key="minus" icon="minus" onClick={manager.zoomOut} />,
             ],
         });
         manager.connect();
