@@ -1,13 +1,13 @@
-package deployment
+package service
 
 import (
 	"testing"
 
 	"github.com/tgs266/fleet/lib/kubernetes"
 	"github.com/tgs266/fleet/lib/kubernetes/types"
-	"github.com/tgs266/fleet/lib/shared"
-	appsv1 "k8s.io/api/apps/v1"
+	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/kubernetes/fake"
 )
@@ -15,24 +15,21 @@ import (
 func TestListMetas(t *testing.T) {
 	testCases := []struct {
 		name            string
-		deps            []runtime.Object
+		services        []runtime.Object
 		selector        *types.DataSelector
 		targetNamespace string
 		expectedCount   int
 	}{
 		{
 			name: "list_metas",
-			deps: []runtime.Object{
-				&appsv1.Deployment{
+			services: []runtime.Object{
+				&corev1.Service{
 					ObjectMeta: metav1.ObjectMeta{
 						Name:      "dep1",
 						Namespace: "namespace1",
 						Labels: map[string]string{
 							"label1": "value1",
 						},
-					},
-					Spec: appsv1.DeploymentSpec{
-						Replicas: shared.Int32Ptr(1),
 					},
 				},
 			},
@@ -41,10 +38,6 @@ func TestListMetas(t *testing.T) {
 					{
 						Property:  types.NameProperty,
 						Ascending: false,
-					},
-					{
-						Property:  types.NamespaceProperty,
-						Ascending: true,
 					},
 				},
 				Filters: []types.Filter{
@@ -62,8 +55,8 @@ func TestListMetas(t *testing.T) {
 
 	for _, test := range testCases {
 		t.Run(test.name, func(t *testing.T) {
-			fakeClientset := fake.NewSimpleClientset(test.deps...)
-			metas, err := ListMetas(&kubernetes.K8Client{
+			fakeClientset := fake.NewSimpleClientset(test.services...)
+			metas, err := List(&kubernetes.K8Client{
 				K8: fakeClientset,
 			}, test.targetNamespace, test.selector)
 

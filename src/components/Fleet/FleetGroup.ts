@@ -242,7 +242,7 @@ export default class FleetGroup {
                             color: RED,
                         },
                     },
-                    () => {}
+                    null
                 )
             );
         }

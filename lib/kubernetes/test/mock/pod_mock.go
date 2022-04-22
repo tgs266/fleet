@@ -37,14 +37,14 @@ func MockContainers(count int) []corev1.Container {
 	return res
 }
 
-func GeneratePod(mock PodMock) *corev1.Pod {
-	conts := MockContainers(mock.ContainerCount)
+func GeneratePod(podMock PodMock) *corev1.Pod {
+	conts := MockContainers(podMock.ContainerCount)
 	return &corev1.Pod{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      mock.Name,
-			Namespace: mock.Namespace,
+			Name:      podMock.Name,
+			Namespace: podMock.Namespace,
 			Labels: map[string]string{
-				"k8s-app": mock.AppLabel,
+				"k8s-app": podMock.AppLabel,
 			},
 		},
 		Status: corev1.PodStatus{
