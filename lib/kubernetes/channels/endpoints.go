@@ -13,7 +13,7 @@ type EndpointListChannel struct {
 	Error chan error
 }
 
-func GetEndpointList(client *kubernetes.Clientset, namespace string, options metaV1.ListOptions, numReads int) *EndpointListChannel {
+func GetEndpointList(client kubernetes.Interface, namespace string, options metaV1.ListOptions, numReads int) *EndpointListChannel {
 	channel := &EndpointListChannel{
 		List:  make(chan *v1.EndpointsList, numReads),
 		Error: make(chan error, numReads),

@@ -7,7 +7,7 @@ import (
 )
 
 type K8Client struct {
-	K8              *kubernetes.Clientset
+	K8              kubernetes.Interface
 	Metrics         *metrics.Clientset
 	ConnectionError error
 }

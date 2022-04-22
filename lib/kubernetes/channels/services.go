@@ -13,7 +13,7 @@ type ServiceListChannel struct {
 	Error chan error
 }
 
-func GetServiceListChannel(client *kubernetes.Clientset, namespace string, options metaV1.ListOptions, numReads int) *ServiceListChannel {
+func GetServiceListChannel(client kubernetes.Interface, namespace string, options metaV1.ListOptions, numReads int) *ServiceListChannel {
 	channel := &ServiceListChannel{
 		List:  make(chan *v1.ServiceList, numReads),
 		Error: make(chan error, numReads),

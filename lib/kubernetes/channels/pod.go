@@ -19,7 +19,7 @@ type PodMetricListChannel struct {
 	List chan *v1beta1.PodMetricsList
 }
 
-func GetPodListChannel(client *kubernetes.Clientset, namespace string, options metaV1.ListOptions, numReads int) *PodListChannel {
+func GetPodListChannel(client kubernetes.Interface, namespace string, options metaV1.ListOptions, numReads int) *PodListChannel {
 	channel := &PodListChannel{
 		List:  make(chan *v1.PodList, numReads),
 		Error: make(chan error, numReads),
@@ -40,12 +40,16 @@ func GetPodMetricsChannel(metricClient *metrics.Clientset, namespace string, opt
 		List: make(chan *v1beta1.PodMetricsList, numReads),
 	}
 
-	// we dont care about the metrics error
-	go func() {
-		list, _ := metricClient.MetricsV1beta1().PodMetricses(namespace).List(context.TODO(), options)
-		for i := 0; i < numReads; i++ {
-			channel.List <- list
-		}
-	}()
+	if metricClient != nil {
+		go func() {
+			// we dont care about the metrics error
+			list, _ := metricClient.MetricsV1beta1().PodMetricses(namespace).List(context.TODO(), options)
+			for i := 0; i < numReads; i++ {
+				channel.List <- list
+			}
+		}()
+	} else {
+		channel.List <- new(v1beta1.PodMetricsList)
+	}
 	return channel
 }
