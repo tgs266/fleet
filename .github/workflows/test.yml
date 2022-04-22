@@ -24,7 +24,7 @@ jobs:
       - name: Test Golang
         run: |
           cd lib
-          go test ./... -covermode=count -coverprofile=coverage.out
+          go test ./... -covermode=count -coverprofile=coverage.out -coverpkg=./...
           cd ..
 
       - name: Test Frontend
