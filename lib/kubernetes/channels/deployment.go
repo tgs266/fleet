@@ -13,7 +13,7 @@ type DeploymentListChannel struct {
 	Error chan error
 }
 
-func GetDeploymentListChannel(client *kubernetes.Clientset, namespace string, options metaV1.ListOptions, numReads int) *DeploymentListChannel {
+func GetDeploymentListChannel(client kubernetes.Interface, namespace string, options metaV1.ListOptions, numReads int) *DeploymentListChannel {
 	channel := &DeploymentListChannel{
 		List:  make(chan *v1.DeploymentList, numReads),
 		Error: make(chan error, numReads),

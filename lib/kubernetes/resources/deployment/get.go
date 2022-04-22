@@ -14,24 +14,6 @@ func getInternal(K8 *kubernetes.K8Client, namespace string, name string, options
 	return K8.K8.AppsV1().Deployments(namespace).Get(context.TODO(), name, options)
 }
 
-// func GetJson(K8 *kubernetes.K8Client, namespace string, name string) (raw.Raw, error) {
-// 	// dep, err := getInternal(K8, namespace, name, metaV1.GetOptions{})
-// 	return K8.K8.AppsV1().RESTClient()
-// 	if err != nil {
-// 		return nil, errors.ParseInternalError(err)
-// 	}
-// 	bytes, err := json.Marshal(dep)
-// 	if err != nil {
-// 		return nil, errors.ParseInternalError(err)
-// 	}
-// 	var res raw.Raw
-// 	if err = json.Unmarshal(bytes, &res); err != nil {
-// 		return nil, errors.ParseInternalError(err)
-// 	}
-// 	res.Wrap(dep.APIVersion, "Deployment")
-// 	return res, nil
-// }
-
 func Get(K8 *kubernetes.K8Client, namespace string, name string) (*Deployment, error) {
 	dep, err := getInternal(K8, namespace, name, metaV1.GetOptions{})
 	if err != nil {

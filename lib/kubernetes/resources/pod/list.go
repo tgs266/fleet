@@ -14,11 +14,15 @@ func ListStubs(K8 *kubernetes.K8Client, namespace string, selector *types.DataSe
 	if err != nil {
 		return nil, err
 	}
+
 	resp := &types.PaginationResponse{
-		Items:  metas,
-		Count:  len(metas),
-		Total:  selector.TotalItemCount,
-		Offset: selector.Offset,
+		Items: metas,
+		Count: len(metas),
+	}
+
+	if selector != nil {
+		resp.Total = selector.TotalItemCount
+		resp.Offset = selector.Offset
 	}
 
 	return resp, nil
@@ -31,9 +35,11 @@ func ChannelToMeta(podChannelList channels.PodListChannel, selector *types.DataS
 		return nil, errors.ParseInternalError(err)
 	}
 
-	podComps := ToComparable(pods)
-	selector.Execute(podComps)
-	pods = FromComparable(selector.Items)
+	if selector != nil {
+		podComps := ToComparable(pods)
+		selector.Execute(podComps)
+		pods = FromComparable(selector.Items)
+	}
 
 	metas := []PodMeta{}
 	for _, pod := range pods.Items {

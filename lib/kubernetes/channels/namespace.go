@@ -13,7 +13,7 @@ type NamespaceListChannel struct {
 	Error chan error
 }
 
-func GetNamespaceListChannel(client *kubernetes.Clientset, options metaV1.ListOptions, numReads int) *NamespaceListChannel {
+func GetNamespaceListChannel(client kubernetes.Interface, options metaV1.ListOptions, numReads int) *NamespaceListChannel {
 	channel := &NamespaceListChannel{
 		List:  make(chan *v1.NamespaceList, numReads),
 		Error: make(chan error, numReads),

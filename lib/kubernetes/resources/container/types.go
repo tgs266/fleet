@@ -105,11 +105,20 @@ func BuildEnvArray(c v1.Container) []*Env {
 }
 
 func BuildContainer(c v1.Container, met *v1beta1.ContainerMetrics, containerState v1.ContainerState) *Container {
+	imageNameSplit := strings.Split(c.Image, ":")
+	imageName := ""
+	tag := ""
+	if len(imageNameSplit) == 1 {
+		imageName = c.Image
+	} else {
+		imageName = imageNameSplit[0]
+		tag = imageNameSplit[1]
+	}
 	container := &Container{
 		Name: c.Name,
 		Image: image.Image{
-			Name: strings.Split(c.Image, ":")[0],
-			Tag:  strings.Split(c.Image, ":")[1],
+			Name: imageName,
+			Tag:  tag,
 		},
 		ImagePullPolicy: GetPullPolicy(c),
 		State:           GetStatus(containerState),

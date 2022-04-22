@@ -13,7 +13,7 @@ type NodeListChannel struct {
 	Error chan error
 }
 
-func GetNodeListChannel(client *kubernetes.Clientset, options metaV1.ListOptions, numReads int) *NodeListChannel {
+func GetNodeListChannel(client kubernetes.Interface, options metaV1.ListOptions, numReads int) *NodeListChannel {
 	channel := &NodeListChannel{
 		List:  make(chan *v1.NodeList, numReads),
 		Error: make(chan error, numReads),
