@@ -76,8 +76,6 @@ func (api *API) Listen(host string) {
 func New(client *client.ClientManager, config fiber.Config) *API {
 	return &API{
 		clientManager: client,
-		app:           fiber.New(config), // fiber.New(fiber.Config{
-		//DisableStartupMessage: true,
-		//}),
+		app:           fiber.New(config),
 	}
 }
