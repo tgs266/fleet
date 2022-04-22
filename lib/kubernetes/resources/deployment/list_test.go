@@ -42,6 +42,10 @@ func TestListMetas(t *testing.T) {
 						Property:  types.NameProperty,
 						Ascending: false,
 					},
+					{
+						Property:  types.NamespaceProperty,
+						Ascending: true,
+					},
 				},
 				Filters: []types.Filter{
 					{
