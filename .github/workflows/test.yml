@@ -30,7 +30,7 @@ jobs:
       - name: Test Frontend
         run: |
           yarn install
-          yarn run test
+          yarn run test --silent
         
       - name: Analyze with SonarCloud
         uses: sonarsource/sonarcloud-github-action@master
