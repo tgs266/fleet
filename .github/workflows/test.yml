@@ -1,0 +1,39 @@
+name: Test Workflow
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+jobs:
+  build:
+    name: Build, Test and Analyze
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Go
+        uses: actions/setup-go@v1
+        with:
+          go-version: '1.17'
+
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16.13.0'
+          
+      - name: Clone Repository
+        uses: actions/checkout@master
+        
+      - name: Test Golang
+        run: |
+          cd lib
+          go test ./... -covermode=count -coverprofile=coverage.out
+          cd ..
+
+      - name: Test Frontend
+        run: |
+          yarn install
+          yarn run test
+        
+      - name: Analyze with SonarCloud
+        uses: sonarsource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
