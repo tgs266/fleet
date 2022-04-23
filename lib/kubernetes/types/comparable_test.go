@@ -93,6 +93,34 @@ func TestComparable2(t *testing.T) {
 			operator: LessThanOrEqualOperator,
 			expected: true,
 		},
+		{
+			name:     "test4",
+			v1:       getComparable(80),
+			v2:       getComparable(200),
+			operator: LessThanOperator,
+			expected: true,
+		},
+		{
+			name:     "test5",
+			v1:       getComparable(800),
+			v2:       getComparable(200),
+			operator: LessThanOperator,
+			expected: false,
+		},
+		{
+			name:     "test6",
+			v1:       getComparable(80),
+			v2:       getComparable(200),
+			operator: LessThanOperator,
+			expected: true,
+		},
+		{
+			name:     "test7",
+			v1:       getComparable(80),
+			v2:       getComparable(200),
+			operator: NotEqualOperator,
+			expected: true,
+		},
 	}
 
 	for _, test := range testCases {
