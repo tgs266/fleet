@@ -19,6 +19,7 @@ import NamespaceList from './views/NamespaceList/NamespaceList';
 import ServiceList from './views/ServiceList/ServiceList';
 
 function App() {
+    console.log(window.location);
     return (
         <Routes>
             <Route path="/" element={<Layout />}>

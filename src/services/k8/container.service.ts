@@ -1,7 +1,7 @@
 /* eslint-disable object-shorthand */
 import { AxiosResponse } from 'axios';
 import { Container } from '../../models/container.model';
-import api from '../axios.service';
+import api, { getWSUrl } from '../axios.service';
 
 export default class Containers {
     static base = '/api/v1';
@@ -23,7 +23,7 @@ export default class Containers {
         callback: (event: MessageEvent<string>) => void
     ): WebSocket {
         const ws = new WebSocket(
-            `ws://localhost:9095/ws/v1/pods/${namespace}/${podName}/containers/${containerName}/logs`
+            getWSUrl(`/ws/v1/pods/${namespace}/${podName}/containers/${containerName}/logs`)
         );
         ws.onmessage = callback;
         return ws;

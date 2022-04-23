@@ -178,7 +178,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: fleet
-          image: tgs266/fleet:nightly
+          image: tgs266/fleet:FILL_THIS
           imagePullPolicy: Always
           ports:
             - containerPort: 9095

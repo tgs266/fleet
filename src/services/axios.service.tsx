@@ -5,8 +5,16 @@ import { Alert, Intent } from '@blueprintjs/core';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { FleetError } from '../models/base';
 import Toaster from './toast.service';
+import urlJoin from '../utils/urljoin';
+
+export function getWSUrl(path: string): string {
+    const currentBase = `${window.location.href.replace(window.location.hash, '')}`;
+    return urlJoin(currentBase.replace(window.location.protocol, 'ws:'), path);
+}
 
 const api = axios.create();
+
+api.defaults.baseURL = `${window.location.href.replace(window.location.hash, '')}`;
 
 api.interceptors.response.use(
     (response: AxiosResponse<any, any> | Promise<AxiosResponse<any, any>>) => response,

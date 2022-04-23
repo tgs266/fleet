@@ -4,7 +4,7 @@ import { PaginationResponse } from '../../models/base';
 import { JSONObject } from '../../models/json.model';
 import { Pod, PodMeta } from '../../models/pod.model';
 import getSortBy from '../../utils/sort';
-import api from '../axios.service';
+import api, { getWSUrl } from '../axios.service';
 
 export default class Pods {
     static base = '/api/v1/pods';
@@ -39,7 +39,7 @@ export default class Pods {
         callback: (event: MessageEvent<string>) => void
     ): WebSocket {
         const ws = new WebSocket(
-            `ws://localhost:9095/ws/v1/pods/${namespace}/${pod}/events?pollInterval=${pollInterval}`
+            getWSUrl(`/ws/v1/pods/${namespace}/${pod}/events?pollInterval=${pollInterval}`)
         );
         ws.onmessage = callback;
         return ws;

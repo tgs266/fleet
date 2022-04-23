@@ -6,10 +6,10 @@ import { ContainerSpec } from '../../models/container.model';
 import { CreateDeployment, Deployment, DeploymentMeta } from '../../models/deployment.model';
 import { JSONObject } from '../../models/json.model';
 import getSortBy from '../../utils/sort';
-import api from '../axios.service';
+import api, { getWSUrl } from '../axios.service';
 
 export default class Deployments {
-    static base = '/api/v1/deployments';
+    static base = `/api/v1/deployments`;
 
     static getDeployments(
         namespace?: string,
@@ -90,7 +90,9 @@ export default class Deployments {
         callback: (event: MessageEvent<string>) => void
     ): WebSocket {
         const ws = new WebSocket(
-            `ws://localhost:9095/ws/v1/deployments/${namespace}/${deployment}/events?pollInterval=${pollInterval}`
+            getWSUrl(
+                `/ws/v1/deployments/${namespace}/${deployment}/events?pollInterval=${pollInterval}`
+            )
         );
         ws.onmessage = callback;
         return ws;

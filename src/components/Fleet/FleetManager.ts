@@ -14,6 +14,7 @@ import {
 } from 'pixi.js-legacy';
 import { Filter } from '../../models/base';
 import { JSONObjectType } from '../../models/json.model';
+import { getWSUrl } from '../../services/axios.service';
 import { LinkedList } from '../../utils/linkedList';
 import { Operation } from './Fleet';
 import FleetGroup from './FleetGroup';
@@ -194,7 +195,7 @@ export default class FleetManager {
             this.groups = {};
             this.width = 0;
         }
-        this.ws = new WebSocket('ws://localhost:9095/ws/v1/fleet');
+        this.ws = new WebSocket(getWSUrl('/ws/v1/fleet'));
         this.ws.onopen = () => {
             this.ws.send(
                 JSON.stringify({

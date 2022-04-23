@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -59,9 +60,8 @@ func main() {
 	logging.INFO("fleet routes initialization complete")
 
 	if src != nil {
-		logging.INFO("serving frontend")
 		path := *src
-		logging.INFO(path)
+		logging.INFO(fmt.Sprintf("serving frontend from %s", path))
 		app.Static("/", path)
 	}
 
