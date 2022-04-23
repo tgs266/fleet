@@ -84,7 +84,6 @@ export default function ContainerSpecPortEdit(props: {
                                     />
                                 </TableCell>
                                 <TableCell>
-                                    {/* <InputGroup defaultValue={port.protocol} onChange={(e) => onChange(`ports[${idx}].protocol`, e.target.value)}/>  */}
                                     <Suggest
                                         items={['TCP', 'UDP', 'SCTP']}
                                         selectedItem={port.protocol}
@@ -103,7 +102,7 @@ export default function ContainerSpecPortEdit(props: {
                                                 />
                                             );
                                         }}
-                                        itemPredicate={(query, item, index, exactMatch) => {
+                                        itemPredicate={(query, item, _, exactMatch) => {
                                             const normalizedTitle = item.toLowerCase();
                                             const normalizedQuery = query.toLowerCase();
 

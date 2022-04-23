@@ -53,7 +53,7 @@ export default function ImageList(props: {
                 name: query.split(':')[0],
                 tag: query.split(':')[1],
             })}
-            itemPredicate={(query, item, index, exactMatch) => {
+            itemPredicate={(query, item, _, exactMatch) => {
                 const normalizedTitle = `${item.name}:${item.tag}`.toLowerCase();
                 const normalizedQuery = query.toLowerCase();
 

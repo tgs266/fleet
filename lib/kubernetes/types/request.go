@@ -89,18 +89,14 @@ func (dr *DataRequest) BuildDataSelector() *DataSelector {
 	sortBys := []SortBy{}
 	for _, s := range dr.SortBy {
 		split := strings.Split(s, ",")
-		if len(split) == 1 {
+		if len(split) == 1 || split[1] != "a" {
 			sortBys = append(sortBys, SortBy{
 				Property: getProperty(split[0]),
-			})
-		} else if split[1] == "a" {
-			sortBys = append(sortBys, SortBy{
-				Ascending: true,
-				Property:  getProperty(split[0]),
 			})
 		} else {
 			sortBys = append(sortBys, SortBy{
-				Property: getProperty(split[0]),
+				Ascending: true,
+				Property:  getProperty(split[0]),
 			})
 		}
 	}

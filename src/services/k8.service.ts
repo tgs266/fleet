@@ -30,7 +30,7 @@ export default class K8 {
 
     static poll(
         ms: number,
-        fcn: (...args: any[]) => Promise<AxiosResponse<any>>,
+        fcn: (...fcnArgs: any[]) => Promise<AxiosResponse<any>>,
         callback: (arg: any) => void,
         ...args: any[]
     ) {

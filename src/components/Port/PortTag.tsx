@@ -13,7 +13,7 @@ export default function PortTag(props: {
     const { port } = props;
 
     function getIntent(protocol: string) {
-        let intent = null;
+        let intent;
         switch (protocol) {
             case 'TCP':
                 intent = Intent.PRIMARY;
@@ -30,11 +30,11 @@ export default function PortTag(props: {
         return intent;
     }
 
-    const intent = getIntent(port.protocol);
+    const selectedIntent = getIntent(port.protocol);
     const hostPort = port.hostPort === 0 ? '' : port.hostPort;
     const hostIp = port.hostIp !== '' ? `${port.hostIp}:${hostPort}` : hostPort;
     return (
-        <Tag style={props.style} minimal round intent={intent as Intent}>
+        <Tag style={props.style} minimal round intent={selectedIntent as Intent}>
             <Text size={props.fontSize}>
                 {port.containerPort}:{hostIp} {port.protocol}
             </Text>

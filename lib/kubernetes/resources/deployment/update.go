@@ -16,6 +16,8 @@ import (
 	metaV1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
+const SELECTOR_LABEL = "fleet-selector"
+
 func Restart(K8 *kubernetes.K8Client, namespace string, name string) error {
 	deployment, err := getInternal(K8, namespace, name, metaV1.GetOptions{})
 	if err != nil {
@@ -73,19 +75,19 @@ func CreateDeployment(K8 *kubernetes.K8Client, dep DeploymentCreation) error {
 		ObjectMeta: metaV1.ObjectMeta{
 			Name:      dep.Name,
 			Namespace: dep.Namespace,
-			Labels:    map[string]string{"fleet-selector": selectorVal},
+			Labels:    map[string]string{SELECTOR_LABEL: selectorVal},
 		},
 		Spec: v1a.DeploymentSpec{
 			Replicas: shared.Int32Ptr(int32(dep.Replicas)),
 			Selector: &metaV1.LabelSelector{
 				MatchLabels: map[string]string{
-					"fleet-selector": selectorVal,
+					SELECTOR_LABEL: selectorVal,
 				},
 			},
 			Template: v1.PodTemplateSpec{
 				ObjectMeta: metaV1.ObjectMeta{
 					Labels: map[string]string{
-						"fleet-selector": selectorVal,
+						SELECTOR_LABEL: selectorVal,
 					},
 				},
 				Spec: v1.PodSpec{

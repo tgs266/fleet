@@ -16,7 +16,7 @@ export default function ContainerSpecTableRow(props: {
     spec: ContainerSpec;
     showDelete: boolean;
     onDelete: (idx: number) => void;
-    refresh: () => void;
+    refresh?: () => void;
 }) {
     const { spec } = props;
     const nav = useNavigate();
@@ -28,7 +28,9 @@ export default function ContainerSpecTableRow(props: {
     const onSuccess = (changedSpec: ContainerSpec) => {
         // K8.deployments.updateContainerSpec(params.deployment, params.namespace, spec.name, changedSpec).then(() => {
         //     setUpdateModalOpen(false)
-        props.refresh();
+        if (props.refresh) {
+            props.refresh();
+        }
         // })
     };
 

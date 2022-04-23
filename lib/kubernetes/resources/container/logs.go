@@ -28,8 +28,12 @@ func StreamPodContainerLogs(K8 *kubernetes.K8Client, namespace string, name stri
 	}
 	defer podLogs.Close()
 
-	lastLine := ""
 	reader := bufio.NewReaderSize(podLogs, 16)
+	readLoop(c, reader, namespace, name, containerName)
+}
+
+func readLoop(c *websocket.Conn, reader *bufio.Reader, namespace, name, containerName string) {
+	lastLine := ""
 	for {
 		data, isPrefix, err := reader.ReadLine()
 		if err == io.EOF {
@@ -39,19 +43,8 @@ func StreamPodContainerLogs(K8 *kubernetes.K8Client, namespace string, name stri
 			return
 		}
 
-		lines := strings.Split(string(data), "\r")
-
-		length := len(lines)
-
-		if len(lastLine) > 0 {
-			lines[0] = lastLine + lines[0]
-			lastLine = ""
-		}
-
-		if isPrefix {
-			lastLine = lines[length-1]
-			lines = lines[:(length - 1)]
-		}
+		lines, newLastLine := parse(data, isPrefix, lastLine)
+		lastLine = newLastLine
 
 		for _, line := range lines {
 			if err := c.WriteMessage(websocket.TextMessage, []byte(line)); err != nil {
@@ -62,5 +55,24 @@ func StreamPodContainerLogs(K8 *kubernetes.K8Client, namespace string, name stri
 				panic(errors.ParseInternalError(err))
 			}
 		}
+
 	}
+}
+
+func parse(data []byte, isPrefix bool, lastLine string) ([]string, string) {
+	lines := strings.Split(string(data), "\r")
+
+	length := len(lines)
+
+	if len(lastLine) > 0 {
+		lines[0] = lastLine + lines[0]
+		lastLine = ""
+	}
+
+	if isPrefix {
+		lastLine = lines[length-1]
+		lines = lines[:(length - 1)]
+	}
+	return lines, lastLine
+
 }

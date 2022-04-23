@@ -2,7 +2,7 @@ import { Card } from '@blueprintjs/core';
 import * as YAML from 'yaml';
 import * as React from 'react';
 import ActionEqualText from '../Text/ActionEqualText';
-import JSONTextEditor from '../TextEditor/JSON';
+import JSONTextEditor from '../TextEditor/JsonYamlTextEditor';
 import TwoButtonDialog from './TwoButtonDialog';
 import { JSONObject } from '../../models/json.model';
 
@@ -40,9 +40,6 @@ export default function TextEditDialog(props: {
             >
                 <JSONTextEditor value={value} onChange={setValue} />
             </Card>
-            {/* {error && <Callout intent="danger">
-            {error}
-        </Callout>} */}
             {equiv && (
                 <div style={{ marginBottom: '1em' }}>
                     <ActionEqualText>{equiv}</ActionEqualText>

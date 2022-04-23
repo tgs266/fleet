@@ -2,7 +2,6 @@ import * as React from 'react';
 import { Icon, Position, IconName } from '@blueprintjs/core';
 import { useLocation, useNavigate } from 'react-router';
 import { Tooltip2 } from '@blueprintjs/popover2';
-// import { SidebarTree } from './NavbarTree'
 
 export interface NavButton {
     target: string;

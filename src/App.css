@@ -5,17 +5,13 @@
 
 body {
     font-size: 16px;
-    font-family: 'Gidole, sans-serif';
+    font-family: 'Gidole', sans-serif;
     display: inline-block;
     width: 100%;
 }
 
 html {
     height: 100% !important;
-    min-height: 100%;
-}
-
-body {
     min-height: 100%;
 }
 

@@ -116,7 +116,7 @@ export default function PodContainerTable(props: { pod: Pod; accordion?: boolean
                                             >
                                                 <Collapse isOpen={isOpen}>
                                                     <ContainerSpecContainer
-                                                        refresh={() => {}}
+                                                        refresh={null}
                                                         style={{ margin: '1em', marginTop: 0 }}
                                                         containerSpecs={
                                                             props.pod.containers as ContainerSpec[]
