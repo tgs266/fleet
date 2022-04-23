@@ -73,4 +73,4 @@ Start the server
 Then navigate to <http://localhost:9095>
 
 
-<!-- Testing: go test ./... -covermode=count -coverprofile=coverage.out, go tool cover -html=coverage -->
+<!-- Testing: go test ./... -covermode=count -coverprofile=coverage.out -coverpkg=./..., go tool cover -html=coverage.out -->

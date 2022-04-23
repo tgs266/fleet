@@ -30,7 +30,7 @@ func TestRestartDeployment(t *testing.T) {
 
 	app.Put("/:namespace/:name", RestartDeployment)
 
-	req := httptest.NewRequest("Put", "/asdf/asdf", nil)
+	req := httptest.NewRequest("PUT", "/asdf/asdf", nil)
 
 	app.Test(req)
 }
@@ -45,7 +45,7 @@ func TestScaleDeployment(t *testing.T) {
 
 	app.Put("/:namespace/:name", ScaleDeployment)
 
-	req := httptest.NewRequest("Put", "/asdf/asdf", bytes.NewBuffer(db))
+	req := httptest.NewRequest("PUT", "/asdf/asdf", bytes.NewBuffer(db))
 
 	app.Test(req)
 }
