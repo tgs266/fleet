@@ -36,7 +36,7 @@ func GetService(c *fiber.Ctx, client *client.ClientManager) error {
 
 	dep, err := service.Get(K8, namespace, name)
 	if err != nil {
-		panic(err)
+		return err
 	}
 	return c.Status(fiber.StatusOK).JSON(dep)
 }
