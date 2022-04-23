@@ -274,7 +274,6 @@ export default class FleetManager {
             }
             const data = JSON.parse(m.data) as FleetObject[];
             const startY = 0;
-            const newGroups = [];
             for (const fleetObj of data) {
                 if (fleetObj.mode === 'DELETE') {
                     this.handleDeleteGroup(fleetObj);
@@ -294,7 +293,6 @@ export default class FleetManager {
                 if (!group) {
                     newGroup = true;
                     group = this.handleCreateGroup(fleetObj, startY);
-                    newGroups.push(group);
                 }
 
                 for (const fleetChild of Object.keys(fleetObj.children)) {

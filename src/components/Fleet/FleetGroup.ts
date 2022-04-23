@@ -4,7 +4,6 @@
 /* eslint-disable no-restricted-syntax */
 // eslint-disable-next-line max-classes-per-file
 import { Container, Texture } from 'pixi.js-legacy';
-// import * as crypto from "crypto";
 import * as TimSort from 'timsort';
 import { FleetChild } from './model';
 import { Operation } from './Fleet';
@@ -13,10 +12,9 @@ import { BOX_MARGIN, BOX_SIZE, RED } from './helper';
 import { JSONObjectType } from '../../models/json.model';
 import { LinkedList } from '../../utils/linkedList';
 
-// const uuid =
 function getUUID() {
     // Public Domain/MIT
-    return Math.random().toString(20).substr(2, 10);
+    return Math.random().toString(20).substring(2, 10);
 }
 
 const TRANSITION_TIME = 400;
@@ -172,11 +170,11 @@ export default class FleetGroup {
         };
     }
 
-    removeFromAllIds(id: string) {
+    removeFromAllIds(passedId: string) {
         const out = [];
-        for (let i = 0; i < this.allIds.length; i += 1) {
-            if (this.allIds[i] !== id) {
-                out.push(this.allIds[i]);
+        for (const id of this.allIds) {
+            if (id !== passedId) {
+                out.push(id);
             }
         }
         return out;
