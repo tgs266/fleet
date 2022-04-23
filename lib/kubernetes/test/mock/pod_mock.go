@@ -56,7 +56,9 @@ func GeneratePod(podMock PodMock) *corev1.Pod {
 				{
 					Name: "asdf",
 					State: corev1.ContainerState{
-						Waiting: &corev1.ContainerStateWaiting{},
+						Waiting: &corev1.ContainerStateWaiting{
+							Reason: "Because",
+						},
 					},
 				},
 				{
@@ -68,7 +70,10 @@ func GeneratePod(podMock PodMock) *corev1.Pod {
 				{
 					Name: "asdf",
 					State: corev1.ContainerState{
-						Terminated: &corev1.ContainerStateTerminated{},
+						Terminated: &corev1.ContainerStateTerminated{
+							ExitCode: 12,
+							Reason:   "Because",
+						},
 					},
 				},
 			},
@@ -88,7 +93,9 @@ func GeneratePod(podMock PodMock) *corev1.Pod {
 				{
 					Name: "asdf",
 					State: corev1.ContainerState{
-						Terminated: &corev1.ContainerStateTerminated{},
+						Terminated: &corev1.ContainerStateTerminated{
+							ExitCode: 12,
+						},
 					},
 				},
 			},

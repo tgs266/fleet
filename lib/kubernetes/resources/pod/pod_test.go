@@ -4,11 +4,13 @@ import (
 	"os"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/tgs266/fleet/lib/kubernetes"
 	"github.com/tgs266/fleet/lib/kubernetes/test/mock"
 	"github.com/tgs266/fleet/lib/kubernetes/types"
 	"github.com/tgs266/fleet/lib/logging"
 	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/kubernetes/fake"
@@ -237,6 +239,7 @@ func TestGet(t *testing.T) {
 		pods            []runtime.Object
 		targetName      string
 		targetNamespace string
+		genericStatus   string
 		expectedCount   int
 	}{
 		{
@@ -249,6 +252,97 @@ func TestGet(t *testing.T) {
 					AppLabel:       "asdf",
 				}),
 			},
+			genericStatus:   "Pending",
+			targetName:      "pod1",
+			targetNamespace: "namespace1",
+			expectedCount:   3,
+		},
+		{
+			name: "get_pod2",
+			pods: func() []runtime.Object {
+				mock := mock.GeneratePod(mock.PodMock{
+					Name:           "pod1",
+					Namespace:      "namespace1",
+					ContainerCount: 3,
+					AppLabel:       "asdf",
+				})
+				mock.Status.InitContainerStatuses[0] = mock.Status.InitContainerStatuses[2]
+				mock.Spec.Overhead = corev1.ResourceList{
+					corev1.ResourceCPU:    *resource.NewMilliQuantity(int64(10), resource.DecimalSI),
+					corev1.ResourceMemory: *resource.NewQuantity(int64(10), resource.DecimalSI),
+				}
+				return []runtime.Object{mock}
+			}(),
+			genericStatus:   "Terminated",
+			targetName:      "pod1",
+			targetNamespace: "namespace1",
+			expectedCount:   3,
+		},
+		{
+			name: "get_pod_terminated",
+			pods: func() []runtime.Object {
+				mock := mock.GeneratePod(mock.PodMock{
+					Name:           "pod1",
+					Namespace:      "namespace1",
+					ContainerCount: 3,
+					AppLabel:       "asdf",
+				})
+				mock.Status.InitContainerStatuses = []corev1.ContainerStatus{}
+				mock.Status.ContainerStatuses = []corev1.ContainerStatus{
+					{
+						Name: "asdf",
+						State: corev1.ContainerState{
+							Terminated: &corev1.ContainerStateTerminated{
+								ExitCode: 12,
+								Reason:   "Because",
+							},
+						},
+					},
+				}
+				return []runtime.Object{mock}
+			}(),
+			genericStatus:   "Terminated",
+			targetName:      "pod1",
+			targetNamespace: "namespace1",
+			expectedCount:   3,
+		},
+		{
+			name: "get_pod_running",
+			pods: func() []runtime.Object {
+				mock := mock.GeneratePod(mock.PodMock{
+					Name:           "pod1",
+					Namespace:      "namespace1",
+					ContainerCount: 3,
+					AppLabel:       "asdf",
+				})
+				mock.Status.InitContainerStatuses = []corev1.ContainerStatus{}
+				mock.Status.ContainerStatuses = []corev1.ContainerStatus{
+					{
+						Ready: true,
+						Name:  "asdf",
+						State: corev1.ContainerState{
+							Running: &corev1.ContainerStateRunning{},
+						},
+					},
+					{
+						Name: "asdf",
+						State: corev1.ContainerState{
+							Terminated: &corev1.ContainerStateTerminated{
+								Reason:   "Completed",
+								ExitCode: 0,
+							},
+						},
+					},
+				}
+				mock.Status.Conditions = []corev1.PodCondition{
+					{
+						Type:   corev1.PodReady,
+						Status: corev1.ConditionTrue,
+					},
+				}
+				return []runtime.Object{mock}
+			}(),
+			genericStatus:   "Running",
 			targetName:      "pod1",
 			targetNamespace: "namespace1",
 			expectedCount:   3,
@@ -269,6 +363,8 @@ func TestGet(t *testing.T) {
 			if res.Name != test.targetName {
 				t.Fatalf("pod name expected %s, got %s", test.targetName, res.Name)
 			}
+
+			assert.Equal(t, test.genericStatus, res.Status.GenericStatus)
 
 		})
 	}
