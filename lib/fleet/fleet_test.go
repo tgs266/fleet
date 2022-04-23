@@ -56,7 +56,7 @@ func TestBuildFleet3(t *testing.T) {
 	}
 	fleet, err := BuildFleet(client, req)
 	assert.Nil(t, err)
-	assert.Len(t, fleet, 3)
+	assert.Len(t, fleet, 1)
 }
 
 func TestCleanFleet(t *testing.T) {
