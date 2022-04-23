@@ -16,3 +16,15 @@ func TestBuildDataRequest(t *testing.T) {
 	assert.Equal(t, offset, dr.Offset)
 	assert.Equal(t, pageSize, dr.PageSize)
 }
+
+func TestBuildDataSelector(t *testing.T) {
+	offset := 3
+	pageSize := 10
+	sortBy := "namespace,a|name,d|created_at"
+	filterBy := "created_at,15,gt|created_at,35,lte"
+
+	dr := buildDataRequest(offset, pageSize, sortBy, filterBy)
+	ds := dr.BuildDataSelector()
+	assert.Equal(t, offset, ds.Offset)
+	assert.Equal(t, pageSize, ds.PageSize)
+}

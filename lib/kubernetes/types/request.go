@@ -12,7 +12,7 @@ type Property string
 
 const (
 	NameProperty      = "name"
-	CreatedAtProperty = "createdAt"
+	CreatedAtProperty = "created_at"
 	NamespaceProperty = "namespace"
 	StatusProperty    = "status"
 	LastSeenProperty  = "lastSeen"
