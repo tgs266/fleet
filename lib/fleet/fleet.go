@@ -79,46 +79,7 @@ func Run(c *websocket.Conn, K8 *kubernetes.K8Client, timeout int) {
 			tempLast = append(tempLast, &x)
 		}
 
-		for _, n := range lastTitles {
-			data, _ := GetByUID(n, fleet)
-			if data == nil {
-				fleet = append(fleet, &FleetObject{
-					Meta: FleetObjectMeta{
-						UID: n,
-					},
-					Mode: "DELETE",
-				})
-			} else {
-				lastData, _ := GetByUID(n, last)
-				lastChildren := lastData.Children
-				newChildren := data.Children
-
-				newMap := map[string]FleetObject{}
-
-				for str, nc := range newChildren {
-					if value, found := lastChildren[str]; found {
-						if value.Status.Reason != nc.Status.Reason || value.Status.Value != nc.Status.Value {
-							nc.Mode = "UPDATE"
-							newMap[str] = nc
-						}
-					} else {
-						nc.Mode = "NEW"
-						newMap[str] = nc
-					}
-				}
-
-				for str, lc := range lastChildren {
-					if _, found := newChildren[str]; !found {
-						lc.Mode = "DELETE"
-						newMap[str] = lc
-					}
-				}
-
-				data.Children = newMap
-				// fleet[dataID] = data
-
-			}
-		}
+		fleet = CleanFleet(lastTitles, last, fleet)
 
 		last = tempLast
 		lastTitles = ExtractIdentifiers(tempLast)
@@ -129,6 +90,48 @@ func Run(c *websocket.Conn, K8 *kubernetes.K8Client, timeout int) {
 
 		time.Sleep(time.Duration(timeout) * time.Millisecond)
 	}
+}
+
+func CleanFleet(lastTitles []string, last []*FleetObject, fleet []*FleetObject) []*FleetObject {
+	for _, n := range lastTitles {
+		data, _ := GetByUID(n, fleet)
+		if data == nil {
+			fleet = append(fleet, &FleetObject{
+				Meta: FleetObjectMeta{
+					UID: n,
+				},
+				Mode: "DELETE",
+			})
+		} else {
+			lastData, _ := GetByUID(n, last)
+			lastChildren := lastData.Children
+			newChildren := data.Children
+
+			newMap := map[string]FleetObject{}
+
+			for str, nc := range newChildren {
+				if value, found := lastChildren[str]; found {
+					if value.Status.Reason != nc.Status.Reason || value.Status.Value != nc.Status.Value {
+						nc.Mode = "UPDATE"
+						newMap[str] = nc
+					}
+				} else {
+					nc.Mode = "NEW"
+					newMap[str] = nc
+				}
+			}
+
+			for str, lc := range lastChildren {
+				if _, found := newChildren[str]; !found {
+					lc.Mode = "DELETE"
+					newMap[str] = lc
+				}
+			}
+
+			data.Children = newMap
+		}
+	}
+	return fleet
 }
 
 func BuildFleet(K8 *kubernetes.K8Client, fleetRequest *FleetRequest) ([]*FleetObject, error) {

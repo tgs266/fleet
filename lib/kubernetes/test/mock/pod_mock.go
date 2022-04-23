@@ -4,9 +4,11 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/types"
 )
 
 type PodMock struct {
+	UID            string
 	Name           string
 	Namespace      string
 	NodeName       string
@@ -41,6 +43,7 @@ func MockContainers(count int) []corev1.Container {
 func GeneratePod(podMock PodMock) *corev1.Pod {
 	return &corev1.Pod{
 		ObjectMeta: metav1.ObjectMeta{
+			UID:       types.UID(podMock.UID),
 			Name:      podMock.Name,
 			Namespace: podMock.Namespace,
 			Labels: map[string]string{

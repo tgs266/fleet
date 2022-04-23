@@ -14,18 +14,21 @@ func GetTestClient() *K8Client {
 
 	pods := []runtime.Object{
 		mock.GeneratePod(mock.PodMock{
+			UID:       "asdf-1",
 			Name:      "asdf-1",
 			Namespace: "ns",
 			NodeName:  "node",
 			AppLabel:  "asdf",
 		}),
 		mock.GeneratePod(mock.PodMock{
+			UID:       "asdf-2",
 			Name:      "asdf-2",
 			Namespace: "ns",
 			NodeName:  "node",
 			AppLabel:  "asdf",
 		}),
 		mock.GeneratePod(mock.PodMock{
+			UID:       "asdf-3",
 			Name:      "asdf-3",
 			Namespace: "ns",
 			NodeName:  "node",
