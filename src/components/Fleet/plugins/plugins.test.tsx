@@ -8,9 +8,10 @@ import FleetGroup from '../FleetGroup';
 import click from './click';
 import { FleetSprite } from '../helper';
 import hover from './hover';
+import { getWSUrl } from '../../../services/axios.service';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const server = new WS('ws://localhost:9095/ws/v1/fleet');
+const server = new WS(getWSUrl('/ws/v1/fleet')); // WS('ws:///ws/v1/fleet');
 
 const getFm = () => {
     const ele = render(<div id="fleet" />).container as HTMLDivElement;
