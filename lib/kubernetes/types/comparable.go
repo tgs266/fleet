@@ -33,7 +33,7 @@ func getComparable(v interface{}) Comparable {
 		return ComparableInt64(int64(v.(int)))
 	}
 
-	panic(errors.NewComparableTypeNotSupported(t.Name()))
+	panic(errors.NewComparableTypeNotSupportedError(t.Name()))
 }
 
 func (c ComparableString) Compare(other Comparable) int {

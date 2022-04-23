@@ -33,7 +33,7 @@ func getOperator(op string) Operator {
 	case LessThanOrEqualOperator:
 		return LessThanOrEqualOperator
 	}
-	panic(errors.NewOperatorNotSupported(op))
+	panic(errors.NewOperatorNotSupportedError(op))
 }
 
 func (o Operator) Test(v1 Comparable, v2 Comparable) bool {

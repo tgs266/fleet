@@ -113,7 +113,7 @@ func NewOperatorTypeMismatchError(operator string, type1 string, type2 string) *
 	}
 }
 
-func NewOperatorNotSupported(operator string) *FleetError {
+func NewOperatorNotSupportedError(operator string) *FleetError {
 
 	return &FleetError{
 		Status:  STATUS_BAD_REQUEST,
@@ -122,7 +122,7 @@ func NewOperatorNotSupported(operator string) *FleetError {
 	}
 }
 
-func NewComparableTypeNotSupported(typeName string) *FleetError {
+func NewComparableTypeNotSupportedError(typeName string) *FleetError {
 
 	return &FleetError{
 		Status:  STATUS_BAD_REQUEST,
