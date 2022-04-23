@@ -6,9 +6,11 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/tgs266/fleet/lib/api"
 	"github.com/tgs266/fleet/lib/client"
+	"github.com/tgs266/fleet/lib/logging"
 )
 
 func setupApp() *api.API {
+	logging.Init(logging.LVL_INFO)
 	manager := &client.ClientManager{
 		TestMode: true,
 	}

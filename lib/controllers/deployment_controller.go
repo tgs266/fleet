@@ -89,7 +89,7 @@ func UpdateDeploymentContainerSpec(c *fiber.Ctx, client *client.ClientManager) e
 	body := new(container.ContainerSpec)
 
 	if err := c.BodyParser(body); err != nil {
-		panic(err)
+		return err
 	}
 
 	err = deployment.UpdateContainerSpec(K8, namespace, name, specName, *body)
