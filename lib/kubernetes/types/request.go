@@ -45,6 +45,10 @@ func BuildDataRequest(c *fiber.Ctx) *DataRequest {
 	pageSize, _ := strconv.Atoi(c.Query("pageSize", "-1"))
 	sortBy := c.Query("sortBy", "")
 	filterBy := c.Query("filterBy", "")
+	return buildDataRequest(offset, pageSize, sortBy, filterBy)
+}
+
+func buildDataRequest(offset, pageSize int, sortBy, filterBy string) *DataRequest {
 	splitSortBy := strings.Split(sortBy, "|")
 	if sortBy == "" {
 		splitSortBy = []string{}
@@ -85,12 +89,18 @@ func (dr *DataRequest) BuildDataSelector() *DataSelector {
 	sortBys := []SortBy{}
 	for _, s := range dr.SortBy {
 		split := strings.Split(s, ",")
-		if len(split) != 2 {
-			panic("invalid request") // TODO
-		}
-		if split[1] == "a" {
+		if len(split) == 1 {
+			sortBys = append(sortBys, SortBy{
+				Property: getProperty(split[0]),
+			})
+		} else if split[1] == "a" {
 			sortBys = append(sortBys, SortBy{
 				Ascending: true,
+				Property:  getProperty(split[0]),
+			})
+		} else if split[1] == "d" {
+			sortBys = append(sortBys, SortBy{
+				Ascending: false,
 				Property:  getProperty(split[0]),
 			})
 		} else {
