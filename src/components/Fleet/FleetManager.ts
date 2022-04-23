@@ -221,6 +221,43 @@ export default class FleetManager {
         }
     };
 
+    handleDeleteGroup = (fleetObj: FleetObject) => {
+        const group = this.groups[fleetObj.meta.uid];
+        this.width -= group.rowSize * (BOX_MARGIN + BOX_SIZE) + CONTAINER_MARGIN;
+        this.operations = this.operations.concat(group.getClearOps());
+        delete this.groupRegions[group.uid]; // [group.uid] = null
+        delete this.groups[fleetObj.meta.uid];
+    };
+
+    handleCreateGroup = (fleetObj: FleetObject, startY: number) => {
+        const group = new FleetGroup(fleetObj.meta.name, fleetObj.meta.uid, {
+            x: this.width,
+            y: startY,
+        });
+        group.rowSize = Math.round(((Object.keys(fleetObj.children).length * 16) / 9) ** 0.5);
+
+        this.groupRegions[group.uid] = {
+            x: {
+                start: this.width + BOX_SIZE + BOX_MARGIN,
+                end: this.width + BOX_SIZE + BOX_MARGIN + group.width,
+            },
+        };
+        this.width += group.width + CONTAINER_MARGIN + BOX_MARGIN;
+
+        this.groups[fleetObj.meta.uid] = group;
+        return group;
+    };
+
+    determineExec = (newGroup: boolean, obj: FleetChild, group: FleetGroup) => {
+        if (newGroup || obj.mode === 'NEW') {
+            this.operations.push(group.createNewOperation(obj));
+        } else if (obj.mode === 'DELETE') {
+            this.operations.push(group.createDeleteOperation(obj));
+        } else if (obj.mode === 'UPDATE') {
+            this.operations.push(group.createUpdateOperation(obj));
+        }
+    };
+
     start() {
         if (this.groups) {
             for (const g of Object.values(this.groups)) {
@@ -240,11 +277,7 @@ export default class FleetManager {
             const newGroups = [];
             for (const fleetObj of data) {
                 if (fleetObj.mode === 'DELETE') {
-                    const group = this.groups[fleetObj.meta.uid];
-                    this.width -= group.rowSize * (BOX_MARGIN + BOX_SIZE) + CONTAINER_MARGIN;
-                    this.operations = this.operations.concat(group.getClearOps());
-                    delete this.groupRegions[group.uid]; // [group.uid] = null
-                    delete this.groups[fleetObj.meta.uid];
+                    this.handleDeleteGroup(fleetObj);
                     continue;
                 }
 
@@ -260,42 +293,14 @@ export default class FleetManager {
                 let newGroup = false;
                 if (!group) {
                     newGroup = true;
-                    group = new FleetGroup(fleetObj.meta.name, fleetObj.meta.uid, {
-                        x: this.width,
-                        y: startY,
-                    });
+                    group = this.handleCreateGroup(fleetObj, startY);
                     newGroups.push(group);
-                    group.rowSize = Math.round(
-                        ((Object.keys(fleetObj.children).length * 16) / 9) ** 0.5
-                    );
-
-                    this.groupRegions[group.uid] = {
-                        x: {
-                            start: this.width + BOX_SIZE + BOX_MARGIN,
-                            end: this.width + BOX_SIZE + BOX_MARGIN + group.width,
-                        },
-                    };
-                    this.width += group.width + CONTAINER_MARGIN + BOX_MARGIN;
-
-                    this.groups[fleetObj.meta.uid] = group;
                 }
 
                 for (const fleetChild of Object.keys(fleetObj.children)) {
                     const obj = fleetObj.children[fleetChild];
                     obj.ownerUID = fleetObj.meta.uid;
-                    if (newGroup || obj.mode === 'NEW') {
-                        this.operations.push(
-                            this.groups[fleetObj.meta.uid].createNewOperation(obj)
-                        );
-                    } else if (obj.mode === 'DELETE') {
-                        this.operations.push(
-                            this.groups[fleetObj.meta.uid].createDeleteOperation(obj)
-                        );
-                    } else if (obj.mode === 'UPDATE') {
-                        this.operations.push(
-                            this.groups[fleetObj.meta.uid].createUpdateOperation(obj)
-                        );
-                    }
+                    this.determineExec(newGroup, obj, group);
                 }
             }
 

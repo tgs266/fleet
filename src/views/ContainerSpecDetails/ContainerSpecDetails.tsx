@@ -15,7 +15,6 @@ import ContainerSpecDetailsInfoCard from './ContainerSpecTitle';
 import Toaster, { showToastWithActionInterval } from '../../services/toast.service';
 import TwoButtonDialog from '../../components/Dialogs/TwoButtonDialog';
 import Text from '../../components/Text/Text';
-// import { AppDetails as IAppDetails } from '../../models/app.model';
 
 interface IContainerSpecDetails {
     containerSpec: ContainerSpec;
@@ -94,6 +93,10 @@ class ImageDetails extends React.Component<IWithRouterProps, IContainerSpecDetai
     };
 
     onSave = () => {
+        const navigate = () =>
+            this.props.navigate(
+                `/deployments/${this.props.params.namespace}/${this.props.params.deployment}`
+            );
         K8.deployments
             .updateContainerSpec(
                 this.props.params.deployment,
@@ -108,18 +111,12 @@ class ImageDetails extends React.Component<IWithRouterProps, IContainerSpecDetai
                         message: 'Container Updated. Redirecting in 5s',
                         intent: Intent.SUCCESS,
                         action: {
-                            onClick: () =>
-                                this.props.navigate(
-                                    `/deployments/${this.props.params.namespace}/${this.props.params.deployment}`
-                                ),
+                            onClick: navigate,
                             text: 'Go Now',
                         },
                     },
                     5000,
-                    () =>
-                        this.props.navigate(
-                            `/deployments/${this.props.params.namespace}/${this.props.params.deployment}`
-                        )
+                    navigate
                 );
             })
             .catch(() => {
