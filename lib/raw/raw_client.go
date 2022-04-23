@@ -42,12 +42,12 @@ func BuildClient(coreClient, appsClient rest.Interface) *Client {
 	}
 }
 
-func (c *Client) getClient(clientType ClientType) rest.Interface {
+func (c *Client) getClient(clientType ClientType) (rest.Interface, bool) {
 	switch clientType {
 	case AppsClientType:
-		return c.appsClient
+		return c.appsClient, c.appsClient != nil
 	default:
-		return c.coreClient
+		return c.coreClient, c.coreClient != nil
 	}
 }
 
@@ -65,7 +65,10 @@ func (c *Client) Get(kind string, name string, namespace string) (runtime.Object
 		return nil, errors.NewBadRequestMustProvideNamespace()
 	}
 
-	client := c.getClient(clientType)
+	client, ok := c.getClient(clientType)
+	if !ok {
+		return nil, errors.CreateError(500, "unknown error occured")
+	}
 	req := client.Get().Resource(resource).Name(name).SetHeader("Accept", "application/json")
 	result := &runtime.Unknown{}
 
@@ -90,7 +93,10 @@ func (c *Client) Put(kind string, name string, namespace string, object *runtime
 		return errors.NewBadRequestMustProvideNamespace()
 	}
 
-	client := c.getClient(clientType)
+	client, ok := c.getClient(clientType)
+	if !ok {
+		return errors.CreateError(500, "unknown error occured")
+	}
 	req := client.Put().Resource(resource).Name(name).SetHeader("Content-Type", "application/json").Body([]byte(object.Raw))
 
 	if useNamespace {

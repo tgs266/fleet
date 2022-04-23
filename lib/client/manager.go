@@ -100,8 +100,14 @@ func (client *ClientManager) RawClient() (*raw.Client, error) {
 	if err != nil {
 		return nil, err
 	}
+	if client.TestMode {
+		return raw.BuildClient(
+			nil,
+			nil,
+		), nil
+	}
 	return raw.BuildClient(
 		k8client.K8.CoreV1().RESTClient(),
 		k8client.K8.AppsV1().RESTClient(),
-	), err
+	), nil
 }
