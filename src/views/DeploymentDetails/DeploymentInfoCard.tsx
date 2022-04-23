@@ -11,7 +11,7 @@ import { Deployment } from '../../models/deployment.model';
 
 export default function DeploymentInfoCard(props: { deployment: Deployment }) {
     const { deployment } = props;
-    let color = Colors.GREEN4;
+    let color;
     switch (deployment.readyReplicas) {
         case 0:
             color = Colors.RED4;

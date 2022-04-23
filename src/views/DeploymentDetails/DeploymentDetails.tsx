@@ -72,8 +72,18 @@ class DeploymentDetails extends React.Component<IWithRouterProps, IDeploymentDet
                 },
             ] as IBreadcrumb[],
             buttons: [
-                <Button key="refresh" data-testid="refresh" icon="refresh" onClick={this.refresh} />,
-                <Button key="scale" data-testid="scale" icon="changes" onClick={this.toggleScaleDialog} />,
+                <Button
+                    key="refresh"
+                    data-testid="refresh"
+                    icon="refresh"
+                    onClick={this.refresh}
+                />,
+                <Button
+                    key="scale"
+                    data-testid="scale"
+                    icon="changes"
+                    onClick={this.toggleScaleDialog}
+                />,
                 <Button key="edit" data-testid="edit" icon="edit" onClick={this.getJson} />,
             ],
             menu: this.getMenu(),
@@ -212,13 +222,7 @@ class DeploymentDetails extends React.Component<IWithRouterProps, IDeploymentDet
                     services={deployment.services}
                 />
                 <ContainerSpecContainer
-                    refresh={() => {
-                        K8.deployments
-                            .getDeployment(this.deployment, this.namespace)
-                            .then((response) => {
-                                this.setState({ deployment: response.data });
-                            });
-                    }}
+                    refresh={this.refresh}
                     style={{ margin: '1em', marginTop: 0 }}
                     containerSpecs={deployment.containerSpecs}
                 />

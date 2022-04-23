@@ -3,6 +3,7 @@
 /* eslint-disable react/prefer-stateless-function */
 import * as React from 'react';
 import _ from 'lodash';
+import { AxiosResponse } from 'axios';
 import { Button, Intent } from '@blueprintjs/core';
 import { ContainerSpec } from '../../models/container.model';
 import K8 from '../../services/k8.service';
@@ -15,6 +16,7 @@ import ContainerSpecDetailsInfoCard from './ContainerSpecTitle';
 import Toaster, { showToastWithActionInterval } from '../../services/toast.service';
 import TwoButtonDialog from '../../components/Dialogs/TwoButtonDialog';
 import Text from '../../components/Text/Text';
+import { Deployment } from '../../models/deployment.model';
 
 interface IContainerSpecDetails {
     containerSpec: ContainerSpec;
@@ -39,13 +41,7 @@ class ImageDetails extends React.Component<IWithRouterProps, IContainerSpecDetai
     componentDidMount() {
         K8.deployments
             .getDeployment(this.props.params.deployment, this.props.params.namespace)
-            .then((response) => {
-                for (const cs of response.data.containerSpecs) {
-                    if (cs.name === this.state.oldName) {
-                        this.setState({ containerSpec: cs });
-                    }
-                }
-            });
+            .then(this.setFromResponse);
         const [, setState] = this.context;
         setState({
             breadcrumbs: [
@@ -72,18 +68,20 @@ class ImageDetails extends React.Component<IWithRouterProps, IContainerSpecDetai
                                 this.props.params.deployment,
                                 this.props.params.namespace
                             )
-                            .then((response) => {
-                                for (const cs of response.data.containerSpecs) {
-                                    if (cs.name === this.state.oldName) {
-                                        this.setState({ containerSpec: cs });
-                                    }
-                                }
-                            });
+                            .then(this.setFromResponse);
                     }}
                 />,
             ],
         });
     }
+
+    setFromResponse = (response: AxiosResponse<Deployment>) => {
+        for (const cs of response.data.containerSpecs) {
+            if (cs.name === this.state.oldName) {
+                this.setState({ containerSpec: cs });
+            }
+        }
+    };
 
     onChange = (path: string, value: any) => {
         this.setState({

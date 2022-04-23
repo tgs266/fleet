@@ -2,7 +2,7 @@
 /* eslint-disable react/no-unused-class-component-methods */
 /* eslint-disable react/no-unstable-nested-components */
 import { Alignment, Button, MenuItem } from '@blueprintjs/core';
-import { Select } from '@blueprintjs/select';
+import { IItemRendererProps, Select } from '@blueprintjs/select';
 import React from 'react';
 import Text from '../Text/Text';
 import TitledCard from '../TitledCard';
@@ -49,6 +49,22 @@ export default class FleetControls extends React.Component<
         if (!this.state.manager) {
             return null;
         }
+
+        const innerItemRenderer = (item: string, itemProps: IItemRendererProps) => {
+            if (!itemProps.modifiers.matchesPredicate) {
+                return null;
+            }
+            return (
+                <MenuItem
+                    active={itemProps.modifiers.active}
+                    disabled={itemProps.modifiers.disabled}
+                    key={item}
+                    onClick={itemProps.handleClick}
+                    text={item}
+                />
+            );
+        };
+
         return (
             <div style={{ position: 'relative' }}>
                 <TitledCard
@@ -89,20 +105,7 @@ export default class FleetControls extends React.Component<
                                     fill
                                     items={['deployment', 'pod', 'container']}
                                     filterable={false}
-                                    itemRenderer={(item, itemProps) => {
-                                        if (!itemProps.modifiers.matchesPredicate) {
-                                            return null;
-                                        }
-                                        return (
-                                            <MenuItem
-                                                active={itemProps.modifiers.active}
-                                                disabled={itemProps.modifiers.disabled}
-                                                key={item}
-                                                onClick={itemProps.handleClick}
-                                                text={item}
-                                            />
-                                        );
-                                    }}
+                                    itemRenderer={innerItemRenderer}
                                     onItemSelect={(item) => {
                                         this.setState({ dim0: item });
                                     }}
@@ -124,20 +127,7 @@ export default class FleetControls extends React.Component<
                                     items={['pod', 'container']}
                                     fill
                                     filterable={false}
-                                    itemRenderer={(item, itemProps) => {
-                                        if (!itemProps.modifiers.matchesPredicate) {
-                                            return null;
-                                        }
-                                        return (
-                                            <MenuItem
-                                                active={itemProps.modifiers.active}
-                                                disabled={itemProps.modifiers.disabled}
-                                                key={item}
-                                                onClick={itemProps.handleClick}
-                                                text={item}
-                                            />
-                                        );
-                                    }}
+                                    itemRenderer={innerItemRenderer}
                                     onItemSelect={(item) => {
                                         this.setState({ dim1: item });
                                     }}

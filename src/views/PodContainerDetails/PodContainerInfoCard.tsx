@@ -11,7 +11,7 @@ import { Container } from '../../models/container.model';
 
 export default function PodContainerInfoCard(props: { container: Container }) {
     const { container } = props;
-    let color = Colors.GREEN4;
+    let color;
     switch (container.state) {
         case 'Terminated':
             color = Colors.RED4;

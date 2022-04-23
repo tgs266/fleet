@@ -3,7 +3,7 @@ import { Colors } from '@blueprintjs/core';
 import { PodMeta } from '../models/pod.model';
 
 export const getStatusColor = (pod: PodMeta) => {
-    let color = Colors.GREEN4;
+    let color;
     switch (pod.status.genericStatus) {
         case 'Pending':
             color = Colors.GOLD5;

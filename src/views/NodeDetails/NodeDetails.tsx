@@ -1,5 +1,6 @@
 /* eslint-disable react/static-property-placement */
 import * as React from 'react';
+import { AxiosResponse } from 'axios';
 import { Card, Intent, Tag } from '@blueprintjs/core';
 import { IWithRouterProps, withRouter } from '../../utils/withRouter';
 import K8 from '../../services/k8.service';
@@ -72,12 +73,7 @@ class NodeDetails extends React.Component<IWithRouterProps, INodeDetailsState> {
                                 this.getPodOffset(),
                                 this.state.pagination.pageSize
                             ),
-                        (r) => {
-                            this.setState({
-                                node: r.data,
-                                pagination: { ...this.state.pagination, total: r.data.pods.total },
-                            });
-                        },
+                        this.setFromResponse,
                         this.props.params.nodeName
                     ),
                 });
@@ -97,6 +93,13 @@ class NodeDetails extends React.Component<IWithRouterProps, INodeDetailsState> {
         return calculatedOffset;
     };
 
+    setFromResponse = (r: AxiosResponse<Node>) => {
+        this.setState({
+            node: r.data,
+            pagination: { ...this.state.pagination, total: r.data.pods.total },
+        });
+    };
+
     pull = () => {
         K8.nodes
             .getNode(
@@ -105,12 +108,7 @@ class NodeDetails extends React.Component<IWithRouterProps, INodeDetailsState> {
                 this.getPodOffset(),
                 this.state.pagination.pageSize
             )
-            .then((r) => {
-                this.setState({
-                    node: r.data,
-                    pagination: { ...this.state.pagination, total: r.data.pods.total },
-                });
-            });
+            .then(this.setFromResponse);
     };
 
     setSort = (sort: TableSort) => {
