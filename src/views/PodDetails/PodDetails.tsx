@@ -23,7 +23,7 @@ import PodResourceInformation from './PodResourceInformation';
 import ConditionTable from '../../components/ConditionTable';
 import { buildLinkToNode } from '../../utils/routing';
 import { JSONObject } from '../../models/json.model';
-import TextEditDialog from '../../components/Dialogs/EditDialog';
+import TextEditDialog from '../../components/Dialogs/TextEditDialog';
 import { FleetError } from '../../models/base';
 
 interface IPodDetailsState {

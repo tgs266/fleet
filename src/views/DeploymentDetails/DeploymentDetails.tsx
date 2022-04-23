@@ -16,7 +16,7 @@ import DeploymentServiceContainer from './DeploymentServiceContainer';
 import DeploymentScaleDialog from './DeploymentScaleDialog';
 import PodContainer from '../../components/PodContainer';
 import ConditionTable from '../../components/ConditionTable';
-import TextEditDialog from '../../components/Dialogs/EditDialog';
+import TextEditDialog from '../../components/Dialogs/TextEditDialog';
 import { FleetError } from '../../models/base';
 import { JSONObject } from '../../models/json.model';
 

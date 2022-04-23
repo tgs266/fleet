@@ -7,9 +7,13 @@ import { Point } from 'pixi.js-legacy';
 import ReactDOM from 'react-dom';
 import { BOX_MARGIN, BOX_SIZE, FleetSprite } from '../helper';
 import FleetManager from '../FleetManager';
-import FleetPopover from '../Popover';
+import FleetPopover from '../FleetPopover';
 
-export default function click(manager: FleetManager, center: { x: number; y: number }, worldPoint?: Point) {
+export default function click(
+    manager: FleetManager,
+    center: { x: number; y: number },
+    worldPoint?: Point
+) {
     const point = new Point();
     manager.app.renderer.plugins.interaction.mapPositionToPoint(point, center.x, center.y);
 
@@ -18,7 +22,7 @@ export default function click(manager: FleetManager, center: { x: number; y: num
     let group = null;
 
     for (const m of Object.keys(manager.groupRegions)) {
-        console.log(manager.groupRegions[m].x.start, worldPoint.x,  manager.groupRegions[m].x.end)
+        console.log(manager.groupRegions[m].x.start, worldPoint.x, manager.groupRegions[m].x.end);
         if (
             manager.groupRegions[m].x.start < worldPoint.x &&
             worldPoint.x < manager.groupRegions[m].x.end

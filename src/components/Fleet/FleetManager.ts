@@ -20,7 +20,7 @@ import FleetGroup from './FleetGroup';
 import { BOX_MARGIN, BOX_SIZE, CONTAINER_MARGIN, FleetSprite } from './helper';
 import { FleetChild, FleetObject } from './model';
 import click from './plugins/click';
-import DragPlugin from './plugins/drag';
+import DragPlugin from './plugins/DragPlugin';
 import hover from './plugins/hover';
 import zoom, { modifyZoom } from './plugins/zoom';
 
