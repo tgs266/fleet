@@ -3,6 +3,7 @@ package pod
 import (
 	"os"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/tgs266/fleet/lib/kubernetes"
@@ -343,6 +344,73 @@ func TestGet(t *testing.T) {
 				return []runtime.Object{mock}
 			}(),
 			genericStatus:   "Running",
+			targetName:      "pod1",
+			targetNamespace: "namespace1",
+			expectedCount:   3,
+		},
+		{
+			name: "get_pod_running_no_ready_cond",
+			pods: func() []runtime.Object {
+				mock := mock.GeneratePod(mock.PodMock{
+					Name:           "pod1",
+					Namespace:      "namespace1",
+					ContainerCount: 3,
+					AppLabel:       "asdf",
+				})
+				mock.Status.InitContainerStatuses = []corev1.ContainerStatus{}
+				mock.Status.ContainerStatuses = []corev1.ContainerStatus{
+					{
+						Ready: true,
+						Name:  "asdf",
+						State: corev1.ContainerState{
+							Running: &corev1.ContainerStateRunning{},
+						},
+					},
+					{
+						Name: "asdf",
+						State: corev1.ContainerState{
+							Terminated: &corev1.ContainerStateTerminated{
+								Reason:   "Completed",
+								ExitCode: 0,
+							},
+						},
+					},
+				}
+				return []runtime.Object{mock}
+			}(),
+			genericStatus:   "Running",
+			targetName:      "pod1",
+			targetNamespace: "namespace1",
+			expectedCount:   3,
+		},
+		{
+			name: "get_pod_running_node_lost",
+			pods: func() []runtime.Object {
+				mock := mock.GeneratePod(mock.PodMock{
+					Name:           "pod1",
+					Namespace:      "namespace1",
+					ContainerCount: 3,
+					AppLabel:       "asdf",
+				})
+				mock.Status.InitContainerStatuses = []corev1.ContainerStatus{}
+				mock.Status.ContainerStatuses = []corev1.ContainerStatus{
+					{
+						Name: "asdf",
+						State: corev1.ContainerState{
+							Terminated: &corev1.ContainerStateTerminated{
+								Reason:   "",
+								ExitCode: 0,
+							},
+						},
+					},
+				}
+				mock.Status.Reason = "NodeLost"
+				mock.DeletionTimestamp = &metav1.Time{
+					Time: time.Now(),
+				}
+				return []runtime.Object{mock}
+			}(),
+			genericStatus:   "Unknown",
 			targetName:      "pod1",
 			targetNamespace: "namespace1",
 			expectedCount:   3,

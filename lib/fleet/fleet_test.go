@@ -42,6 +42,23 @@ func TestBuildFleet2(t *testing.T) {
 	assert.Len(t, fleet, 3)
 }
 
+func TestBuildFleet3(t *testing.T) {
+	client := kubernetes.GetTestClient()
+	req := &FleetRequest{
+		Dimensions: []FleetRequestDimension{
+			{
+				Dimension: DeploymentDimName,
+			},
+			{
+				Dimension: ContainerDimName,
+			},
+		},
+	}
+	fleet, err := BuildFleet(client, req)
+	assert.Nil(t, err)
+	assert.Len(t, fleet, 3)
+}
+
 func TestCleanFleet(t *testing.T) {
 	client := kubernetes.GetTestClient()
 	req := &FleetRequest{
