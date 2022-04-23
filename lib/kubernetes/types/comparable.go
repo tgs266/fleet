@@ -28,9 +28,9 @@ func getComparable(v interface{}) Comparable {
 	case "int64":
 		return ComparableInt64(v.(int64))
 	case "int32":
-		return ComparableInt64(v.(int64))
+		return ComparableInt64(int64(v.(int32)))
 	case "int":
-		return ComparableInt64(v.(int64))
+		return ComparableInt64(int64(v.(int)))
 	}
 
 	panic(errors.NewComparableTypeNotSupported(t.Name()))

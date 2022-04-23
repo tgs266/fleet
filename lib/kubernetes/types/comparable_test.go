@@ -74,10 +74,10 @@ func TestComparable2(t *testing.T) {
 	}{
 		{
 			name:     "test1",
-			v1:       getComparable(int64(32)),
-			v2:       getComparable(int32(32)),
+			v1:       getComparable(int32(32)),
+			v2:       getComparable(int64(32)),
 			operator: EqualOperator,
-			expected: true,
+			expected: false,
 		},
 		{
 			name:     "test2",
