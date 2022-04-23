@@ -3,7 +3,6 @@
 #### Checklist
 
 - [ ] Includes tests
-- [ ] Update documentation
 
 #### Changes proposed in this pull request:
 
