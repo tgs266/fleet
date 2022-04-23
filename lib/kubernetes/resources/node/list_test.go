@@ -18,22 +18,20 @@ func TestListMetas(t *testing.T) {
 			Name:           "asdf1",
 			Namespace:      "asdf",
 			AppLabel:       "asdf1",
-			ContainerCount: 2,
+			ContainerCount: 3,
 		}),
 		mock.GeneratePod(mock.PodMock{
 			Name:           "asdf2",
 			Namespace:      "asdf",
 			AppLabel:       "asdf2",
-			ContainerCount: 4,
+			ContainerCount: 3,
 		}),
 	}
 
-	pods[0].Spec = corev1.PodSpec{
-		NodeName: "asdf",
-	}
-	pods[1].Spec = corev1.PodSpec{
-		NodeName: "asdf",
-	}
+	pods[0].Spec.NodeName = "asdf"
+	pods[0].Status.Phase = corev1.PodRunning
+	pods[1].Spec.NodeName = "asdf"
+	pods[1].Status.Phase = corev1.PodRunning
 
 	testCases := []struct {
 		name            string

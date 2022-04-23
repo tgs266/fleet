@@ -38,7 +38,6 @@ func MockContainers(count int) []corev1.Container {
 }
 
 func GeneratePod(podMock PodMock) *corev1.Pod {
-	conts := MockContainers(podMock.ContainerCount)
 	return &corev1.Pod{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      podMock.Name,
@@ -90,8 +89,8 @@ func GeneratePod(podMock PodMock) *corev1.Pod {
 			},
 		},
 		Spec: corev1.PodSpec{
-			Containers:     conts,
-			InitContainers: conts,
+			Containers:     MockContainers(podMock.ContainerCount),
+			InitContainers: MockContainers(podMock.ContainerCount),
 		},
 	}
 }
