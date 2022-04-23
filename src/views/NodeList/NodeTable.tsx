@@ -48,17 +48,18 @@ class NodeTable extends React.Component<unknown, INodeTableState> {
                             </Tag>
                         </TableCell>
                         <TableCell>
-                            Memory Requests
+                            Memory Requests{' '}
                             <Tag minimal round>
                                 GB
                             </Tag>
                         </TableCell>
                         <TableCell>
-                            Memory Limit
+                            Memory Limit{' '}
                             <Tag minimal round>
                                 GB
                             </Tag>
                         </TableCell>
+                        <TableCell>Pods</TableCell>
                     </TableHeader>
                     <tbody>
                         {this.state.nodes.map((node) => (
@@ -113,6 +114,14 @@ class NodeTable extends React.Component<unknown, INodeTableState> {
                                     )}{' '}
                                     <Tag minimal round>
                                         {(node.nodeResources.cpuRequestsFraction * 100).toFixed(2)}%
+                                    </Tag>
+                                </TableCell>
+                                <TableCell>
+                                    {node.nodeResources.allocatedPods} /{' '}
+                                    {node.nodeResources.podCapacity}{' '}
+                                    <Tag minimal round>
+                                        {(node.nodeResources.allocatedPodFraction * 100).toFixed(2)}
+                                        %
                                     </Tag>
                                 </TableCell>
                             </TableRow>

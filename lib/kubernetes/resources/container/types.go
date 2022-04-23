@@ -3,6 +3,7 @@ package container
 import (
 	"strings"
 
+	"github.com/tgs266/fleet/lib/kubernetes/resources"
 	"github.com/tgs266/fleet/lib/kubernetes/resources/image"
 
 	v1 "k8s.io/api/core/v1"
@@ -35,12 +36,12 @@ type ContainerSpec struct {
 }
 
 type Container struct {
-	Name            string      `json:"name"`
-	Image           image.Image `json:"image"`
-	State           string      `json:"state"`
-	Ports           []*Port     `json:"ports,omitempty"`
-	EnvVars         []*Env      `json:"envVars,omitempty"`
-	ImagePullPolicy string      `json:"imagePullPolicy"`
+	Name            string                  `json:"name"`
+	Image           image.Image             `json:"image"`
+	State           resources.GenericStatus `json:"state"`
+	Ports           []*Port                 `json:"ports,omitempty"`
+	EnvVars         []*Env                  `json:"envVars,omitempty"`
+	ImagePullPolicy string                  `json:"imagePullPolicy"`
 
 	CPURequests int64 `json:"cpuRequests"`
 	MemRequests int64 `json:"memRequests"`
@@ -50,15 +51,15 @@ type Container struct {
 	MemUsage    int64 `json:"memUsage,omitempty"`
 }
 
-func GetStatus(containerState v1.ContainerState) string {
+func GetStatus(containerState v1.ContainerState) resources.GenericStatus {
 	if containerState.Terminated != nil {
-		return "Terminated"
+		return resources.TERMINATED_STATUS
 	} else if containerState.Waiting != nil {
-		return "Waiting"
+		return resources.WAITING_STATUS
 	} else if containerState.Running != nil {
-		return "Running"
+		return resources.RUNNING_STATUS
 	} else {
-		return "Unknown"
+		return resources.UNKNOWN_STATUS
 	}
 }
 

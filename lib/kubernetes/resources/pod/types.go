@@ -4,16 +4,12 @@ import (
 	"fmt"
 
 	"github.com/tgs266/fleet/lib/kubernetes/common"
+	"github.com/tgs266/fleet/lib/kubernetes/resources"
 	"github.com/tgs266/fleet/lib/kubernetes/resources/condition"
 	"github.com/tgs266/fleet/lib/kubernetes/resources/container"
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/metrics/pkg/apis/metrics/v1beta1"
 )
-
-type PodStatus struct {
-	GenericStatus string `json:"genericStatus"`
-	Reason        string `json:"reason"`
-}
 
 type PodResources struct {
 	CPURequests    int64 `json:"cpuRequests"`
@@ -32,15 +28,15 @@ type PodResources struct {
 }
 
 type PodMeta struct {
-	UID         string            `json:"uid"`
-	Name        string            `json:"name"`
-	Namespace   string            `json:"namespace"`
-	CreatedAt   uint              `json:"createdAt"`
-	Status      PodStatus         `json:"status"`
-	Restarts    int32             `json:"restarts"`
-	NodeName    string            `json:"nodeName"`
-	Labels      map[string]string `json:"labels"`
-	Annotations map[string]string `json:"annotations"`
+	UID         string                   `json:"uid"`
+	Name        string                   `json:"name"`
+	Namespace   string                   `json:"namespace"`
+	CreatedAt   uint                     `json:"createdAt"`
+	Status      resources.ResourceStatus `json:"status"`
+	Restarts    int32                    `json:"restarts"`
+	NodeName    string                   `json:"nodeName"`
+	Labels      map[string]string        `json:"labels"`
+	Annotations map[string]string        `json:"annotations"`
 }
 
 type Pod struct {
@@ -143,14 +139,14 @@ func hasPodReadyCondition(conditions []v1.PodCondition) bool {
 	return false
 }
 
-func GetPodStatus(pod *v1.Pod) PodStatus {
+func GetPodStatus(pod *v1.Pod) resources.ResourceStatus {
 	readyContainers := 0
 
 	reason := string(pod.Status.Phase)
-	genericStatus := ""
+	genericStatus := resources.UNKNOWN_STATUS
 	if pod.Status.Reason != "" {
 		reason = pod.Status.Reason
-		genericStatus = "Pending"
+		genericStatus = resources.PENDING_STATUS
 	}
 
 	initializing := false
@@ -160,7 +156,7 @@ func GetPodStatus(pod *v1.Pod) PodStatus {
 		case container.State.Terminated != nil && container.State.Terminated.ExitCode == 0:
 			continue
 		case container.State.Terminated != nil:
-			genericStatus = "Terminated"
+			genericStatus = resources.TERMINATED_STATUS
 			// initialization is failed
 			if len(container.State.Terminated.Reason) == 0 {
 				if container.State.Terminated.Signal != 0 {
@@ -173,11 +169,11 @@ func GetPodStatus(pod *v1.Pod) PodStatus {
 			}
 			initializing = true
 		case container.State.Waiting != nil && len(container.State.Waiting.Reason) > 0 && container.State.Waiting.Reason != "PodInitializing":
-			genericStatus = "Pending"
+			genericStatus = resources.PENDING_STATUS
 			reason = "Init:" + container.State.Waiting.Reason
 			initializing = true
 		default:
-			genericStatus = "Pending"
+			genericStatus = resources.PENDING_STATUS
 			reason = fmt.Sprintf("Init:%d/%d", i, len(pod.Spec.InitContainers))
 			initializing = true
 		}
@@ -189,20 +185,20 @@ func GetPodStatus(pod *v1.Pod) PodStatus {
 			container := pod.Status.ContainerStatuses[i]
 
 			if container.State.Waiting != nil && container.State.Waiting.Reason != "" {
-				genericStatus = "Pending"
+				genericStatus = resources.PENDING_STATUS
 				reason = container.State.Waiting.Reason
 			} else if container.State.Terminated != nil && container.State.Terminated.Reason != "" {
-				genericStatus = "Terminated"
+				genericStatus = resources.TERMINATED_STATUS
 				reason = container.State.Terminated.Reason
 			} else if container.State.Terminated != nil && container.State.Terminated.Reason == "" {
-				genericStatus = "Terminated"
+				genericStatus = resources.TERMINATED_STATUS
 				if container.State.Terminated.Signal != 0 {
 					reason = fmt.Sprintf("Signal:%d", container.State.Terminated.Signal)
 				} else {
 					reason = fmt.Sprintf("ExitCode:%d", container.State.Terminated.ExitCode)
 				}
 			} else if container.Ready && container.State.Running != nil {
-				genericStatus = "Running"
+				genericStatus = resources.RUNNING_STATUS
 				hasRunning = true
 				readyContainers++
 			}
@@ -211,23 +207,23 @@ func GetPodStatus(pod *v1.Pod) PodStatus {
 		// change pod status back to "Running" if there is at least one container still reporting as "Running" status
 		if reason == "Completed" && hasRunning {
 			if hasPodReadyCondition(pod.Status.Conditions) {
-				genericStatus = "Running"
+				genericStatus = resources.RUNNING_STATUS
 				reason = "Running"
 			} else {
-				genericStatus = "Running"
+				genericStatus = resources.RUNNING_STATUS
 				reason = "NotReady"
 			}
 		}
 	}
 
 	if pod.DeletionTimestamp != nil && pod.Status.Reason == "NodeLost" {
-		genericStatus = "Unknown"
+		genericStatus = resources.UNKNOWN_STATUS
 		reason = "Unknown"
 	} else if pod.DeletionTimestamp != nil {
-		genericStatus = "Waiting"
+		genericStatus = resources.PENDING_STATUS
 		reason = "Terminating"
 	}
-	return PodStatus{
+	return resources.ResourceStatus{
 		GenericStatus: genericStatus,
 		Reason:        reason,
 	}

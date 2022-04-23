@@ -6,7 +6,8 @@ import { Tooltip2 } from '@blueprintjs/popover2';
 export interface NavButton {
     target: string;
     icon: IconName;
-    name: string;
+    id: string;
+    name?: string;
     activeSelector?: (arg: string) => boolean;
 }
 
@@ -24,7 +25,7 @@ export default function SideNavButton(props: NavButton) {
     const inner = (
         <div
             className={`sidebar-icon no-outline ${active ? 'sidebar-active' : ''}`}
-            id={props.name}
+            id={props.id}
             onClick={() => {
                 navigate(props.target);
             }}

@@ -5,6 +5,7 @@ import (
 
 	"github.com/tgs266/fleet/lib/errors"
 	"github.com/tgs266/fleet/lib/kubernetes"
+	"github.com/tgs266/fleet/lib/kubernetes/resources"
 	v1 "k8s.io/api/apps/v1"
 	metaV1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -55,19 +56,19 @@ func getDeploymentStatus(ready, total int) FleetStatus {
 	if ready == total {
 		return FleetStatus{
 			Color:  GREEN_RGB,
-			Value:  "Running",
+			Value:  string(resources.RUNNING_STATUS),
 			Reason: "",
 		}
 	} else if ready == 0 {
 		return FleetStatus{
 			Color:  RED_RGB,
-			Value:  "Failed",
+			Value:  string(resources.TERMINATED_STATUS),
 			Reason: "No running pods",
 		}
 	} else {
 		return FleetStatus{
 			Color:  YELLOW_RGB,
-			Value:  "Waiting",
+			Value:  string(resources.WAITING_STATUS),
 			Reason: fmt.Sprintf("%d/%d pods running", ready, total),
 		}
 	}

@@ -3,6 +3,7 @@ import { TableSort } from '../../components/SortableTableHeaderCell';
 import { PaginationResponse } from '../../models/base';
 import { JSONObject } from '../../models/json.model';
 import { Pod, PodMeta } from '../../models/pod.model';
+import getSortBy from '../../utils/sort';
 import api from '../axios.service';
 
 export default class Pods {
@@ -18,12 +19,8 @@ export default class Pods {
         offset?: number,
         pageSize?: number
     ): Promise<AxiosResponse<PaginationResponse<PodMeta>>> {
-        let sortBy = '';
-        if (sort) {
-            sortBy = `${sort.sortableId},${sort.ascending ? 'a' : 'd'}`;
-        }
         return api.get(`${Pods.base}/${namespace || '_all_'}`, {
-            params: { sortBy, offset, pageSize },
+            params: { sortBy: getSortBy(sort), offset, pageSize },
         });
     }
 

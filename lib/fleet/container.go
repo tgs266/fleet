@@ -1,6 +1,7 @@
 package fleet
 
 import (
+	"github.com/tgs266/fleet/lib/kubernetes/resources"
 	"github.com/tgs266/fleet/lib/kubernetes/resources/container"
 	v1 "k8s.io/api/core/v1"
 )
@@ -26,28 +27,28 @@ func buildContainerFleetObject(pod v1.Pod, container v1.Container, state v1.Cont
 func getContainerStatus(state v1.ContainerState) FleetStatus {
 	cState := container.GetStatus(state)
 	switch cState {
-	case "Running":
+	case resources.RUNNING_STATUS:
 		return FleetStatus{
 			Color:  GREEN_RGB,
-			Value:  "Running",
+			Value:  string(cState),
 			Reason: "",
 		}
-	case "Waiting":
+	case resources.WAITING_STATUS:
 		return FleetStatus{
 			Color:  YELLOW_RGB,
-			Value:  "Waiting",
+			Value:  string(cState),
 			Reason: "",
 		}
-	case "Terminated":
+	case resources.TERMINATED_STATUS:
 		return FleetStatus{
 			Color:  RED_RGB,
-			Value:  "Terminated",
+			Value:  string(cState),
 			Reason: "",
 		}
 	}
 	return FleetStatus{
 		Color:  RED_RGB,
-		Value:  "Terminated",
+		Value:  string(resources.TERMINATED_STATUS),
 		Reason: "",
 	}
 }

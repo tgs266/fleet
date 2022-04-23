@@ -6,6 +6,7 @@ import { IBreadcrumb, NavContext } from '../../layouts/Navigation';
 import { Pagination } from '../../models/component.model';
 import { PodMeta } from '../../models/pod.model';
 import K8 from '../../services/k8.service';
+import getOffset from '../../utils/table';
 
 interface IPodListState extends Pagination {
     pods: PodMeta[];
@@ -54,20 +55,7 @@ class PodListTable extends React.Component<IPodTableProps, IPodListState> {
                 this.setState({
                     pods: response.data.items,
                     total: response.data.total,
-                    pollId: K8.poll(
-                        5000,
-                        () =>
-                            K8.pods.getPods(
-                                this.props.namespace,
-                                this.state.sort,
-                                this.getOffset(),
-                                this.state.pageSize
-                            ),
-                        (resp) => {
-                            this.setState({ pods: resp.data.items, total: resp.data.total });
-                        },
-                        ''
-                    ),
+                    pollId: K8.pollFunction(5000, () => this.pull(null, null)),
                 });
             });
     }
@@ -76,31 +64,32 @@ class PodListTable extends React.Component<IPodTableProps, IPodListState> {
         clearInterval(this.state.pollId);
     }
 
-    getOffset = () => {
-        const calculatedOffset = this.state.page * this.state.pageSize;
-        if (calculatedOffset > this.state.total) {
-            const diff = calculatedOffset - this.state.total;
-            return this.state.total - diff;
-        }
-        return calculatedOffset;
-    };
-
-    sortChange = (sort: TableSort) => {
+    pull = (sort?: TableSort, page?: number) => {
+        const usingSort = sort || this.state.sort;
+        const usingPage = page !== null ? page : this.state.page;
         K8.pods
-            .getPods(this.props.namespace, sort, this.getOffset(), this.state.pageSize)
+            .getPods(
+                this.props.namespace,
+                usingSort,
+                getOffset(usingPage, this.state.pageSize, this.state.total),
+                this.state.pageSize
+            )
             .then((response) => {
-                this.setState({ pods: response.data.items, sort, total: response.data.total });
+                this.setState({
+                    pods: response.data.items,
+                    sort: usingSort,
+                    page: usingPage,
+                    total: response.data.total,
+                });
             });
     };
 
+    sortChange = (sort: TableSort) => {
+        this.pull(sort, null);
+    };
+
     setPage = (page: number) => {
-        this.setState({ page }, () =>
-            K8.pods
-                .getPods('', this.state.sort, this.getOffset(), this.state.pageSize)
-                .then((response) => {
-                    this.setState({ pods: response.data.items, total: response.data.total });
-                })
-        );
+        this.pull(null, page);
     };
 
     render() {
