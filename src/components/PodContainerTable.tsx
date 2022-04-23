@@ -13,17 +13,18 @@ import { Pod } from '../models/pod.model';
 import { buildLinkToContainer } from '../utils/routing';
 import { BytesTo } from '../utils/conversions';
 import ContainerSpecContainer from './ContainerSpec/ContainerSpecContainer';
+import CONSTANTS from '../utils/constants';
 
 export default function PodContainerTable(props: { pod: Pod; accordion?: boolean }) {
     const getColor = (cont: Container) => {
         switch (cont.state) {
-            case 'Running':
+            case CONSTANTS.status.RUNNING_STATUS:
                 return Colors.GREEN4;
-            case 'Waiting':
+            case CONSTANTS.status.WAITING_STATUS:
                 return Colors.GOLD5;
-            case 'Failed':
+            case CONSTANTS.status.TERMINATED_STATUS:
                 return Colors.RED4;
-            case 'Unknown':
+            case CONSTANTS.status.UNKNOWN_STATUS:
                 return Colors.GRAY4;
             default:
                 return Colors.RED4;

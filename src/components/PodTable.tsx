@@ -1,18 +1,16 @@
+/* eslint-disable react/no-unstable-nested-components */
 import { Alignment, Icon } from '@blueprintjs/core';
 import { Classes, Tooltip2 } from '@blueprintjs/popover2';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { PodMeta } from '../models/pod.model';
 import { getStatusColor } from '../utils/pods';
-import { buildLinkToPod } from '../utils/routing';
+import { buildLinkToNamespace, buildLinkToNode, buildLinkToPod } from '../utils/routing';
 import { createdAtToOrigination } from '../utils/time';
 import AgeText from './AgeText';
-import SortableTableHeaderCell, { TableSort } from './SortableTableHeaderCell';
-import Table, { PaginationProps } from './Table';
-import TableBody from './TableBody';
-import TableCell from './TableCell';
-import TableHeader from './TableHeader';
-import TableRow from './TableRow';
+import ResourceTable from './ResourceTable';
+import { TableSort } from './SortableTableHeaderCell';
+import { PaginationProps } from './Table';
 
 export default function PodTable(props: {
     pods: PodMeta[];
@@ -21,73 +19,67 @@ export default function PodTable(props: {
     paginationProps?: PaginationProps;
 }) {
     return (
-        <Table>
-            <TableHeader>
-                {!props.sort ? (
-                    <>
-                        <TableCell />
-                        <TableCell>Name</TableCell>
-                        <TableCell>Namespace</TableCell>
-                        <TableCell>Node Name</TableCell>
-                        <TableCell>Age</TableCell>
-                        <TableCell>Restarts</TableCell>
-                    </>
-                ) : (
-                    <>
-                        <TableCell />
-                        <SortableTableHeaderCell
-                            sort={props.sort}
-                            onSortChange={props.onSortChange}
-                            sortableId="name"
+        <ResourceTable<PodMeta>
+            data={props.pods}
+            sort={props.sort}
+            keyPath="uid"
+            onSortChange={props.onSortChange}
+            paginationProps={props.paginationProps}
+            columns={[
+                {
+                    key: 'icon',
+                    alignment: Alignment.CENTER,
+                    columnName: '',
+                    columnFunction: (row: PodMeta) => {
+                        const statusColor = getStatusColor(row);
+                        const statusHtml = (
+                            <Icon color={statusColor} icon="full-circle" size={14} />
+                        );
+                        return <Tooltip2 content={row.status.reason}>{statusHtml}</Tooltip2>;
+                    },
+                },
+                {
+                    key: 'name',
+                    columnName: 'Name',
+                    sortableId: 'name',
+                    columnFunction: (row: PodMeta) => (
+                        <Link to={buildLinkToPod(row.namespace, row.name)}>{row.name}</Link>
+                    ),
+                },
+                {
+                    key: 'namespace',
+                    columnName: 'Namespace',
+                    sortableId: 'namespace',
+                    columnFunction: (row: PodMeta) => (
+                        <Link to={buildLinkToNamespace(row.namespace)}>{row.namespace}</Link>
+                    ),
+                },
+                {
+                    key: 'nodeName',
+                    columnName: 'Node Name',
+                    columnFunction: (row: PodMeta) => (
+                        <Link to={buildLinkToNode(row.nodeName)}>{row.nodeName}</Link>
+                    ),
+                },
+                {
+                    key: 'age',
+                    columnName: 'Age',
+                    sortableId: 'created_at',
+                    columnFunction: (row: PodMeta) => (
+                        <Tooltip2
+                            className={Classes.TOOLTIP2_INDICATOR}
+                            content={createdAtToOrigination(row.createdAt)}
                         >
-                            Name
-                        </SortableTableHeaderCell>
-                        <SortableTableHeaderCell
-                            sort={props.sort}
-                            onSortChange={props.onSortChange}
-                            sortableId="namespace"
-                        >
-                            Namespace
-                        </SortableTableHeaderCell>
-                        <TableCell>Node Name</TableCell>
-                        <SortableTableHeaderCell
-                            sort={props.sort}
-                            onSortChange={props.onSortChange}
-                            sortableId="createdAt"
-                        >
-                            Age
-                        </SortableTableHeaderCell>
-                        <TableCell>Restarts</TableCell>
-                    </>
-                )}
-            </TableHeader>
-            <TableBody paginationProps={props.paginationProps}>
-                {props.pods.map((p) => {
-                    const statusColor = getStatusColor(p);
-                    const statusHtml = <Icon color={statusColor} icon="full-circle" size={14} />;
-                    return (
-                        <TableRow key={p.uid}>
-                            <TableCell alignment={Alignment.CENTER}>
-                                <Tooltip2 content={p.status.reason}>{statusHtml}</Tooltip2>
-                            </TableCell>
-                            <TableCell>
-                                <Link to={buildLinkToPod(p.namespace, p.name)}>{p.name}</Link>
-                            </TableCell>
-                            <TableCell>{p.namespace}</TableCell>
-                            <TableCell>{p.nodeName}</TableCell>
-                            <TableCell>
-                                <Tooltip2
-                                    className={Classes.TOOLTIP2_INDICATOR}
-                                    content={createdAtToOrigination(p.createdAt)}
-                                >
-                                    <AgeText hr value={p.createdAt} />
-                                </Tooltip2>
-                            </TableCell>
-                            <TableCell>{p.restarts}</TableCell>
-                        </TableRow>
-                    );
-                })}
-            </TableBody>
-        </Table>
+                            <AgeText hr value={row.createdAt} />
+                        </Tooltip2>
+                    ),
+                },
+                {
+                    key: 'restarts',
+                    columnName: 'Restarts',
+                    columnFunction: (row: PodMeta) => row.restarts.toString(),
+                },
+            ]}
+        />
     );
 }

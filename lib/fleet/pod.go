@@ -3,6 +3,7 @@ package fleet
 import (
 	"github.com/tgs266/fleet/lib/errors"
 	"github.com/tgs266/fleet/lib/kubernetes"
+	"github.com/tgs266/fleet/lib/kubernetes/resources"
 	"github.com/tgs266/fleet/lib/kubernetes/resources/pod"
 	v1 "k8s.io/api/core/v1"
 )
@@ -53,23 +54,23 @@ func BuildFleetFromPods(K8 *kubernetes.K8Client, deps v1.PodList, dimension *Fle
 func getPodStatus(p v1.Pod) FleetStatus {
 	status := pod.GetPodStatus(&p)
 	switch status.GenericStatus {
-	case "Running":
+	case resources.RUNNING_STATUS:
 		return FleetStatus{
 			Color:  GREEN_RGB,
-			Value:  "Running",
-			Reason: status.Reason,
+			Value:  string(status.GenericStatus),
+			Reason: "",
 		}
-	case "Pending":
+	case resources.PENDING_STATUS:
 		return FleetStatus{
 			Color:  YELLOW_RGB,
-			Value:  "Pending",
-			Reason: status.Reason,
+			Value:  string(status.GenericStatus),
+			Reason: "",
 		}
-	case "Terminated":
+	case resources.TERMINATED_STATUS:
 		return FleetStatus{
 			Color:  RED_RGB,
-			Value:  "Terminated",
-			Reason: status.Reason,
+			Value:  string(status.GenericStatus),
+			Reason: "",
 		}
 	}
 	return FleetStatus{

@@ -40,4 +40,10 @@ export default class K8 {
             });
         }, ms);
     }
+
+    static pollFunction(ms: number, fcn: () => void) {
+        return setInterval(() => {
+            fcn();
+        }, ms);
+    }
 }

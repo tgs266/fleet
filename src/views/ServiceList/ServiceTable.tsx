@@ -1,16 +1,16 @@
+/* eslint-disable react/no-unstable-nested-components */
 import { Card } from '@blueprintjs/core';
 import { Classes, Tooltip2 } from '@blueprintjs/popover2';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
-import SortableTableHeaderCell, { TableSort } from '../../components/SortableTableHeaderCell';
-import Table from '../../components/Table';
-import TableBody from '../../components/TableBody';
-import TableCell from '../../components/TableCell';
-import TableHeader from '../../components/TableHeader';
-import TableRow from '../../components/TableRow';
+import ResourceTable from '../../components/ResourceTable';
+import { TableSort } from '../../components/SortableTableHeaderCell';
+import { IBreadcrumb, NavContext } from '../../layouts/Navigation';
+import { Pagination } from '../../models/component.model';
 import { ServiceMeta } from '../../models/service.model';
 import K8 from '../../services/k8.service';
-import { buildLinkToService } from '../../utils/routing';
+import { buildLinkToNamespace, buildLinkToService } from '../../utils/routing';
+import getOffset from '../../utils/table';
 import { createdAtToHumanReadable, createdAtToOrigination } from '../../utils/time';
 import { IWithRouterProps, withRouter } from '../../utils/withRouter';
 
@@ -18,37 +18,142 @@ interface IServiceTableProps extends IWithRouterProps {
     namespace?: string;
 }
 
-interface IServiceTableState {
+interface IServiceTableState extends Pagination {
     services: ServiceMeta[];
     sort: TableSort;
+    pollId: NodeJS.Timer;
 }
 
-class DeploymentTable extends React.Component<IServiceTableProps, IServiceTableState> {
+class ServiceTable extends React.Component<IServiceTableProps, IServiceTableState> {
+    // eslint-disable-next-line react/static-property-placement
+    static contextType = NavContext;
+
     constructor(props: IServiceTableProps) {
         super(props);
-        this.state = { services: [], sort: { sortableId: 'name', ascending: false } };
+        this.state = {
+            services: [],
+            sort: {
+                sortableId: 'name',
+                ascending: false,
+            },
+            page: 0,
+            pageSize: 10,
+            total: null,
+            pollId: null,
+        };
     }
 
     componentDidMount() {
-        this.pull();
+        const [, setState] = this.context;
+        setState({
+            breadcrumbs: [
+                {
+                    text: 'services',
+                    link: '/services',
+                },
+            ] as IBreadcrumb[],
+            buttons: [],
+            menu: null,
+        });
+        K8.services
+            .getServices(this.props.namespace, this.state.sort, 0, this.state.pageSize)
+            .then((response) => {
+                this.setState({
+                    services: response.data.items,
+                    total: response.data.total,
+                    pollId: K8.pollFunction(5000, () => this.pull(null, null)),
+                });
+            });
     }
 
-    onSortChange = (sort: TableSort) => {
-        this.setState({ sort }, this.pull);
+    componentWillUnmount() {
+        clearInterval(this.state.pollId);
+    }
+
+    pull = (sort?: TableSort, page?: number) => {
+        const usingSort = sort || this.state.sort;
+        const usingPage = page !== null ? page : this.state.page;
+        K8.services
+            .getServices(
+                this.props.namespace,
+                usingSort,
+                getOffset(usingPage, this.state.pageSize, this.state.total),
+                this.state.pageSize
+            )
+            .then((response) => {
+                this.setState({
+                    services: response.data.items,
+                    sort: usingSort,
+                    page: usingPage,
+                    total: response.data.total,
+                });
+            });
     };
 
-    pull = () => {
-        K8.services
-            .getServices(this.props.namespace || '_all_', this.state.sort)
-            .then((response) => {
-                this.setState({ services: response.data.items });
-            });
+    sortChange = (sort: TableSort) => {
+        this.pull(sort, null);
+    };
+
+    setPage = (page: number) => {
+        this.pull(null, page);
     };
 
     render() {
         return (
             <Card style={{ padding: 0, minWidth: '40em' }}>
-                <Table>
+                <ResourceTable<ServiceMeta>
+                    paginationProps={{
+                        page: this.state.page,
+                        pageSize: this.state.pageSize,
+                        total: this.state.total,
+                        onPageChange: this.setPage,
+                    }}
+                    onSortChange={this.sortChange}
+                    sort={this.state.sort}
+                    data={this.state.services}
+                    keyPath="uid"
+                    columns={[
+                        {
+                            key: 'name',
+                            sortableId: 'name',
+                            columnName: 'Name',
+                            columnFunction: (row: ServiceMeta) => (
+                                <Link to={buildLinkToService(row.namespace, row.name)}>
+                                    {row.name}
+                                </Link>
+                            ),
+                        },
+                        {
+                            key: 'namespace',
+                            sortableId: 'namespace',
+                            columnName: 'Namespace',
+                            columnFunction: (row: ServiceMeta) => (
+                                <Link to={buildLinkToNamespace(row.namespace)}>
+                                    {row.namespace}
+                                </Link>
+                            ),
+                        },
+                        {
+                            key: 'age',
+                            sortableId: 'created_at',
+                            columnName: 'Age',
+                            columnFunction: (row: ServiceMeta) => (
+                                <Tooltip2
+                                    className={Classes.TOOLTIP2_INDICATOR}
+                                    content={createdAtToOrigination(row.createdAt)}
+                                >
+                                    {createdAtToHumanReadable(row.createdAt)}
+                                </Tooltip2>
+                            ),
+                        },
+                        {
+                            key: 'type',
+                            columnName: 'Type',
+                            columnFunction: (row: ServiceMeta) => row.type,
+                        },
+                    ]}
+                />
+                {/* <Table>
                     <TableHeader>
                         <SortableTableHeaderCell
                             sort={this.state.sort}
@@ -92,10 +197,10 @@ class DeploymentTable extends React.Component<IServiceTableProps, IServiceTableS
                             </TableRow>
                         ))}
                     </TableBody>
-                </Table>
+                </Table> */}
             </Card>
         );
     }
 }
 
-export default withRouter(DeploymentTable);
+export default withRouter(ServiceTable);

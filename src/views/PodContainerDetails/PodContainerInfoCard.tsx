@@ -8,15 +8,16 @@ import LabeledText from '../../components/LabeledText';
 import PortTag from '../../components/Port/PortTag';
 import Text from '../../components/Text/Text';
 import { Container } from '../../models/container.model';
+import CONSTANTS from '../../utils/constants';
 
 export default function PodContainerInfoCard(props: { container: Container }) {
     const { container } = props;
     let color;
     switch (container.state) {
-        case 'Terminated':
+        case CONSTANTS.status.TERMINATED_STATUS:
             color = Colors.RED4;
             break;
-        case 'Running':
+        case CONSTANTS.status.RUNNING_STATUS:
             color = Colors.GREEN4;
             break;
         default:

@@ -5,6 +5,7 @@ import { PaginationResponse } from '../../models/base';
 import { ContainerSpec } from '../../models/container.model';
 import { CreateDeployment, Deployment, DeploymentMeta } from '../../models/deployment.model';
 import { JSONObject } from '../../models/json.model';
+import getSortBy from '../../utils/sort';
 import api from '../axios.service';
 
 export default class Deployments {
@@ -12,13 +13,13 @@ export default class Deployments {
 
     static getDeployments(
         namespace?: string,
-        sort?: TableSort
+        sort?: TableSort,
+        offset?: number,
+        pageSize?: number
     ): Promise<AxiosResponse<PaginationResponse<DeploymentMeta>>> {
-        let sortBy = '';
-        if (sort) {
-            sortBy = `${sort.sortableId},${sort.ascending ? 'a' : 'd'}`;
-        }
-        return api.get(`${Deployments.base}/${namespace || '_all_'}`, { params: { sortBy } });
+        return api.get(`${Deployments.base}/${namespace || '_all_'}`, {
+            params: { sortBy: getSortBy(sort), offset, pageSize },
+        });
     }
 
     static getDeployment(

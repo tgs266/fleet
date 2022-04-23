@@ -7,6 +7,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/tgs266/fleet/lib/kubernetes"
+	"github.com/tgs266/fleet/lib/kubernetes/resources"
 	"github.com/tgs266/fleet/lib/kubernetes/test/mock"
 	"github.com/tgs266/fleet/lib/kubernetes/types"
 	"github.com/tgs266/fleet/lib/logging"
@@ -240,7 +241,7 @@ func TestGet(t *testing.T) {
 		pods            []runtime.Object
 		targetName      string
 		targetNamespace string
-		genericStatus   string
+		genericStatus   resources.GenericStatus
 		expectedCount   int
 	}{
 		{
@@ -253,7 +254,7 @@ func TestGet(t *testing.T) {
 					AppLabel:       "asdf",
 				}),
 			},
-			genericStatus:   "Pending",
+			genericStatus:   resources.PENDING_STATUS,
 			targetName:      "pod1",
 			targetNamespace: "namespace1",
 			expectedCount:   3,
@@ -274,7 +275,7 @@ func TestGet(t *testing.T) {
 				}
 				return []runtime.Object{mock}
 			}(),
-			genericStatus:   "Terminated",
+			genericStatus:   resources.TERMINATED_STATUS,
 			targetName:      "pod1",
 			targetNamespace: "namespace1",
 			expectedCount:   3,
@@ -302,7 +303,7 @@ func TestGet(t *testing.T) {
 				}
 				return []runtime.Object{mock}
 			}(),
-			genericStatus:   "Terminated",
+			genericStatus:   resources.TERMINATED_STATUS,
 			targetName:      "pod1",
 			targetNamespace: "namespace1",
 			expectedCount:   3,
@@ -343,7 +344,7 @@ func TestGet(t *testing.T) {
 				}
 				return []runtime.Object{mock}
 			}(),
-			genericStatus:   "Running",
+			genericStatus:   resources.RUNNING_STATUS,
 			targetName:      "pod1",
 			targetNamespace: "namespace1",
 			expectedCount:   3,
@@ -378,7 +379,7 @@ func TestGet(t *testing.T) {
 				}
 				return []runtime.Object{mock}
 			}(),
-			genericStatus:   "Running",
+			genericStatus:   resources.RUNNING_STATUS,
 			targetName:      "pod1",
 			targetNamespace: "namespace1",
 			expectedCount:   3,
@@ -410,7 +411,7 @@ func TestGet(t *testing.T) {
 				}
 				return []runtime.Object{mock}
 			}(),
-			genericStatus:   "Unknown",
+			genericStatus:   resources.UNKNOWN_STATUS,
 			targetName:      "pod1",
 			targetNamespace: "namespace1",
 			expectedCount:   3,
