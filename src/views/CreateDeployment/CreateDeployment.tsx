@@ -2,7 +2,7 @@
 import { Button, Intent } from '@blueprintjs/core';
 import _ from 'lodash';
 import * as React from 'react';
-import axios, { AxiosError } from 'axios';
+import { AxiosError } from 'axios';
 import { CreateDeployment as CD } from '../../models/deployment.model';
 import {} from '../../models/container.model';
 import Toaster, { showToastWithActionInterval } from '../../services/toast.service';
@@ -76,7 +76,7 @@ class CreateDeployment extends React.Component<IWithRouterProps, ICreateDeployme
             deployment: {
                 ...this.state.deployment,
                 containerSpecs: this.state.deployment.containerSpecs.filter(
-                    (a, idx2) => idx !== idx2
+                    (_a, idx2) => idx !== idx2
                 ),
             },
         });
@@ -125,6 +125,10 @@ class CreateDeployment extends React.Component<IWithRouterProps, ICreateDeployme
                 idx += 1;
             }
         }
+        const navigate = () =>
+            this.props.navigate(
+                `/deployments/${this.state.deployment.namespace}/${this.state.deployment.name}`
+            );
         K8.deployments
             .createDeployment(this.state.deployment)
             .then(() => {
@@ -133,35 +137,33 @@ class CreateDeployment extends React.Component<IWithRouterProps, ICreateDeployme
                         message: 'App Created. Redirecting in 5s',
                         intent: Intent.SUCCESS,
                         action: {
-                            onClick: () =>
-                                this.props.navigate(
-                                    `/deployments/${this.state.deployment.namespace}/${this.state.deployment.name}`
-                                ),
+                            onClick: navigate,
                             text: 'Go Now',
                         },
                     },
                     5000,
-                    () =>
-                        this.props.navigate(
-                            `/deployments/${this.state.deployment.namespace}/${this.state.deployment.name}`
-                        )
+                    navigate
                 );
             })
             .catch((err: Error | AxiosError) => {
-                if (axios.isAxiosError(err)) {
-                    Toaster.show({ message: err.message, intent: Intent.DANGER });
-                    // Access to config, request, and response
-                } else {
-                    Toaster.show({ message: err.message, intent: Intent.DANGER });
-                    // Just a stock error
-                }
+                Toaster.show({ message: err.message, intent: Intent.DANGER });
             });
     };
 
     render() {
         return (
             <div style={{ margin: '1em', marginBottom: '1em' }}>
-                <TitledCard title="Create Deployment" rightElement={<Button data-testid="save-btn" intent={Intent.PRIMARY} text="Save" onClick={this.submit} />}>
+                <TitledCard
+                    title="Create Deployment"
+                    rightElement={
+                        <Button
+                            data-testid="save-btn"
+                            intent={Intent.PRIMARY}
+                            text="Save"
+                            onClick={this.submit}
+                        />
+                    }
+                >
                     <BasicDetails app={this.state.deployment} onChange={this.onAppChange} />
                 </TitledCard>
                 <div style={{ marginBottom: '1em' }}>
