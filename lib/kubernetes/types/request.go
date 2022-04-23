@@ -98,11 +98,6 @@ func (dr *DataRequest) BuildDataSelector() *DataSelector {
 				Ascending: true,
 				Property:  getProperty(split[0]),
 			})
-		} else if split[1] == "d" {
-			sortBys = append(sortBys, SortBy{
-				Ascending: false,
-				Property:  getProperty(split[0]),
-			})
 		} else {
 			sortBys = append(sortBys, SortBy{
 				Property: getProperty(split[0]),

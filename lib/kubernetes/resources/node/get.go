@@ -38,7 +38,6 @@ func Get(K8 *kubernetes.K8Client, name string, dataSelector *types.DataSelector)
 	podComps := pod.ToComparable(pods)
 	// lets users get system namespace
 	dataSelector.Execute(podComps)
-	dataSelector.ResumeFilters()
 	queriedPods := pod.FromComparable(dataSelector.Items)
 
 	return BuildNode(node, pods, queriedPods, dataSelector), nil

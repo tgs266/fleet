@@ -63,29 +63,6 @@ func (ds *DataSelector) setTotalItemCountFromInternal() *DataSelector {
 	return ds
 }
 
-func (ds *DataSelector) PauseFilters(filters Filters) *DataSelector {
-	pausedFilters := Filters{}
-	keepFilters := Filters{}
-	for _, passedFilter := range filters {
-		for _, filter := range ds.Filters {
-			if passedFilter == filter {
-				pausedFilters = append(pausedFilters, filter)
-			} else {
-				keepFilters = append(keepFilters, filter)
-			}
-		}
-	}
-	ds.Filters = keepFilters
-	ds.PausedFilters = pausedFilters
-	return ds
-}
-
-func (ds *DataSelector) ResumeFilters() *DataSelector {
-	ds.Filters = append(ds.Filters, ds.PausedFilters...)
-	ds.PausedFilters = Filters{}
-	return ds
-}
-
 func (ds *DataSelector) Execute(items []ComparableType) *DataSelector {
 	ds.Items = items
 	ds.filter().setTotalItemCountFromInternal().Sort()

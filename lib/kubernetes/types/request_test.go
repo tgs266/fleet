@@ -25,6 +25,7 @@ func TestBuildDataSelector(t *testing.T) {
 
 	dr := buildDataRequest(offset, pageSize, sortBy, filterBy)
 	ds := dr.BuildDataSelector()
+	ds.AddIgnoreSystemNamespace()
 	assert.Equal(t, offset, ds.Offset)
 	assert.Equal(t, pageSize, ds.PageSize)
 }
