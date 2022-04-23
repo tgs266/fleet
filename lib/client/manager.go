@@ -9,7 +9,6 @@ import (
 	"github.com/tgs266/fleet/lib/kubernetes"
 	"github.com/tgs266/fleet/lib/logging"
 	"github.com/tgs266/fleet/lib/raw"
-	"k8s.io/client-go/kubernetes/fake"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/client-go/util/homedir"
@@ -61,9 +60,7 @@ func (client *ClientManager) initClusterConfig() {
 func (client *ClientManager) getK8Client() (*kubernetes.K8Client, error) {
 
 	if client.TestMode {
-		return &kubernetes.K8Client{
-			K8: fake.NewSimpleClientset(),
-		}, nil
+		return kubernetes.GetTestClient(), nil
 	}
 
 	k8client := new(kubernetes.K8Client)

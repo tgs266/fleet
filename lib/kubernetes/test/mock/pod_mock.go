@@ -9,6 +9,7 @@ import (
 type PodMock struct {
 	Name           string
 	Namespace      string
+	NodeName       string
 	AppLabel       string
 	ContainerCount int
 }
@@ -47,6 +48,7 @@ func GeneratePod(podMock PodMock) *corev1.Pod {
 			},
 		},
 		Status: corev1.PodStatus{
+			Phase: corev1.PodRunning,
 			ContainerStatuses: []corev1.ContainerStatus{
 				{
 					Name: "asdf",
@@ -89,8 +91,9 @@ func GeneratePod(podMock PodMock) *corev1.Pod {
 			},
 		},
 		Spec: corev1.PodSpec{
-			Containers:     MockContainers(podMock.ContainerCount),
-			InitContainers: MockContainers(podMock.ContainerCount),
+			Containers:     MockContainers(3),
+			InitContainers: MockContainers(3),
+			NodeName:       podMock.NodeName,
 		},
 	}
 }

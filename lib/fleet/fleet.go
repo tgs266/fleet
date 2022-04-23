@@ -2,7 +2,6 @@ package fleet
 
 import (
 	"encoding/json"
-	"fmt"
 	"time"
 
 	"github.com/gofiber/websocket/v2"
@@ -40,20 +39,6 @@ func ExtractIdentifiers(fleet []*FleetObject) []string {
 		ret = append(ret, obj.Meta.UID)
 	}
 	return ret
-}
-
-func insert(a []*FleetObject, index int, value *FleetObject) []*FleetObject {
-	if len(a) == index { // nil or empty slice or after last element
-		return append(a, value)
-	}
-	a = append(a[:index+1], a[index:]...) // index < len(a)
-	a[index] = value
-	return a
-}
-
-func prettyPrint(data interface{}) {
-	b, _ := json.MarshalIndent(data, "", "    ")
-	fmt.Println(string(b))
 }
 
 func Run(c *websocket.Conn, K8 *kubernetes.K8Client, timeout int) {
@@ -166,7 +151,7 @@ func BuildFleet(K8 *kubernetes.K8Client, fleetRequest *FleetRequest) ([]*FleetOb
 		if hasSecond {
 			return BuildFleetFromDeployments(K8, *deps, fleetRequest.Dimensions[1])
 		} else {
-
+			return nil, errors.NewBadRequestError("cannot do single yet")
 		}
 	case PodDimName:
 		dc := channels.GetPodListChannel(K8.K8, "", metav1.ListOptions{}, 1)
