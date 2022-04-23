@@ -49,42 +49,7 @@ func main() {
 	logging.INFO("middleware registered")
 
 	logging.INFO("initializing routing")
-	app.Get("/api/v1/pods/:namespace", controllers.GetPodMetaList)
-	app.Get("/api/v1/pods/:namespace/:name", controllers.GetPod)
-	app.Delete("/api/v1/pods/:namespace/:name", controllers.DeletePod)
-	app.Get("/api/v1/pods/:namespace/:podName/containers/:containerName", controllers.GetPodContainer)
-	app.WebsocketGet("/ws/v1/pods/:namespace/:podName/containers/:containerName/logs", controllers.ContainerLogStream)
-	app.WebsocketGet("/ws/v1/pods/:namespace/:name/events", controllers.PodEventStream)
-
-	app.Post("/api/v1/deployments/", controllers.CreateDeployment)
-	app.Get("/api/v1/deployments/:namespace", controllers.GetDeploymentStubList)
-	app.Get("/api/v1/deployments/:namespace/:name", controllers.GetDeployment)
-	app.Delete("/api/v1/deployments/:namespace/:name", controllers.DeleteDeployment)
-	app.Put("/api/v1/deployments/:namespace/:name/scale", controllers.ScaleDeployment)
-	app.Put("/api/v1/deployments/:namespace/:name/restart", controllers.RestartDeployment)
-	app.Put("/api/v1/deployments/:namespace/:name/container-specs/:specName", controllers.UpdateDeploymentContainerSpec)
-	app.WebsocketGet("/ws/v1/deployments/:namespace/:name/events", controllers.DeploymentEventStream)
-
-	app.Get("/api/v1/nodes", controllers.GetNodes)
-	app.Get("/api/v1/nodes/:name", controllers.GetNode)
-
-	app.Get("/api/v1/services/:namespace/", controllers.GetServices)
-	app.Get("/api/v1/services/:namespace/:name", controllers.GetService)
-
-	app.Get("/api/v1/images", controllers.GetAllImages)
-
-	app.Get("/api/v1/system/resources", controllers.GetSystemResources)
-
-	app.Get("/api/v1/namespaces/", controllers.GetNamespaces)
-	app.Get("/api/v1/namespaces/:name", controllers.GetNamespace)
-
-	app.Get("/api/v1/raw/:kind/:namespace/:name", controllers.RawGet)
-	app.Get("/api/v1/raw/:kind/:name", controllers.RawGet)
-
-	app.Put("/api/v1/raw/:kind/:namespace/:name", controllers.RawPut)
-	app.Put("/api/v1/raw/:kind/:name", controllers.RawPut)
-
-	app.Get("/api/v1/filters/properties", controllers.GetFilters)
+	controllers.InitializeRoutes(app)
 
 	logging.INFO("routing initialization completed")
 	logging.INFO("initializing fleet routes")
@@ -95,9 +60,6 @@ func main() {
 
 	if src != nil {
 		logging.INFO("serving frontend")
-		// ex, _ := os.Executable()
-		// exPath := filepath.Dir(ex)
-		// path := filepath.Join(exPath, *src)
 		path := *src
 		logging.INFO(path)
 		app.Static("/", path)

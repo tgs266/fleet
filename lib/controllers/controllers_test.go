@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"testing"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/tgs266/fleet/lib/api"
 	"github.com/tgs266/fleet/lib/client"
@@ -14,4 +16,9 @@ func setupApp() *api.API {
 		DisableStartupMessage: true,
 	})
 	return app
+}
+
+func TestInitializeRotue(t *testing.T) {
+	app := setupApp()
+	InitializeRoutes(app)
 }
