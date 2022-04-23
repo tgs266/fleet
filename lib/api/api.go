@@ -1,6 +1,8 @@
 package api
 
 import (
+	"net/http"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/websocket/v2"
 	"github.com/tgs266/fleet/lib/client"
@@ -27,6 +29,9 @@ func (api *API) RegisterMiddleware(function func(c *fiber.Ctx) error) {
 
 func (api *API) Static(prefix string, root string) {
 	api.app.Static(prefix, root)
+}
+func (api *API) Test(req *http.Request, msTimeout ...int) (resp *http.Response, err error) {
+	return api.app.Test(req, msTimeout...)
 }
 func (api *API) Get(path string, handler func(c *fiber.Ctx, clientManager *client.ClientManager) error) {
 	api.app.Get(path, func(c *fiber.Ctx) error {

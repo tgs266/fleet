@@ -10,7 +10,6 @@ import (
 	"github.com/tgs266/fleet/lib/kubernetes/resources/deployment"
 	"github.com/tgs266/fleet/lib/kubernetes/types"
 	"github.com/tgs266/fleet/lib/shared"
-	v1 "k8s.io/api/apps/v1"
 )
 
 func GetDeploymentStubList(c *fiber.Ctx, client *client.ClientManager) error {
@@ -43,35 +42,6 @@ func GetDeployment(c *fiber.Ctx, client *client.ClientManager) error {
 		return err
 	}
 	return c.Status(fiber.StatusOK).JSON(dep)
-}
-
-func UpdateDeploymentFromJson(c *fiber.Ctx, client *client.ClientManager) error {
-	K8, err := client.Client()
-	if err != nil {
-		return err
-	}
-
-	namespace := shared.GetNamespace(c.Params("namespace"))
-	name := c.Params("name")
-
-	body := new(v1.Deployment)
-
-	if err := c.BodyParser(body); err != nil {
-		panic(err)
-	}
-
-	if err := matchParam("name", body.Name, name); err != nil {
-		return err
-	}
-	if err := matchParam("namespace", body.Namespace, namespace); err != nil {
-		return err
-	}
-
-	err = deployment.UpdateDeployment(K8, namespace, name, body)
-	if err != nil {
-		return err
-	}
-	return c.SendStatus(fiber.StatusNoContent)
 }
 
 func RestartDeployment(c *fiber.Ctx, client *client.ClientManager) error {
