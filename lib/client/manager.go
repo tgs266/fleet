@@ -86,8 +86,7 @@ func (client *ClientManager) initClusterConfig() {
 	logging.INFO("attempting in-cluster config")
 	cfg, err := rest.InClusterConfig()
 	if err != nil {
-		logging.ERROR("in-cluster config failed")
-		return
+		logging.WARN("in-cluster config failed")
 	}
 	client.clusterConfig = cfg
 
