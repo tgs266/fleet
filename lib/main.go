@@ -47,10 +47,11 @@ func main() {
 
 	if oidcIssuerUrl != nil {
 		manager.InitializeOIDC(oidc.OIDCConfig{
-			IssuerURL:    *oidcIssuerUrl,
-			ClientID:     *oidcClientId,
-			ClientSecret: *oidcClientSecret,
-			Host:         *host,
+			IssuerURL:        *oidcIssuerUrl,
+			ClientID:         *oidcClientId,
+			ClientSecret:     *oidcClientSecret,
+			Host:             *host,
+			UseOfflineAccess: true,
 		})
 	}
 

@@ -15,9 +15,10 @@ func TestInit(t *testing.T) {
 
 	manager := &OIDCManager{}
 	err := manager.Init(OIDCConfig{
-		IssuerURL:    m.Issuer(),
-		ClientID:     m.ClientID,
-		ClientSecret: m.ClientSecret,
+		IssuerURL:        m.Issuer(),
+		ClientID:         m.ClientID,
+		ClientSecret:     m.ClientSecret,
+		UseOfflineAccess: false,
 	})
 
 	assert.Nil(t, err)

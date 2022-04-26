@@ -31,6 +31,10 @@ func (manager *OIDCManager) Init(config OIDCConfig) error {
 	if err != nil {
 		return err
 	}
+	scopes := []string{oidc.ScopeOpenID, "profile", "email"}
+	if config.UseOfflineAccess {
+		scopes = append(scopes, oidc.ScopeOfflineAccess)
+	}
 	oauth2Config := oauth2.Config{
 		ClientID:     config.ClientID,
 		ClientSecret: config.ClientSecret,
@@ -38,7 +42,7 @@ func (manager *OIDCManager) Init(config OIDCConfig) error {
 
 		Endpoint: provider.Endpoint(),
 
-		Scopes: []string{oidc.ScopeOpenID, oidc.ScopeOfflineAccess, "profile", "email"},
+		Scopes: scopes,
 	}
 
 	manager.oauth2Config = oauth2Config

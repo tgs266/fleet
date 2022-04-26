@@ -9,6 +9,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/oauth2-proxy/mockoidc"
+	"github.com/stretchr/testify/assert"
 	"github.com/tgs266/fleet/lib/api"
 	"github.com/tgs266/fleet/lib/auth"
 	"github.com/tgs266/fleet/lib/auth/oidc"
@@ -25,9 +26,10 @@ func IsOIDCAvailableFail(t *testing.T) {
 	manager := client.NewClientManager(true)
 	manager.TestMode = true
 	manager.InitializeOIDC(oidc.OIDCConfig{
-		IssuerURL:    m.Issuer(),
-		ClientID:     m.ClientID,
-		ClientSecret: m.ClientSecret,
+		IssuerURL:        m.Issuer(),
+		ClientID:         m.ClientID,
+		ClientSecret:     m.ClientSecret,
+		UseOfflineAccess: false,
 	})
 
 	app := api.New(manager, fiber.Config{
@@ -50,9 +52,10 @@ func IsOIDCAvailable(t *testing.T) {
 	manager := client.NewClientManager(true)
 	manager.TestMode = true
 	manager.InitializeOIDC(oidc.OIDCConfig{
-		IssuerURL:    m.Issuer(),
-		ClientID:     m.ClientID,
-		ClientSecret: m.ClientSecret,
+		IssuerURL:        m.Issuer(),
+		ClientID:         m.ClientID,
+		ClientSecret:     m.ClientSecret,
+		UseOfflineAccess: false,
 	})
 
 	app := api.New(manager, fiber.Config{
@@ -66,7 +69,7 @@ func IsOIDCAvailable(t *testing.T) {
 	app.Test(req)
 }
 
-func TestGetOIDCUrl(t *testing.T) {
+func TestGetOIDC(t *testing.T) {
 	m, _ := mockoidc.Run()
 	defer m.Shutdown()
 
@@ -75,9 +78,10 @@ func TestGetOIDCUrl(t *testing.T) {
 	manager := client.NewClientManager(true)
 	manager.TestMode = true
 	manager.InitializeOIDC(oidc.OIDCConfig{
-		IssuerURL:    m.Issuer(),
-		ClientID:     m.ClientID,
-		ClientSecret: m.ClientSecret,
+		IssuerURL:        m.Issuer(),
+		ClientID:         m.ClientID,
+		ClientSecret:     m.ClientSecret,
+		UseOfflineAccess: false,
 	})
 
 	app := api.New(manager, fiber.Config{
@@ -86,9 +90,39 @@ func TestGetOIDCUrl(t *testing.T) {
 
 	AddOIDCRoutes(app)
 
-	req := httptest.NewRequest("GET", "/api/v1/auth/oauth2/url", nil)
+	req := httptest.NewRequest("GET", "/api/v1/auth/oauth2/url?location=asdf", nil)
 
-	app.Test(req)
+	res, _ := app.Test(req)
+
+	defer res.Body.Close()
+
+	var j string
+	err := json.NewDecoder(res.Body).Decode(&j)
+	assert.Nil(t, err)
+
+	req2, _ := http.NewRequest("GET", j, nil)
+	req2.AddCookie(res.Cookies()[0])
+	req2.AddCookie(res.Cookies()[1])
+	req2.AddCookie(res.Cookies()[2])
+
+	res2, err := http.DefaultClient.Do(req2)
+	assert.Nil(t, err)
+
+	defer res2.Body.Close()
+
+	var j2 interface{}
+	err = json.NewDecoder(res2.Body).Decode(&j2)
+	assert.Nil(t, err)
+
+	code := res2.Request.URL.Query().Get("code")
+
+	req3 := httptest.NewRequest("GET", "/api/v1/auth/oauth2/callback?state="+res.Cookies()[1].Value+"&code="+code, nil)
+	req3.AddCookie(res.Cookies()[0])
+	req3.AddCookie(res.Cookies()[1])
+	req3.AddCookie(res.Cookies()[2])
+
+	_, err = app.Test(req3)
+	assert.Nil(t, err)
 }
 
 func TestLogin(t *testing.T) {
