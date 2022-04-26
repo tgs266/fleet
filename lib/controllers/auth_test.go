@@ -17,7 +17,7 @@ import (
 	"github.com/tgs266/fleet/lib/logging"
 )
 
-func IsOIDCAvailableFail(t *testing.T) {
+func TestIsOIDCAvailableFail(t *testing.T) {
 	m, _ := mockoidc.Run()
 	defer m.Shutdown()
 
@@ -38,12 +38,12 @@ func IsOIDCAvailableFail(t *testing.T) {
 
 	AddUnsupportedOIDCRoute(app)
 
-	req := httptest.NewRequest("GET", "/api/v1/auth/oauth2/", nil)
+	req := httptest.NewRequest("GET", "/api/v1/auth/oauth2", nil)
 
 	app.Test(req)
 }
 
-func IsOIDCAvailable(t *testing.T) {
+func TestIsOIDCAvailable(t *testing.T) {
 	m, _ := mockoidc.Run()
 	defer m.Shutdown()
 
@@ -137,6 +137,22 @@ func TestLogin(t *testing.T) {
 	db, _ := json.Marshal(data)
 
 	req := httptest.NewRequest(http.MethodPost, "/api/v1/auth/login", bytes.NewBuffer(db))
+
+	app.Test(req)
+}
+
+func TestRefresh(t *testing.T) {
+	app := setupAppAuth()
+
+	app.Post("/api/v1/auth/refresh", Refresh)
+
+	data := &auth.RefreshRequest{
+		Token: "asdfasdfasdfasf",
+	}
+
+	db, _ := json.Marshal(data)
+
+	req := httptest.NewRequest(http.MethodPost, "/api/v1/auth/refresh", bytes.NewBuffer(db))
 
 	app.Test(req)
 }
