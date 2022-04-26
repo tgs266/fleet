@@ -6,7 +6,13 @@ import (
 	"github.com/tgs266/fleet/lib/logging"
 )
 
-func TestSetupApp(t *testing.T) {
+func TestMain(t *testing.T) {
+	logging.Init(logging.LVL_INFO)
+
+	setupApp()
+}
+
+func TestSetupBackend(t *testing.T) {
 	logging.Init(logging.LVL_INFO)
 
 	useAuth := true
@@ -14,5 +20,25 @@ func TestSetupApp(t *testing.T) {
 		useAuth: &useAuth,
 	}
 
-	setupApp(flags)
+	setupBackend(flags)
+}
+
+func TestSetupBackend2(t *testing.T) {
+	defer func() {
+		if r := recover(); r != nil {
+			return
+		}
+	}()
+	logging.Init(logging.LVL_INFO)
+
+	useAuth := true
+	str := "asdf"
+	flags := Flags{
+		useAuth:          &useAuth,
+		oidcIssuerUrl:    &str,
+		oidcClientId:     &str,
+		oidcClientSecret: &str,
+	}
+
+	setupBackend(flags)
 }

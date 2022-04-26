@@ -57,7 +57,7 @@ func parseFlags() Flags {
 	}
 }
 
-func setupApp(flags Flags) *api.API {
+func setupBackend(flags Flags) *api.API {
 	manager := client.NewClientManager(*flags.useAuth)
 
 	if flags.oidcIssuerUrl != nil {
@@ -113,8 +113,7 @@ func setupApp(flags Flags) *api.API {
 	return app
 }
 
-func main() {
-
+func setupApp() *api.API {
 	logging.Init(logging.LVL_INFO)
 	logging.INFO("initializing fleet")
 
@@ -122,13 +121,17 @@ func main() {
 
 	jwe.TOKEN_TTL = *flags.tokenTTL
 
-	app := setupApp(flags)
+	app := setupBackend(flags)
 
 	if flags.src != nil {
 		path := *flags.src
 		logging.INFO(fmt.Sprintf("serving frontend from %s", path))
 		app.Static("/", path)
 	}
+	return app
+}
 
+func main() {
+	app := setupApp()
 	app.Listen(":9095")
 }
