@@ -67,9 +67,6 @@ func main() {
 
 			c.Request().Header.Set("jweToken", c.Query("jwe", "asdf"))
 			k8, err := manager.Client(c)
-			// if err != nil {
-			// 	return err
-			// }
 
 			c.Locals("allowed", true)
 			c.Locals("k8", k8)
