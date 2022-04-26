@@ -16,6 +16,9 @@ FROM ubuntu:latest as stage2
 
 COPY --from=stage1 /app/build/* /app/
 
+RUN apt -y update 
+RUN apt-get -y install ca-certificates
+
 WORKDIR /app
 EXPOSE 9095
 
