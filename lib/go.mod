@@ -9,6 +9,7 @@ require (
 
 require (
 	github.com/coreos/go-oidc/v3 v3.1.0 // indirect
+	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
 	golang.org/x/crypto v0.0.0-20220214200702-86341886e292 // indirect
 )
 
@@ -39,6 +40,7 @@ require (
 	github.com/lufia/plan9stats v0.0.0-20211012122336-39d0f177ccd0 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
+	github.com/oauth2-proxy/mockoidc v0.0.0-20220308204021-b9169deeb282
 	github.com/onsi/ginkgo v1.16.4 // indirect
 	github.com/onsi/gomega v1.15.0 // indirect
 	github.com/opencontainers/go-digest v1.0.0 // indirect

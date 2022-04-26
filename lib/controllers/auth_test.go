@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/oauth2-proxy/mockoidc"
 	"github.com/tgs266/fleet/lib/api"
 	"github.com/tgs266/fleet/lib/auth"
 	"github.com/tgs266/fleet/lib/auth/oidc"
@@ -16,14 +17,17 @@ import (
 )
 
 func IsOIDCAvailableFail(t *testing.T) {
+	m, _ := mockoidc.Run()
+	defer m.Shutdown()
+
 	logging.Init(logging.LVL_INFO)
 
 	manager := client.NewClientManager(true)
 	manager.TestMode = true
 	manager.InitializeOIDC(oidc.OIDCConfig{
-		IssuerURL:    "https://example.com/auth",
-		ClientID:     "asdf",
-		ClientSecret: "asdf",
+		IssuerURL:    m.Issuer(),
+		ClientID:     m.ClientID,
+		ClientSecret: m.ClientSecret,
 	})
 
 	app := api.New(manager, fiber.Config{
@@ -38,14 +42,17 @@ func IsOIDCAvailableFail(t *testing.T) {
 }
 
 func IsOIDCAvailable(t *testing.T) {
+	m, _ := mockoidc.Run()
+	defer m.Shutdown()
+
 	logging.Init(logging.LVL_INFO)
 
 	manager := client.NewClientManager(true)
 	manager.TestMode = true
 	manager.InitializeOIDC(oidc.OIDCConfig{
-		IssuerURL:    "https://example.com/auth",
-		ClientID:     "asdf",
-		ClientSecret: "asdf",
+		IssuerURL:    m.Issuer(),
+		ClientID:     m.ClientID,
+		ClientSecret: m.ClientSecret,
 	})
 
 	app := api.New(manager, fiber.Config{
@@ -60,14 +67,17 @@ func IsOIDCAvailable(t *testing.T) {
 }
 
 func TestGetOIDCUrl(t *testing.T) {
+	m, _ := mockoidc.Run()
+	defer m.Shutdown()
+
 	logging.Init(logging.LVL_INFO)
 
 	manager := client.NewClientManager(true)
 	manager.TestMode = true
 	manager.InitializeOIDC(oidc.OIDCConfig{
-		IssuerURL:    "https://example.com/auth",
-		ClientID:     "asdf",
-		ClientSecret: "asdf",
+		IssuerURL:    m.Issuer(),
+		ClientID:     m.ClientID,
+		ClientSecret: m.ClientSecret,
 	})
 
 	app := api.New(manager, fiber.Config{
