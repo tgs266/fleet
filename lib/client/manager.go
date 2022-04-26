@@ -228,11 +228,15 @@ func (self *ClientManager) ValidateAuthInfo(cfg *rest.Config, authInfo *api.Auth
 		return err
 	}
 
-	_, err = k8client.K8.AuthenticationV1().TokenReviews().Create(context.TODO(), &authv1.TokenReview{
-		Spec: authv1.TokenReviewSpec{
-			Token: authInfo.Token,
-		},
-	}, metaV1.CreateOptions{})
+	if !self.TestAuthMode {
+		_, err = k8client.K8.AuthenticationV1().TokenReviews().Create(context.TODO(), &authv1.TokenReview{
+			Spec: authv1.TokenReviewSpec{
+				Token: authInfo.Token,
+			},
+		}, metaV1.CreateOptions{})
+	} else {
+		err = errors.NewConfigInitializationError(nil)
+	}
 
 	if err != nil {
 		// valid token, but you cant access anything
