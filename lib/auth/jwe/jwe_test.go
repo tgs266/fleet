@@ -1,7 +1,6 @@
 package jwe
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -17,7 +16,6 @@ func TestEncryptDecrypt(t *testing.T) {
 		Token: "asdf",
 	}
 	token, err := manager.Generate(*info)
-	fmt.Println(err)
 	assert.Nil(t, err)
 
 	newInfo, err := manager.Decrypt(token)

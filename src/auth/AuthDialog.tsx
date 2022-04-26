@@ -75,7 +75,6 @@ export default function AuthDialog(props: { onClose: () => void; mode: string })
                     disabled={!canUseOIDC}
                     onClick={() => {
                         Auth.getOIDCUrl().then((r) => {
-                            console.log(r.data.url);
                             window.open(r.data.url, '_self');
                         });
                     }}

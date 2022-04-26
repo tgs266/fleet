@@ -5,7 +5,6 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"errors"
-	"fmt"
 	"io"
 	"time"
 
@@ -51,9 +50,6 @@ func (manager *OIDCManager) Init(config OIDCConfig) error {
 		ClientID: config.ClientID,
 	})
 
-	fmt.Println(provider.Endpoint())
-	fmt.Println(config)
-
 	return nil
 }
 
@@ -83,7 +79,6 @@ func (manager *OIDCManager) GetOIDCUrl(c *fiber.Ctx) string {
 	})
 
 	url := manager.oauth2Config.AuthCodeURL(state, oidc.Nonce(nonce))
-	fmt.Println(url)
 
 	return url
 }
