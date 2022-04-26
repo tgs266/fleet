@@ -224,7 +224,7 @@ func (self *ClientManager) ValidateAuthInfo(cfg *rest.Config, authInfo *api.Auth
 	k8client := new(kubernetes.K8Client)
 
 	err := k8client.Connect(cfg)
-	if err != nil {
+	if err != nil && !self.TestAuthMode {
 		return err
 	}
 

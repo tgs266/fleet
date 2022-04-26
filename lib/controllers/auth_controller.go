@@ -29,7 +29,8 @@ func Login(c *fiber.Ctx, client *client.ClientManager) error {
 func Refresh(c *fiber.Ctx, client *client.ClientManager) error {
 	body := new(auth.RefreshRequest)
 
-	if err := c.BodyParser(body); err != nil {
+	if err := json.Unmarshal(c.Body(), &body); err != nil {
+		fmt.Println(err)
 		return err
 	}
 
