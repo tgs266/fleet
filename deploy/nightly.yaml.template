@@ -114,7 +114,7 @@ metadata:
   labels:
     app.kubernetes.io/name: fleet
   name: fleet
-rules:
+rules: 
   # Allow Metrics Scraper to get metrics from the Metrics server
   - apiGroups: ["metrics.k8s.io"]
     resources: ["pods", "nodes"]

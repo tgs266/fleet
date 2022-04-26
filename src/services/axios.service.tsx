@@ -1,11 +1,13 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable react/no-render-return-value */
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Alert, Intent } from '@blueprintjs/core';
-import axios, { AxiosError, AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { FleetError } from '../models/base';
 import Toaster from './toast.service';
 import urlJoin from '../utils/urljoin';
+import AuthDialog from '../auth/AuthDialog';
 
 export function getWSUrl(path: string): string {
     const currentBase = `${window.location.href.replace(window.location.hash, '')}`;
@@ -13,8 +15,18 @@ export function getWSUrl(path: string): string {
 }
 
 const api = axios.create();
+let dialog: HTMLDivElement = null;
 
 api.defaults.baseURL = `${window.location.href.replace(window.location.hash, '')}`;
+
+api.interceptors.request.use((config: AxiosRequestConfig<any>) => {
+    const token = localStorage.getItem('jwe');
+    if (token) {
+        config.headers.jweToken = token;
+    }
+
+    return config;
+});
 
 api.interceptors.response.use(
     (response: AxiosResponse<any, any> | Promise<AxiosResponse<any, any>>) => response,
@@ -39,6 +51,26 @@ api.interceptors.response.use(
                 ),
                 containerElement
             );
+        } else if (
+            error.response.data.status === 'UNAUTHORIZED' ||
+            error.response.data.status === 'UNAUTHORIZED_EXPIRED'
+        ) {
+            localStorage.removeItem('jwe');
+            if (!dialog) {
+                dialog = document.createElement('div');
+                document.body.appendChild(dialog);
+                ReactDOM.render(
+                    React.createElement(AuthDialog, {
+                        mode: error.response.data.status,
+                        onClose: () => {
+                            ReactDOM.unmountComponentAtNode(dialog);
+                            dialog = null;
+                            window.location.reload();
+                        },
+                    }),
+                    dialog
+                );
+            }
         } else {
             Toaster.show({ message: error.response.data.message, intent: Intent.DANGER });
         }

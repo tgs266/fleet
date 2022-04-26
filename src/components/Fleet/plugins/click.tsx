@@ -22,7 +22,6 @@ export default function click(
     let group = null;
 
     for (const m of Object.keys(manager.groupRegions)) {
-        console.log(manager.groupRegions[m].x.start, worldPoint.x, manager.groupRegions[m].x.end);
         if (
             manager.groupRegions[m].x.start < worldPoint.x &&
             worldPoint.x < manager.groupRegions[m].x.end

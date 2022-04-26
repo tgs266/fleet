@@ -147,7 +147,7 @@ class DeploymentTable extends React.Component<IDeploymentTableProps, IDeployment
                             sortableId: 'name',
                             columnName: 'Name',
                             columnFunction: (row: DeploymentMeta) => (
-                                <Link to={buildLinkToDeployment(row.namespace, row.name)}>
+                                <Link to={buildLinkToDeployment(row.name, row.namespace)}>
                                     {row.name}
                                 </Link>
                             ),

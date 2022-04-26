@@ -1,9 +1,15 @@
 import * as React from 'react';
-import { Outlet } from 'react-router';
+import { Outlet, useLocation } from 'react-router';
+import Auth from '../services/auth.service';
 import Navigation, { NavContextProvider } from './Navigation';
 import SideNavigation from './SideNavigation';
 
 function Layout() {
+    const location = useLocation();
+
+    React.useEffect(() => {
+        Auth.refresh();
+    }, [location]);
     return (
         <div className="fleet fleet-blueprint-theme">
             <div style={{ display: 'flex', width: '100%' }} id="main-container">

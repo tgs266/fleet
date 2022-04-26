@@ -1,10 +1,11 @@
-import axios, { AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
 import { TableSort } from '../../components/SortableTableHeaderCell';
 import { PaginationResponse } from '../../models/base';
 import { JSONObject } from '../../models/json.model';
 import { Pod, PodMeta } from '../../models/pod.model';
 import getSortBy from '../../utils/sort';
 import api, { getWSUrl } from '../axios.service';
+import getWebsocket from '../websocket';
 
 export default class Pods {
     static base = '/api/v1/pods';
@@ -38,8 +39,11 @@ export default class Pods {
         pollInterval: number,
         callback: (event: MessageEvent<string>) => void
     ): WebSocket {
-        const ws = new WebSocket(
-            getWSUrl(`/ws/v1/pods/${namespace}/${pod}/events?pollInterval=${pollInterval}`)
+        const token = localStorage.getItem('jwe');
+        const ws = getWebsocket(
+            getWSUrl(
+                `/ws/v1/pods/${namespace}/${pod}/events?pollInterval=${pollInterval}&jwe=${token}`
+            )
         );
         ws.onmessage = callback;
         return ws;
@@ -54,6 +58,6 @@ export default class Pods {
         namespace: string,
         p: JSONObject
     ): Promise<AxiosResponse<JSONObject>> {
-        return axios.put(`/api/v1/raw/pods/${namespace}/${pod}`, p);
+        return api.put(`/api/v1/raw/pods/${namespace}/${pod}`, p);
     }
 }

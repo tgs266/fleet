@@ -18,8 +18,24 @@ import Namespace from './views/Namespace/Namespace';
 import NamespaceList from './views/NamespaceList/NamespaceList';
 import ServiceList from './views/ServiceList/ServiceList';
 
+function getCookie(name: string) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+    return null;
+}
+
+function deleteCookie(name: string) {
+    document.cookie = `${name}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
+}
+
 function App() {
-    console.log(window.location);
+    const token = getCookie('token');
+    if (token) {
+        localStorage.setItem('jwe', token);
+        deleteCookie('token');
+    }
+
     return (
         <Routes>
             <Route path="/" element={<Layout />}>

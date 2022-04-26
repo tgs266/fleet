@@ -1,9 +1,13 @@
 package fleet
 
 import (
+	"encoding/json"
+
 	"github.com/gofiber/websocket/v2"
 	"github.com/tgs266/fleet/lib/api"
 	"github.com/tgs266/fleet/lib/client"
+	"github.com/tgs266/fleet/lib/errors"
+	"github.com/tgs266/fleet/lib/kubernetes"
 )
 
 func AddRoutes(app *api.API) {
@@ -16,13 +20,13 @@ func Websocket(c *websocket.Conn, cl *client.ClientManager) {
 			c.Close()
 		}
 	}()
-	manager := client.NewClientManager()
-
-	K8, err := manager.Client()
+	err := c.Locals("k8err")
 	if err != nil {
+		bytes, _ := json.Marshal(err.(*errors.FleetError))
+		c.WriteMessage(8, bytes)
 		c.Close()
+		return
 	}
-
+	K8 := c.Locals("k8").(*kubernetes.K8Client)
 	Run(c, K8, 1000)
-
 }

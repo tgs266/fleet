@@ -3567,7 +3567,7 @@ headers-polyfill@^3.0.4:
   resolved "https://registry.yarnpkg.com/headers-polyfill/-/headers-polyfill-3.0.7.tgz#725c4f591e6748f46b036197eae102c92b959ff4"
   integrity sha512-JoLCAdCEab58+2/yEmSnOlficyHFpIl0XJqwu3l+Unkm1gXpFUYsThz6Yha3D6tNhocWkCPfyW0YVIGWFqTi7w==
 
-history@^5.2.0:
+history@^5.2.0, history@^5.3.0:
   version "5.3.0"
   resolved "https://registry.yarnpkg.com/history/-/history-5.3.0.tgz#1548abaa245ba47992f063a0783db91ef201c73b"
   integrity sha512-ZqaKwjjrAYUYfLG+htGaIIZ4nioX2L70ZUMIFysS3xvBsSG4x/n1V6TXV3N8ZYNuFGlDirFg32T7B6WOUPDYcQ==

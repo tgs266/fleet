@@ -24,6 +24,7 @@ import click from './plugins/click';
 import DragPlugin from './plugins/DragPlugin';
 import hover from './plugins/hover';
 import zoom, { modifyZoom } from './plugins/zoom';
+import getWebsocket from '../../services/websocket';
 
 const MAX_OPERATION_COUNT = 5000;
 
@@ -195,7 +196,8 @@ export default class FleetManager {
             this.groups = {};
             this.width = 0;
         }
-        this.ws = new WebSocket(getWSUrl('/ws/v1/fleet'));
+        const token = localStorage.getItem('jwe');
+        this.ws = getWebsocket(getWSUrl(`/ws/v1/fleet?jwe=${token}`));
         this.ws.onopen = () => {
             this.ws.send(
                 JSON.stringify({

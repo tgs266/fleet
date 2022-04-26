@@ -1,5 +1,5 @@
 /* eslint-disable object-shorthand */
-import axios, { AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
 import { TableSort } from '../../components/SortableTableHeaderCell';
 import { PaginationResponse } from '../../models/base';
 import { ContainerSpec } from '../../models/container.model';
@@ -7,6 +7,7 @@ import { CreateDeployment, Deployment, DeploymentMeta } from '../../models/deplo
 import { JSONObject } from '../../models/json.model';
 import getSortBy from '../../utils/sort';
 import api, { getWSUrl } from '../axios.service';
+import getWebsocket from '../websocket';
 
 export default class Deployments {
     static base = `/api/v1/deployments`;
@@ -41,7 +42,7 @@ export default class Deployments {
         namespace: string,
         dep: JSONObject
     ): Promise<AxiosResponse<JSONObject>> {
-        return axios.put(`/api/v1/raw/deployments/${namespace}/${deployment}`, dep);
+        return api.put(`/api/v1/raw/deployments/${namespace}/${deployment}`, dep);
     }
 
     static restartApp(deployment: string, namespace: string): Promise<AxiosResponse<any>> {
@@ -78,7 +79,7 @@ export default class Deployments {
         namespace: string,
         replicas: number
     ): Promise<AxiosResponse<any>> {
-        return axios.put(`${Deployments.base}/${namespace}/${deployment}/scale`, {
+        return api.put(`${Deployments.base}/${namespace}/${deployment}/scale`, {
             replicas,
         });
     }
@@ -89,9 +90,10 @@ export default class Deployments {
         pollInterval: number,
         callback: (event: MessageEvent<string>) => void
     ): WebSocket {
-        const ws = new WebSocket(
+        const token = localStorage.getItem('jwe');
+        const ws = getWebsocket(
             getWSUrl(
-                `/ws/v1/deployments/${namespace}/${deployment}/events?pollInterval=${pollInterval}`
+                `/ws/v1/deployments/${namespace}/${deployment}/events?pollInterval=${pollInterval}&jwe=${token}`
             )
         );
         ws.onmessage = callback;

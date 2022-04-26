@@ -49,7 +49,6 @@ class PodDetails extends React.Component<IWithRouterProps, IPodDetailsState> {
     }
 
     componentDidMount() {
-        console.log(this.props.params);
         const [, setState] = this.context;
         setState({
             breadcrumbs: [

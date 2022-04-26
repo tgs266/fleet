@@ -32,6 +32,6 @@ fi
 cp nightly.yaml.template nightly.yaml 
 sed -i "s/FILL_THIS/${TAG}/g" nightly.yaml
 
-kubectl delete --all -n fleet 
+kubectl delete all --all -n fleet 
 kubectl apply -f nightly.yaml 
 rm -rf nightly.yaml
