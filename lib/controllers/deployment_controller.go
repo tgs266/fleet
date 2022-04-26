@@ -26,7 +26,7 @@ func GetDeploymentStubList(c *fiber.Ctx, client *client.ClientManager) error {
 
 	deps, err := deployment.ListMetas(K8, namespace, dataSelector)
 	if err != nil {
-		panic(err)
+		return err
 	}
 	return c.Status(fiber.StatusOK).JSON(deps)
 }

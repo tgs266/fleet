@@ -23,7 +23,8 @@ import (
 )
 
 type ClientManager struct {
-	TestMode bool
+	TestMode     bool
+	TestAuthMode bool
 
 	// path to kubernetes config
 	kubeConfigPath string
@@ -111,12 +112,12 @@ func (client *ClientManager) getK8Client(c *fiber.Ctx) (*kubernetes.K8Client, er
 		}
 
 		cfg, err = client.Wrap(authInfo, cfg)
-		if err != nil {
+		if err != nil && !client.TestAuthMode {
 			return nil, err
 		}
 
 		err = client.ValidateAuthInfo(cfg, authInfo)
-		if err != nil {
+		if err != nil && !client.TestAuthMode {
 			return nil, errors.NewInvalidKubernetesCredentials()
 		}
 	}

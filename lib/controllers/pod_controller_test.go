@@ -23,6 +23,16 @@ func TestGetPod(t *testing.T) {
 	app.Test(req)
 }
 
+func TestGetPodWithAuth(t *testing.T) {
+	app := setupAppAuth()
+	app.Get("/:namespace/:name", GetPod)
+
+	req := httptest.NewRequest("GET", "/asdf/asdf?sortBy=name,a", nil)
+	req.Header.Add("Authorization", "Bearer asdfasdfasdf")
+
+	app.Test(req)
+}
+
 func TestDeletePod(t *testing.T) {
 	app := setupApp()
 	app.Delete("/:namespace/:name", DeletePod)

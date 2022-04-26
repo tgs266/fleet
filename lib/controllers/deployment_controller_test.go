@@ -48,6 +48,16 @@ func TestRestartDeployment(t *testing.T) {
 	app.Test(req)
 }
 
+func TestRestartDeploymentWithAuth(t *testing.T) {
+	app := setupAppAuth()
+	app.Put("/:namespace/:name", RestartDeployment)
+
+	req := httptest.NewRequest("PUT", "/asdf/asdf", nil)
+	req.Header.Add("Authorization", "Bearer asdfasdfasdf")
+
+	app.Test(req)
+}
+
 func TestScaleDeployment(t *testing.T) {
 	app := setupApp()
 

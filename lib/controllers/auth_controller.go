@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"encoding/json"
+	"fmt"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -12,7 +14,8 @@ import (
 func Login(c *fiber.Ctx, client *client.ClientManager) error {
 	body := new(auth.LoginRequest)
 
-	if err := c.BodyParser(body); err != nil {
+	if err := json.Unmarshal(c.Body(), &body); err != nil {
+		fmt.Println(err)
 		return err
 	}
 
