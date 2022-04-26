@@ -43,22 +43,6 @@ func main() {
 
 	jwe.TOKEN_TTL = *tokenTtl
 
-	// provider, err := oidc.NewProvider(context.TODO(), "https://dev-86695282.okta.com/oauth2/default")
-	// oauth2Config := oauth2.Config{
-	// 	ClientID:     "0oa4tllmr4qYmj3OB5d7",
-	// 	ClientSecret: "Y_LRAwPjWo8gQMbQyrRnQnTAmst3DL6-ZcIpfbkI",
-	// 	RedirectURL:  "http://localhost:9095/api/v1/auth/ouath2/callback",
-
-	// 	// Discovery returns the OAuth2 endpoints.
-	// 	Endpoint: provider.Endpoint(),
-
-	// 	// "openid" is a required scope for OpenID Connect flows.
-	// 	Scopes: []string{oidc.ScopeOpenID, oidc.ScopeOfflineAccess, "profile", "email"},
-	// }
-	// state, _ := randString(16)
-	// nonce, _ := randString(16)
-	// fmt.Println(oauth2Config.AuthCodeURL(state, oidc.Nonce(nonce)))
-
 	manager := client.NewClientManager(*useAuth)
 
 	if oidcIssuerUrl != nil {
