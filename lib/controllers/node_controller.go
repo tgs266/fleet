@@ -8,7 +8,7 @@ import (
 )
 
 func GetNodes(c *fiber.Ctx, client *client.ClientManager) error {
-	K8, err := client.Client()
+	K8, err := client.Client(c)
 	if err != nil {
 		return err
 	}
@@ -21,7 +21,7 @@ func GetNodes(c *fiber.Ctx, client *client.ClientManager) error {
 }
 
 func GetNode(c *fiber.Ctx, client *client.ClientManager) error {
-	K8, err := client.Client()
+	K8, err := client.Client(c)
 	if err != nil {
 		return err
 	}

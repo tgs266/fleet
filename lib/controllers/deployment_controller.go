@@ -1,11 +1,14 @@
 package controllers
 
 import (
+	"encoding/json"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/websocket/v2"
 	"github.com/tgs266/fleet/lib/client"
+	"github.com/tgs266/fleet/lib/errors"
+	"github.com/tgs266/fleet/lib/kubernetes"
 	"github.com/tgs266/fleet/lib/kubernetes/resources/container"
 	"github.com/tgs266/fleet/lib/kubernetes/resources/deployment"
 	"github.com/tgs266/fleet/lib/kubernetes/types"
@@ -13,7 +16,7 @@ import (
 )
 
 func GetDeploymentStubList(c *fiber.Ctx, client *client.ClientManager) error {
-	K8, err := client.Client()
+	K8, err := client.Client(c)
 	if err != nil {
 		return err
 	}
@@ -23,13 +26,13 @@ func GetDeploymentStubList(c *fiber.Ctx, client *client.ClientManager) error {
 
 	deps, err := deployment.ListMetas(K8, namespace, dataSelector)
 	if err != nil {
-		panic(err)
+		return err
 	}
 	return c.Status(fiber.StatusOK).JSON(deps)
 }
 
 func GetDeployment(c *fiber.Ctx, client *client.ClientManager) error {
-	K8, err := client.Client()
+	K8, err := client.Client(c)
 	if err != nil {
 		return err
 	}
@@ -45,7 +48,7 @@ func GetDeployment(c *fiber.Ctx, client *client.ClientManager) error {
 }
 
 func RestartDeployment(c *fiber.Ctx, client *client.ClientManager) error {
-	K8, err := client.Client()
+	K8, err := client.Client(c)
 	if err != nil {
 		return err
 	}
@@ -61,7 +64,7 @@ func RestartDeployment(c *fiber.Ctx, client *client.ClientManager) error {
 }
 
 func DeleteDeployment(c *fiber.Ctx, client *client.ClientManager) error {
-	K8, err := client.Client()
+	K8, err := client.Client(c)
 	if err != nil {
 		return err
 	}
@@ -77,7 +80,7 @@ func DeleteDeployment(c *fiber.Ctx, client *client.ClientManager) error {
 }
 
 func UpdateDeploymentContainerSpec(c *fiber.Ctx, client *client.ClientManager) error {
-	K8, err := client.Client()
+	K8, err := client.Client(c)
 	if err != nil {
 		return err
 	}
@@ -100,7 +103,7 @@ func UpdateDeploymentContainerSpec(c *fiber.Ctx, client *client.ClientManager) e
 }
 
 func CreateDeployment(c *fiber.Ctx, client *client.ClientManager) error {
-	K8, err := client.Client()
+	K8, err := client.Client(c)
 	if err != nil {
 		return err
 	}
@@ -119,15 +122,17 @@ func CreateDeployment(c *fiber.Ctx, client *client.ClientManager) error {
 }
 
 func DeploymentEventStream(c *websocket.Conn, client *client.ClientManager) {
-	K8, err := client.Client()
+	err := c.Locals("k8err")
 	if err != nil {
-		panic(err)
+		bytes, _ := json.Marshal(err.(*errors.FleetError))
+		c.WriteMessage(8, bytes)
+		c.Close()
+		return
 	}
-
+	K8 := c.Locals("k8").(*kubernetes.K8Client)
 	namespace := shared.GetNamespace(c.Params("namespace"))
 	name := c.Params("name")
 	pollInterval, _ := strconv.Atoi(c.Query("pollInterval", "5000"))
-
 	deployment.StreamDeploymentEvents(K8, namespace, name, c, pollInterval)
 }
 
@@ -136,9 +141,9 @@ type scaleDeploymentBody struct {
 }
 
 func ScaleDeployment(c *fiber.Ctx, client *client.ClientManager) error {
-	K8, err := client.Client()
+	K8, err := client.Client(c)
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	namespace := shared.GetNamespace(c.Params("namespace"))

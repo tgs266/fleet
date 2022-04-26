@@ -8,7 +8,7 @@ import (
 )
 
 func GetNamespaces(c *fiber.Ctx, client *client.ClientManager) error {
-	K8, err := client.Client()
+	K8, err := client.Client(c)
 	if err != nil {
 		return err
 	}
@@ -23,7 +23,7 @@ func GetNamespaces(c *fiber.Ctx, client *client.ClientManager) error {
 }
 
 func GetNamespace(c *fiber.Ctx, client *client.ClientManager) error {
-	K8, err := client.Client()
+	K8, err := client.Client(c)
 	if err != nil {
 		return err
 	}

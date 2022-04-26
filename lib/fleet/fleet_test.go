@@ -1,7 +1,6 @@
 package fleet
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -100,7 +99,6 @@ func TestCleanFleet2(t *testing.T) {
 	lastTitles := ExtractIdentifiers(last)
 
 	delete(fleet[0].Children, "asdf-1-asdf")
-	fmt.Println(fleet[0].Children)
 
 	cleaned := CleanFleet(lastTitles, last, fleet)
 	assert.Len(t, cleaned[0].Children, 1)

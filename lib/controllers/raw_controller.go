@@ -8,7 +8,7 @@ import (
 )
 
 func RawGet(c *fiber.Ctx, client *client.ClientManager) error {
-	rawClient, err := client.RawClient()
+	rawClient, err := client.RawClient(c)
 	if err != nil {
 		return errors.ParseInternalError(err)
 	}
@@ -25,7 +25,7 @@ func RawGet(c *fiber.Ctx, client *client.ClientManager) error {
 }
 
 func RawPut(c *fiber.Ctx, client *client.ClientManager) error {
-	rawClient, err := client.RawClient()
+	rawClient, err := client.RawClient(c)
 	if err != nil {
 		return errors.ParseInternalError(err)
 	}

@@ -9,7 +9,7 @@ import (
 )
 
 func GetServices(c *fiber.Ctx, client *client.ClientManager) error {
-	K8, err := client.Client()
+	K8, err := client.Client(c)
 	if err != nil {
 		return err
 	}
@@ -26,7 +26,7 @@ func GetServices(c *fiber.Ctx, client *client.ClientManager) error {
 }
 
 func GetService(c *fiber.Ctx, client *client.ClientManager) error {
-	K8, err := client.Client()
+	K8, err := client.Client(c)
 	if err != nil {
 		return err
 	}

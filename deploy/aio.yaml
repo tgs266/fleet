@@ -183,6 +183,9 @@ spec:
           ports:
             - containerPort: 9095
               protocol: TCP
+          args:
+            - -useAuth
+            - -tokenTTL=900
           volumeMounts:
             - name: fleet-certs
               mountPath: /certs

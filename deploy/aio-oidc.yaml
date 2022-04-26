@@ -114,7 +114,7 @@ metadata:
   labels:
     app.kubernetes.io/name: fleet
   name: fleet
-rules: 
+rules:
   # Allow Metrics Scraper to get metrics from the Metrics server
   - apiGroups: ["metrics.k8s.io"]
     resources: ["pods", "nodes"]
@@ -178,14 +178,18 @@ spec:
           type: RuntimeDefault
       containers:
         - name: fleet
-          image: tgs266/fleet:FILL_THIS
+          image: tgs266/fleet:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 9095
               protocol: TCP
           args:
-            - -useAuth
-            - -tokenTTL=900
+            - --useAuth
+            - --tokenTTL=900
+            - --oidc-issuer-url=<OIDC-ISSUER-URL>
+            - --oidc-client-id=<OIDC-CLIENT-URL>
+            - --oidc-client-secret=<OIDC-CLIENT-SECRET>
+            - --host=<HOST PATH (ex http://localhost:9095)>
           volumeMounts:
             - name: fleet-certs
               mountPath: /certs

@@ -11,9 +11,19 @@ import (
 
 func setupApp() *api.API {
 	logging.Init(logging.LVL_INFO)
-	manager := &client.ClientManager{
-		TestMode: true,
-	}
+	manager := client.NewClientManager(false)
+	manager.TestMode = true
+	app := api.New(manager, fiber.Config{
+		DisableStartupMessage: true,
+	})
+	return app
+}
+
+func setupAppAuth() *api.API {
+	logging.Init(logging.LVL_INFO)
+	manager := client.NewClientManager(true)
+	manager.TestMode = false
+	manager.TestAuthMode = true
 	app := api.New(manager, fiber.Config{
 		DisableStartupMessage: true,
 	})

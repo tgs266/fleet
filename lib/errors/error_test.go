@@ -63,3 +63,43 @@ func TestNewComparableTypeNotSupportedError(t *testing.T) {
 	err := NewComparableTypeNotSupportedError("asdf")
 	assert.Equal(t, 400, err.Code)
 }
+
+func TestNewNoAuthenticationHeaderProvided(t *testing.T) {
+	err := NewNoAuthenticationHeaderProvided()
+	assert.Equal(t, 401, err.Code)
+}
+
+func TestNewInvalidBearerToken(t *testing.T) {
+	err := NewInvalidBearerToken()
+	assert.Equal(t, 401, err.Code)
+}
+
+func TestNewExpiredJWEToken(t *testing.T) {
+	err := NewExpiredJWEToken()
+	assert.Equal(t, 401, err.Code)
+}
+
+func TestNewInvalidJWEToken(t *testing.T) {
+	err := NewInvalidJWEToken()
+	assert.Equal(t, 401, err.Code)
+}
+
+func TestNewInvalidClaims(t *testing.T) {
+	err := NewInvalidClaims()
+	assert.Equal(t, 401, err.Code)
+}
+
+func TestNewInvalidJWEFormat(t *testing.T) {
+	err := NewInvalidJWEFormat()
+	assert.Equal(t, 401, err.Code)
+}
+
+func TestNewForbiddenAccess(t *testing.T) {
+	err := NewForbiddenAccess()
+	assert.Equal(t, 403, err.Code)
+}
+
+func TestNewInvalidKubernetesCredentials(t *testing.T) {
+	err := NewInvalidKubernetesCredentials()
+	assert.Equal(t, 401, err.Code)
+}

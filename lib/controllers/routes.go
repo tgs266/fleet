@@ -33,6 +33,8 @@ func initializeServiceRoutes(app *api.API) {
 }
 
 func initializeOtherRoutes(app *api.API) {
+	app.Post("/api/v1/auth/login", Login)
+	app.Post("/api/v1/auth/refresh", Refresh)
 	app.Get("/api/v1/images", GetAllImages)
 
 	app.Get("/api/v1/system/resources", GetSystemResources)

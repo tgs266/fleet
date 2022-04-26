@@ -47,6 +47,9 @@ func ParseInternalError(err error) error {
 	statusError, ok := err.(*k8errors.StatusError)
 	if ok && statusError.Status().Code > 0 {
 		statusCode := int(statusError.Status().Code)
+		if statusError.ErrStatus.Code == 403 {
+			return NewForbiddenAccess()
+		}
 		return CreateError(statusCode, statusError.Status().Message)
 	}
 	return CreateError(500, err.Error())
@@ -128,5 +131,69 @@ func NewComparableTypeNotSupportedError(typeName string) *FleetError {
 		Status:  STATUS_BAD_REQUEST,
 		Code:    fiber.StatusBadRequest,
 		Message: fmt.Sprintf("comparable for type %s is not supported", typeName),
+	}
+}
+
+func NewNoAuthenticationHeaderProvided() *FleetError {
+	return &FleetError{
+		Status:  STATUS_UNAUTHORIZED,
+		Code:    401,
+		Message: "must provide jwe token or kubernetes auth token",
+	}
+}
+
+func NewInvalidBearerToken() *FleetError {
+	return &FleetError{
+		Status:  STATUS_UNAUTHORIZED,
+		Code:    401,
+		Message: "invalud bearer token",
+	}
+}
+
+func NewExpiredJWEToken() *FleetError {
+	return &FleetError{
+		Status:  STATUS_UNAUTHORIZED_EXPIRED,
+		Code:    401,
+		Message: "provided jwe token is expired",
+	}
+}
+
+func NewInvalidJWEToken() *FleetError {
+	return &FleetError{
+		Status:  STATUS_UNAUTHORIZED,
+		Code:    401,
+		Message: "provided jwe token is invalid",
+	}
+}
+
+func NewInvalidClaims() *FleetError {
+	return &FleetError{
+		Status:  STATUS_UNAUTHORIZED,
+		Code:    401,
+		Message: "provided jwe claims are invalid",
+	}
+}
+
+func NewInvalidJWEFormat() *FleetError {
+	return &FleetError{
+		Status:  STATUS_UNAUTHORIZED,
+		Code:    401,
+		Message: "provided jwe has an invalid format",
+	}
+}
+
+func NewForbiddenAccess() *FleetError {
+	return &FleetError{
+		Status:  STATUS_FORBIDDEN,
+		Code:    403,
+		Message: "access to requested resource is forbidden",
+	}
+}
+
+func NewInvalidKubernetesCredentials() *FleetError {
+	return &FleetError{
+		Status:  STATUS_UNAUTHORIZED,
+		Code:    401,
+		Message: "credentials provided are invalid",
 	}
 }
