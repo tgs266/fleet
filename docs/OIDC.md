@@ -17,6 +17,7 @@
 	| `apiserver.oidc-username-claim` | The specific claim the in the JWT token that holds the username of the user | email, name, userID, etc |
 	| `apiserver.oidc-groups-claim` | The specific claim the in the JWT token that holds the groups the user is assigned to (for groupwide permissions) | groups |
 	| `apiserver.oidc-ca-file` | The certificate authority file provided by your OpenID Issuer (You may not need this. Okta, for example, does not provide one and it works fine) | file path |
+	
 	You can read more about these options [here](https://kubernetes.io/docs/reference/access-authn-authz/authentication/)
 
 2. Create your user roles
@@ -35,6 +36,7 @@
 		name: k8s-admin # group name included in the OpenID groups claim
 	```
 	Or a role that can only read pods and services
+	
 	First create the role
 	```
 	apiVersion: rbac.authorization.k8s.io/v1
