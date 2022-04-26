@@ -51,7 +51,18 @@ func AddOIDCRoutes(app *api.API) {
 		return c.JSON(response)
 	})
 	app.Get("/api/v1/auth/oauth2/url", func(c *fiber.Ctx, clientManager *client.ClientManager) error {
-		return c.JSON(clientManager.OIDCUrl(c))
+		url := clientManager.OIDCUrl(c)
+		resp := struct {
+			URL string `json:"url"`
+		}{
+			URL: url,
+		}
+
+		fmt.Println(resp)
+
+		return c.JSON(
+			resp,
+		)
 	})
 	app.Get("/api/v1/auth/oauth2/callback", func(c *fiber.Ctx, clientManager *client.ClientManager) error {
 		idToken, err := clientManager.OIDCCallback(c)
