@@ -51,6 +51,9 @@ func (manager *OIDCManager) Init(config OIDCConfig) error {
 		ClientID: config.ClientID,
 	})
 
+	fmt.Println(provider.Endpoint())
+	fmt.Println(config)
+
 	return nil
 }
 
