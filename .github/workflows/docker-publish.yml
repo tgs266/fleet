@@ -21,7 +21,8 @@ jobs:
       run: |
         TAG1="tgs266/fleet:${{ github.event.inputs.version }}"
         TAG2="tgs266/fleet:latest"
-        echo ::set-output name=tags::${TAG1}::${TAG2}
+        echo ::set-output name=tag::${TAG1}
+        echo ::set-output name=tag2::${TAG2}
       
     - name: Log in to Docker Hub
       uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
@@ -34,7 +35,7 @@ jobs:
       with:
         context: .
         push: true
-        tags: ${{ steps.prep.outputs.tags }}
+        tags: ${{ steps.prep.outputs.tag }},${{ steps.prep.outputs.tag2 }}
 
     - name: Tag
       uses: rickstaa/action-create-tag@v1
