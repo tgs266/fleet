@@ -26,11 +26,17 @@ func createFiberConfig() fiber.Config {
 	}
 }
 
-func main() {
+type Flags struct {
+	src              *string
+	tokenTTL         *int
+	useAuth          *bool
+	oidcIssuerUrl    *string
+	oidcClientId     *string
+	oidcClientSecret *string
+	host             *string
+}
 
-	logging.Init(logging.LVL_INFO)
-	logging.INFO("initializing fleet")
-
+func parseFlags() Flags {
 	src := flag.String("src", "", "frontend source")
 	tokenTtl := flag.Int("tokenTTL", 900, "token time-to-live (seconds)")
 	useAuth := flag.Bool("useAuth", false, "use authentication")
@@ -40,17 +46,26 @@ func main() {
 	host := flag.String("host", "", "")
 
 	flag.Parse()
+	return Flags{
+		src:              src,
+		tokenTTL:         tokenTtl,
+		useAuth:          useAuth,
+		oidcIssuerUrl:    oidcIssuerUrl,
+		oidcClientId:     oidcClientId,
+		oidcClientSecret: oidcClientSecret,
+		host:             host,
+	}
+}
 
-	jwe.TOKEN_TTL = *tokenTtl
+func setupApp(flags Flags) *api.API {
+	manager := client.NewClientManager(*flags.useAuth)
 
-	manager := client.NewClientManager(*useAuth)
-
-	if oidcIssuerUrl != nil {
+	if flags.oidcIssuerUrl != nil {
 		manager.InitializeOIDC(oidc.OIDCConfig{
-			IssuerURL:        *oidcIssuerUrl,
-			ClientID:         *oidcClientId,
-			ClientSecret:     *oidcClientSecret,
-			Host:             *host,
+			IssuerURL:        *flags.oidcIssuerUrl,
+			ClientID:         *flags.oidcClientId,
+			ClientSecret:     *flags.oidcClientSecret,
+			Host:             *flags.host,
 			UseOfflineAccess: true,
 		})
 	}
@@ -82,7 +97,7 @@ func main() {
 	logging.INFO("initializing routing")
 	controllers.InitializeRoutes(app)
 
-	if oidcIssuerUrl != nil && *oidcIssuerUrl != "" {
+	if flags.oidcIssuerUrl != nil {
 		logging.INFO("initializing OIDC routing")
 		controllers.AddOIDCRoutes(app)
 	} else {
@@ -95,9 +110,22 @@ func main() {
 	fleet.AddRoutes(app)
 
 	logging.INFO("fleet routes initialization complete")
+	return app
+}
 
-	if src != nil {
-		path := *src
+func main() {
+
+	logging.Init(logging.LVL_INFO)
+	logging.INFO("initializing fleet")
+
+	flags := parseFlags()
+
+	jwe.TOKEN_TTL = *flags.tokenTTL
+
+	app := setupApp(flags)
+
+	if flags.src != nil {
+		path := *flags.src
 		logging.INFO(fmt.Sprintf("serving frontend from %s", path))
 		app.Static("/", path)
 	}
