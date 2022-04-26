@@ -10,6 +10,16 @@ import (
 	"github.com/tgs266/fleet/lib/kubernetes/resources/image"
 )
 
+func TestGetDeploymentStubListWithAuth(t *testing.T) {
+	app := setupAppAuth()
+	app.Get("/:namespace", GetDeploymentStubList)
+
+	req := httptest.NewRequest("GET", "/asdf", nil)
+	req.Header.Add("Authorization", "Bearer asdfasdfasdf")
+
+	app.Test(req)
+}
+
 func TestGetDeploymentStubList(t *testing.T) {
 	app := setupApp()
 	app.Get("/:namespace", GetDeploymentStubList)
