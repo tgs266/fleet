@@ -15,7 +15,7 @@ func TestGetDeploymentStubListWithAuth(t *testing.T) {
 	app.Get("/:namespace", GetDeploymentStubList)
 
 	req := httptest.NewRequest("GET", "/asdf", nil)
-	req.Header.Add("Authorization", "Bearer asdfasdfasdf")
+	req.Header.Add("jweToken", "asdfasdfasdf")
 
 	app.Test(req)
 }

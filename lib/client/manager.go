@@ -130,6 +130,11 @@ func (client *ClientManager) getAuthInfo(c *fiber.Ctx) (*api.AuthInfo, error) {
 	}
 	authInfo, err := client.authManager.ExtractAuthInfo(c)
 	if err != nil {
+		if client.TestAuthMode {
+			return &api.AuthInfo{
+				Token: "asdf",
+			}, nil
+		}
 		return nil, err
 	}
 	return authInfo, nil
