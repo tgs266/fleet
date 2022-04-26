@@ -9,7 +9,7 @@ export default class Auth {
         return axios.post(`${Auth.base}/login`, { token: token });
     }
 
-    static getOIDCUrl(): Promise<AxiosResponse<any>> {
+    static getOIDCUrl(): Promise<AxiosResponse<{ url: string }>> {
         return axios.get(`${Auth.base}/oauth2/url`, { params: { location: window.location.href } });
     }
 
