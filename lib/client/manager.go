@@ -61,7 +61,7 @@ func NewClientManager(useAuth bool) *ClientManager {
 }
 
 func (client *ClientManager) InitializeOIDC(config oidc.OIDCConfig) {
-	logging.INFO("initializing OIDC integration")
+	logging.INFO("initializing OIDC integration with issuer url " + config.IssuerURL)
 	o := &oidc.OIDCManager{}
 	o.Init(config)
 	client.oidcManager = o
