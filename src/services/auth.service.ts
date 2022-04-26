@@ -1,8 +1,9 @@
 /* eslint-disable object-shorthand */
 import axios, { AxiosResponse } from 'axios';
+import urlJoin from '../utils/urljoin';
 
 export default class Auth {
-    static base = '/api/v1/auth';
+    static base = urlJoin(window.location.href.replace(window.location.hash, ''), '/api/v1/auth');
 
     static login(token: string): Promise<AxiosResponse<any>> {
         return axios.post(`${Auth.base}/login`, { token: token });
