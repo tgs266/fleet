@@ -18,6 +18,7 @@ COPY --from=stage1 /app/build/* /app/
 
 RUN apt -y update 
 RUN apt-get -y install ca-certificates
+RUN rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 EXPOSE 9095
