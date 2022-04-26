@@ -101,13 +101,13 @@ func (client *ClientManager) getK8Client(c *fiber.Ctx) (*kubernetes.K8Client, er
 
 	k8client := new(kubernetes.K8Client)
 	cfg, err := client.buildConfig()
-	if err != nil {
+	if err != nil && !client.TestAuthMode {
 		return nil, err
 	}
 
 	if client.useAuth {
 		authInfo, err := client.getAuthInfo(c)
-		if err != nil {
+		if err != nil && !client.TestAuthMode {
 			return nil, err
 		}
 
