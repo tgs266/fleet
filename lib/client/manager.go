@@ -60,11 +60,12 @@ func NewClientManager(useAuth bool) *ClientManager {
 	return client
 }
 
-func (client *ClientManager) InitializeOIDC(config oidc.OIDCConfig) {
+func (client *ClientManager) InitializeOIDC(config oidc.OIDCConfig) error {
 	logging.INFO("initializing OIDC integration with issuer url " + config.IssuerURL)
 	o := &oidc.OIDCManager{}
-	o.Init(config)
+	err := o.Init(config)
 	client.oidcManager = o
+	return err
 }
 
 func (client *ClientManager) OIDCCallback(c *fiber.Ctx) (string, error) {

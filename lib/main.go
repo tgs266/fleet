@@ -61,13 +61,23 @@ func setupBackend(flags Flags) *api.API {
 	manager := client.NewClientManager(*flags.useAuth)
 
 	if flags.oidcIssuerUrl != nil {
-		manager.InitializeOIDC(oidc.OIDCConfig{
+		err := manager.InitializeOIDC(oidc.OIDCConfig{
 			IssuerURL:        *flags.oidcIssuerUrl,
 			ClientID:         *flags.oidcClientId,
 			ClientSecret:     *flags.oidcClientSecret,
 			Host:             *flags.host,
 			UseOfflineAccess: true,
 		})
+		if err != nil {
+			logging.INFO(oidc.OIDCConfig{
+				IssuerURL:        *flags.oidcIssuerUrl,
+				ClientID:         *flags.oidcClientId,
+				ClientSecret:     *flags.oidcClientSecret,
+				Host:             *flags.host,
+				UseOfflineAccess: true,
+			})
+			logging.ERROR(err)
+		}
 	}
 
 	app := api.New(manager, createFiberConfig())
