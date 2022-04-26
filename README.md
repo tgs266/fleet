@@ -33,8 +33,13 @@ Then just fire up a proxy
 ```
 kubectl proxy
 ```
-
 And then go to <http://localhost:8001/api/v1/namespaces/fleet/services/fleet/proxy/#/>
+
+Or port forward the pod
+```
+kubectl port-forward POD 9095:9095
+```
+And go to <http://localhost:9095/#/>
 
 ### From source
 
