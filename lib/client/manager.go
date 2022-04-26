@@ -154,11 +154,13 @@ func (client *ClientManager) buildConfig() (*rest.Config, error) {
 func (client *ClientManager) Wrap(authInfo *api.AuthInfo, cfg *rest.Config) (*rest.Config, error) {
 
 	cmdCfg := api.NewConfig()
-	cmdCfg.Clusters["kubernetes"] = &api.Cluster{
-		Server:                   cfg.Host,
-		CertificateAuthority:     cfg.TLSClientConfig.CAFile,
-		CertificateAuthorityData: cfg.TLSClientConfig.CAData,
-		InsecureSkipTLSVerify:    cfg.TLSClientConfig.Insecure,
+	if cfg != nil {
+		cmdCfg.Clusters["kubernetes"] = &api.Cluster{
+			Server:                   cfg.Host,
+			CertificateAuthority:     cfg.TLSClientConfig.CAFile,
+			CertificateAuthorityData: cfg.TLSClientConfig.CAData,
+			InsecureSkipTLSVerify:    cfg.TLSClientConfig.Insecure,
+		}
 	}
 	cmdCfg.AuthInfos["kubernetes"] = authInfo
 	cmdCfg.Contexts["kubernetes"] = &api.Context{
