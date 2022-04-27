@@ -4,29 +4,9 @@
 /* eslint-disable prefer-destructuring */
 /* eslint-disable prefer-rest-params */
 /* eslint-disable no-param-reassign */
-function normalize(strArray) {
+
+function joinLoop(strArray) {
     const resultArray = [];
-    if (strArray.length === 0) {
-        return '';
-    }
-
-    if (typeof strArray[0] !== 'string') {
-        throw new TypeError(`Url must be a string. Received ${strArray[0]}`);
-    }
-
-    // If the first part is a plain protocol, we combine it with the next part.
-    if (strArray[0].match(/^[^/:]+:\/*$/) && strArray.length > 1) {
-        const first = strArray.shift();
-        strArray[0] = first + strArray[0];
-    }
-
-    // There must be two or three slashes in the file protocol, two slashes in anything else.
-    if (strArray[0].match(/^file:\/\/\//)) {
-        strArray[0] = strArray[0].replace(/^([^/:]+):\/*/, '$1:///');
-    } else {
-        strArray[0] = strArray[0].replace(/^([^/:]+):\/*/, '$1://');
-    }
-
     for (let i = 0; i < strArray.length; i++) {
         let component = strArray[i];
 
@@ -52,6 +32,32 @@ function normalize(strArray) {
 
         resultArray.push(component);
     }
+    return resultArray;
+}
+
+function normalize(strArray) {
+    if (strArray.length === 0) {
+        return '';
+    }
+
+    if (typeof strArray[0] !== 'string') {
+        throw new TypeError(`Url must be a string. Received ${strArray[0]}`);
+    }
+
+    // If the first part is a plain protocol, we combine it with the next part.
+    if (strArray[0].match(/^[^/:]+:\/*$/) && strArray.length > 1) {
+        const first = strArray.shift();
+        strArray[0] = first + strArray[0];
+    }
+
+    // There must be two or three slashes in the file protocol, two slashes in anything else.
+    if (strArray[0].match(/^file:\/\/\//)) {
+        strArray[0] = strArray[0].replace(/^([^/:]+):\/*/, '$1:///');
+    } else {
+        strArray[0] = strArray[0].replace(/^([^/:]+):\/*/, '$1://');
+    }
+
+    const resultArray = joinLoop(strArray);
 
     let str = resultArray.join('/');
     // Each input component is now separated by a single slash except the possible first plain protocol part.
