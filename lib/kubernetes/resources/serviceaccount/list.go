@@ -23,15 +23,22 @@ func List(K8 *kubernetes.K8Client, namespace string, selector *types.DataSelecto
 		serviceAccounts = FromComparable(selector.Items)
 	}
 
-	resp := []ServiceAccountMeta{}
+	items := []ServiceAccountMeta{}
 	for _, sa := range serviceAccounts.Items {
-		resp = append(resp, BuildServiceAccountMeta(&sa))
+		items = append(items, BuildServiceAccountMeta(&sa))
+	}
+	resp := &types.PaginationResponse{
+		Items: items,
+		Count: len(items),
 	}
 
-	return &types.PaginationResponse{
-		Items:  resp,
-		Count:  len(resp),
-		Total:  selector.TotalItemCount,
-		Offset: selector.Offset,
-	}, nil
+	if selector != nil {
+		resp.Total = selector.TotalItemCount
+		resp.Offset = selector.Offset
+	} else {
+		resp.Total = resp.Count
+		resp.Offset = 0
+	}
+
+	return resp, nil
 }
