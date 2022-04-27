@@ -69,8 +69,8 @@ func TestGet(t *testing.T) {
 			}, test.targetNamespace, test.targetName)
 
 			assert.Nil(t, err)
-			assert.Equal(t, test.targetNamespace, sa.Meta.Namespace)
-			assert.Equal(t, test.targetName, sa.Meta.Name)
+			assert.Equal(t, test.targetNamespace, sa.ServiceAccountMeta.Namespace)
+			assert.Equal(t, test.targetName, sa.ServiceAccountMeta.Name)
 
 		})
 	}

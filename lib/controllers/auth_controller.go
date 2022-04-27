@@ -51,6 +51,14 @@ func CanI(c *fiber.Ctx, client *client.ClientManager) error {
 	return c.JSON(resp)
 }
 
+func UsingAuth(c *fiber.Ctx, client *client.ClientManager) error {
+	return c.JSON(struct {
+		UsingAuth bool `json:"usingAuth"`
+	}{
+		UsingAuth: client.UseAuth,
+	})
+}
+
 func Login(c *fiber.Ctx, client *client.ClientManager) error {
 	body := new(auth.LoginRequest)
 

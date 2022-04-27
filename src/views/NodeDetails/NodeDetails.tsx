@@ -17,6 +17,8 @@ import NodeResourceInformation from './NodeResourceInformation';
 import PodTable from '../../components/PodTable';
 import { TableSort } from '../../components/SortableTableHeaderCell';
 import { Pagination } from '../../models/component.model';
+import LabeledAnnotationsTagList from '../../components/AnnotationsTagList';
+import LabeledLabelsTagList from '../../components/LabelsTagList';
 
 interface INodeDetailsState {
     node: Node;
@@ -140,35 +142,11 @@ class NodeDetails extends React.Component<IWithRouterProps, INodeDetailsState> {
                                     {node.uid}
                                 </LabeledText>
                             </div>
-                            <div style={{ marginTop: '0.25em' }}>
-                                {node.labels && (
-                                    <Label label="LABELS">
-                                        <TagList spacing="0.25em">
-                                            {Object.keys(node.labels).map((key) => (
-                                                <Tag intent={Intent.NONE} round>
-                                                    <Text small>
-                                                        {key}: {node.labels[key]}
-                                                    </Text>
-                                                </Tag>
-                                            ))}
-                                        </TagList>
-                                    </Label>
-                                )}
+                            <div style={{ marginTop: '0.25em', display: 'flex' }}>
+                                <LabeledLabelsTagList obj={node} />
                             </div>
-                            <div style={{ marginTop: '0.25em' }}>
-                                {node.annotations && (
-                                    <Label label="ANNOTATIONS">
-                                        <TagList spacing="0.25em">
-                                            {Object.keys(node.annotations).map((key) => (
-                                                <Tag intent={Intent.NONE} round>
-                                                    <Text small>
-                                                        {key}: {node.annotations[key]}
-                                                    </Text>
-                                                </Tag>
-                                            ))}
-                                        </TagList>
-                                    </Label>
-                                )}
+                            <div style={{ marginTop: '0.25em', display: 'flex' }}>
+                                <LabeledAnnotationsTagList obj={node} />
                             </div>
                         </InfoCard>
                     </div>

@@ -1,9 +1,29 @@
+/* eslint-disable import/no-cycle */
 /* eslint-disable object-shorthand */
 import axios, { AxiosResponse } from 'axios';
 import urlJoin from '../utils/urljoin';
+import api from './axios.service';
 
 export default class Auth {
     static base = urlJoin(window.location.href.replace(window.location.hash, ''), '/api/v1/auth');
+
+    static using(): Promise<AxiosResponse<{ usingAuth: boolean }>> {
+        if (process.env.TEST_ENV) {
+            return new Promise((resolve) => {
+                const x: AxiosResponse<{ usingAuth: boolean }> = {
+                    config: {},
+                    status: 200,
+                    statusText: 'asdf',
+                    headers: {},
+                    data: {
+                        usingAuth: true,
+                    },
+                };
+                resolve(x);
+            });
+        }
+        return axios.get(`${Auth.base}/`);
+    }
 
     static login(token: string): Promise<AxiosResponse<any>> {
         return axios.post(`${Auth.base}/login`, { token: token });
@@ -46,6 +66,6 @@ export default class Auth {
                 resolve(x);
             });
         }
-        return axios.get(`${Auth.base}/cani`, { params: { resource, verb, name, namespace } });
+        return api.get(`${Auth.base}/cani`, { params: { resource, verb, name, namespace } });
     }
 }

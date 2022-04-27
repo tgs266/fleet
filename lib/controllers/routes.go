@@ -37,7 +37,21 @@ func initializeServiceAccountRoutes(app *api.API) {
 	app.Get("/api/v1/serviceaccounts/:namespace/:name", GetServiceAccount)
 }
 
+func initializeRoleRoutes(app *api.API) {
+	app.Get("/api/v1/roles/:namespace/", GetRoles)
+	app.Get("/api/v1/roles/:namespace/:name", GetRole)
+
+	app.Get("/api/v1/clusterroles/", GetClusterRoles)
+	app.Get("/api/v1/clusterroles/:name", GetClusterRole)
+}
+
+func initializeRoleBindingRoutes(app *api.API) {
+	app.Get("/api/v1/rolebindings/:namespace/", GetRoleBindings)
+	app.Get("/api/v1/rolebindings/:namespace/:name", GetRoleBinding)
+}
+
 func initializeOtherRoutes(app *api.API) {
+	app.Get("/api/v1/auth/", UsingAuth)
 	app.Get("/api/v1/auth/cani", CanI)
 	app.Post("/api/v1/auth/login", Login)
 	app.Post("/api/v1/auth/refresh", Refresh)
@@ -63,5 +77,7 @@ func InitializeRoutes(app *api.API) {
 	initializeNodeRoutes(app)
 	initializeServiceRoutes(app)
 	initializeServiceAccountRoutes(app)
+	initializeRoleRoutes(app)
+	initializeRoleBindingRoutes(app)
 	initializeOtherRoutes(app)
 }

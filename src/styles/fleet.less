@@ -50,6 +50,10 @@ html {
     font-size: 18px;
 }
 
+.bp4-ui-text.muted {
+    color: @gray1;
+}
+
 
 .fleet.fleet-blueprint-theme {
     background: @light-gray5;
@@ -190,6 +194,16 @@ html {
     }
 
     .pod-container-child {
+        &:first-child {
+            border-radius: 3px 3px 0px 0px;
+        }
+        border-radius: 0px 0px 0px 0px;
+        &:last-child {
+            border-radius: 0px 0px 3px 3px;
+        }
+    }
+
+    .rule-accordion-list-child {
         &:first-child {
             border-radius: 3px 3px 0px 0px;
         }

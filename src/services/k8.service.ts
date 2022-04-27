@@ -9,6 +9,9 @@ import Namespaces from './k8/namespace.service';
 import { JSONObjectType } from '../models/json.model';
 import api from './axios.service';
 import ServiceAccounts from './k8/serviceaccount.service';
+import Roles from './k8/role.service';
+import ClusterRoles from './k8/clusterrole.service';
+import RoleBindings from './k8/rolebinding.service';
 
 export default class K8 {
     static deployments = Deployments;
@@ -26,6 +29,12 @@ export default class K8 {
     static namespaces = Namespaces;
 
     static serviceAccounts = ServiceAccounts;
+
+    static roles = Roles;
+
+    static clusterRoles = ClusterRoles;
+
+    static roleBindings = RoleBindings;
 
     static getFilterProperties(): Promise<AxiosResponse<JSONObjectType<string>>> {
         return api.get('/api/v1/filters/properties');

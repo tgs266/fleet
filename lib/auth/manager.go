@@ -22,12 +22,17 @@ func New() *AuthManager {
 func (self *AuthManager) ExtractAuthInfo(c *fiber.Ctx) (*api.AuthInfo, error) {
 	authHeader := string(c.Request().Header.Peek("Authorization"))
 	jweToken := string(c.Request().Header.Peek("jweToken"))
+	impersonate := string(c.Request().Header.Peek("Impersonate-User"))
 
 	// check authheader first, fail if it is invalid
 	if strings.HasPrefix(authHeader, "Bearer ") {
 		authHeader = strings.TrimPrefix(authHeader, "Bearer ")
 		if len(authHeader) > 0 {
-			return &api.AuthInfo{Token: authHeader}, nil
+			authInfo := &api.AuthInfo{Token: authHeader}
+			if len(impersonate) > 0 {
+				authInfo.Impersonate = impersonate
+			}
+			return authInfo, nil
 		} else {
 			return nil, fleetErrs.NewInvalidBearerToken()
 		}
@@ -37,6 +42,9 @@ func (self *AuthManager) ExtractAuthInfo(c *fiber.Ctx) (*api.AuthInfo, error) {
 		authInfo, err := self.jweManager.Decrypt(jweToken)
 		if err != nil {
 			return nil, err
+		}
+		if len(impersonate) > 0 {
+			authInfo.Impersonate = impersonate
 		}
 		return authInfo, nil
 	}

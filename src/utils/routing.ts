@@ -19,3 +19,9 @@ export const buildLinkToService = (namespace: string, serviceName: string) =>
 export const buildLinkToNode = (nodeName: string) => `/nodes/${nodeName}`;
 
 export const buildLinkToNamespace = (ns: string) => `/namespaces/${ns}`;
+
+export const buildLinkToRole = (ns: string, roleName: string) => `/roles/${ns}/${roleName}`;
+export const buildLinkToRoleBinding = (ns: string, roleBindingName: string) =>
+    `/rolebindings/${ns}/${roleBindingName}`;
+
+export const buildLinkToServiceAccount = (ns: string, sa: string) => `/serviceaccounts/${ns}/${sa}`;

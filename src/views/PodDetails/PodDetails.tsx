@@ -1,6 +1,6 @@
 /* eslint-disable react/static-property-placement */
 import * as React from 'react';
-import { Button, Intent, Menu, MenuItem, Tag } from '@blueprintjs/core';
+import { Button, Intent, Menu, MenuItem } from '@blueprintjs/core';
 import { AxiosError } from 'axios';
 import { Link } from 'react-router-dom';
 import { IWithRouterProps, withRouter } from '../../utils/withRouter';
@@ -12,10 +12,8 @@ import TitledCard from '../../components/TitledCard';
 import { IBreadcrumb, NavContext } from '../../layouts/Navigation';
 import InfoCard from '../../components/InfoCard';
 import LabeledText from '../../components/LabeledText';
-import Label from '../../components/Label';
 import Text from '../../components/Text/Text';
 import AgeText from '../../components/AgeText';
-import TagList from '../../components/TagList';
 import PodEvents from './PodEvents';
 import TwoButtonDialog from '../../components/Dialogs/TwoButtonDialog';
 import Toaster, { showToastWithActionInterval } from '../../services/toast.service';
@@ -25,6 +23,8 @@ import { buildLinkToNode } from '../../utils/routing';
 import { JSONObject } from '../../models/json.model';
 import TextEditDialog from '../../components/Dialogs/TextEditDialog';
 import { FleetError } from '../../models/base';
+import LabeledAnnotationsTagList from '../../components/AnnotationsTagList';
+import LabeledLabelsTagList from '../../components/LabelsTagList';
 
 interface IPodDetailsState {
     pod: Pod;
@@ -214,34 +214,10 @@ class PodDetails extends React.Component<IWithRouterProps, IPodDetailsState> {
                                 </LabeledText>
                             </div>
                             <div style={{ marginTop: '0.25em', display: 'flex' }}>
-                                {pod.labels && (
-                                    <Label label="LABELS">
-                                        <TagList>
-                                            {Object.keys(pod.labels).map((key) => (
-                                                <Tag key={key} intent={Intent.NONE} round>
-                                                    <Text small>
-                                                        {key}: {pod.labels[key]}
-                                                    </Text>
-                                                </Tag>
-                                            ))}
-                                        </TagList>
-                                    </Label>
-                                )}
+                                <LabeledLabelsTagList obj={pod} />
                             </div>
                             <div style={{ marginTop: '0.25em', display: 'flex' }}>
-                                {pod.annotations && (
-                                    <Label label="ANNOTATIONS">
-                                        <TagList>
-                                            {Object.keys(pod.annotations).map((key) => (
-                                                <Tag key={key} intent={Intent.NONE} round>
-                                                    <Text small>
-                                                        {key}: {pod.annotations[key]}
-                                                    </Text>
-                                                </Tag>
-                                            ))}
-                                        </TagList>
-                                    </Label>
-                                )}
+                                <LabeledAnnotationsTagList obj={pod} />
                             </div>
                         </InfoCard>
                     </div>
