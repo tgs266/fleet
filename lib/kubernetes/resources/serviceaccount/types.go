@@ -15,7 +15,7 @@ type ServiceAccountMeta struct {
 }
 
 type ServiceAccount struct {
-	Meta ServiceAccountMeta `json:",inline"`
+	ServiceAccountMeta `json:",inline"`
 }
 
 func BuildServiceAccountMeta(sa *v1.ServiceAccount) ServiceAccountMeta {
@@ -32,6 +32,6 @@ func BuildServiceAccountMeta(sa *v1.ServiceAccount) ServiceAccountMeta {
 func BuildServiceAccount(sa *v1.ServiceAccount) *ServiceAccount {
 	meta := BuildServiceAccountMeta(sa)
 	return &ServiceAccount{
-		Meta: meta,
+		ServiceAccountMeta: meta,
 	}
 }

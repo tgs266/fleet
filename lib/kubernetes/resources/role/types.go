@@ -15,8 +15,8 @@ type RoleMeta struct {
 }
 
 type Role struct {
-	Meta  RoleMeta          `json:",inline"`
-	Rules []rbac.PolicyRule `json:"rules"`
+	RoleMeta `json:",inline"`
+	Rules    []rbac.PolicyRule `json:"rules"`
 }
 
 func BuildRoleMeta(role *rbac.Role) RoleMeta {
@@ -33,7 +33,7 @@ func BuildRoleMeta(role *rbac.Role) RoleMeta {
 func BuildRole(role *rbac.Role) *Role {
 	meta := BuildRoleMeta(role)
 	return &Role{
-		Meta:  meta,
-		Rules: role.Rules,
+		RoleMeta: meta,
+		Rules:    role.Rules,
 	}
 }

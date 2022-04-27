@@ -69,7 +69,7 @@ func TestGet(t *testing.T) {
 			}, test.targetName)
 
 			assert.Nil(t, err)
-			assert.Equal(t, test.targetName, role.Meta.Name)
+			assert.Equal(t, test.targetName, role.ClusterRoleMeta.Name)
 
 		})
 	}

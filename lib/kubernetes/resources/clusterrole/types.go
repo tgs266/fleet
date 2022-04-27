@@ -14,8 +14,8 @@ type ClusterRoleMeta struct {
 }
 
 type ClusterRole struct {
-	Meta  ClusterRoleMeta   `json:",inline"`
-	Rules []rbac.PolicyRule `json:"rules"`
+	ClusterRoleMeta `json:",inline"`
+	Rules           []rbac.PolicyRule `json:"rules"`
 }
 
 func BuildClusterRoleMeta(role *rbac.ClusterRole) ClusterRoleMeta {
@@ -31,7 +31,7 @@ func BuildClusterRoleMeta(role *rbac.ClusterRole) ClusterRoleMeta {
 func BuildClusterRole(role *rbac.ClusterRole) *ClusterRole {
 	meta := BuildClusterRoleMeta(role)
 	return &ClusterRole{
-		Meta:  meta,
-		Rules: role.Rules,
+		ClusterRoleMeta: meta,
+		Rules:           role.Rules,
 	}
 }
