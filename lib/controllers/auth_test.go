@@ -81,6 +81,7 @@ func TestGetOIDC(t *testing.T) {
 		IssuerURL:        m.Issuer(),
 		ClientID:         m.ClientID,
 		ClientSecret:     m.ClientSecret,
+		Host:             m.Server.Addr,
 		UseOfflineAccess: false,
 	})
 
@@ -94,21 +95,19 @@ func TestGetOIDC(t *testing.T) {
 
 	res, _ := app.Test(req)
 
-	defer res.Body.Close()
-
-	var j string
+	var j struct {
+		URL string `json:"url"`
+	}
 	err := json.NewDecoder(res.Body).Decode(&j)
 	assert.Nil(t, err)
 
-	req2, _ := http.NewRequest("GET", j, nil)
+	req2, _ := http.NewRequest("GET", j.URL, nil)
 	req2.AddCookie(res.Cookies()[0])
 	req2.AddCookie(res.Cookies()[1])
 	req2.AddCookie(res.Cookies()[2])
 
 	res2, err := http.DefaultClient.Do(req2)
 	assert.Nil(t, err)
-
-	defer res2.Body.Close()
 
 	var j2 interface{}
 	err = json.NewDecoder(res2.Body).Decode(&j2)
@@ -155,4 +154,15 @@ func TestRefresh(t *testing.T) {
 	req := httptest.NewRequest(http.MethodPost, "/api/v1/auth/refresh", bytes.NewBuffer(db))
 
 	app.Test(req)
+}
+
+func TestCanI(t *testing.T) {
+	app := setupApp()
+
+	app.Get("/api/v1/auth/cani", CanI)
+
+	req := httptest.NewRequest(http.MethodGet, "/api/v1/auth/cani?verb=list&resource=pods", nil)
+
+	_, err := app.Test(req)
+	assert.Nil(t, err)
 }

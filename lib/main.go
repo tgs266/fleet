@@ -60,7 +60,7 @@ func parseFlags() Flags {
 func setupBackend(flags Flags) *api.API {
 	manager := client.NewClientManager(*flags.useAuth)
 
-	if flags.oidcIssuerUrl != nil {
+	if *flags.oidcIssuerUrl != "" {
 		err := manager.InitializeOIDC(oidc.OIDCConfig{
 			IssuerURL:        *flags.oidcIssuerUrl,
 			ClientID:         *flags.oidcClientId,
@@ -69,13 +69,6 @@ func setupBackend(flags Flags) *api.API {
 			UseOfflineAccess: true,
 		})
 		if err != nil {
-			logging.INFO(oidc.OIDCConfig{
-				IssuerURL:        *flags.oidcIssuerUrl,
-				ClientID:         *flags.oidcClientId,
-				ClientSecret:     *flags.oidcClientSecret,
-				Host:             *flags.host,
-				UseOfflineAccess: true,
-			})
 			logging.ERROR(err)
 		}
 	}
@@ -107,7 +100,7 @@ func setupBackend(flags Flags) *api.API {
 	logging.INFO("initializing routing")
 	controllers.InitializeRoutes(app)
 
-	if flags.oidcIssuerUrl != nil {
+	if *flags.oidcIssuerUrl != "" {
 		logging.INFO("initializing OIDC routing")
 		controllers.AddOIDCRoutes(app)
 	} else {

@@ -8,6 +8,7 @@ import Nodes from './k8/node.service';
 import Namespaces from './k8/namespace.service';
 import { JSONObjectType } from '../models/json.model';
 import api from './axios.service';
+import ServiceAccounts from './k8/serviceaccount.service';
 
 export default class K8 {
     static deployments = Deployments;
@@ -23,6 +24,8 @@ export default class K8 {
     static nodes = Nodes;
 
     static namespaces = Namespaces;
+
+    static serviceAccounts = ServiceAccounts;
 
     static getFilterProperties(): Promise<AxiosResponse<JSONObjectType<string>>> {
         return api.get('/api/v1/filters/properties');

@@ -36,6 +36,27 @@ func GetTestClient() *K8Client {
 		}),
 	}
 
+	serviceAccounts := []runtime.Object{
+		&corev1.ServiceAccount{
+			ObjectMeta: metav1.ObjectMeta{
+				Name:      "sa1",
+				Namespace: "namespace1",
+				Labels: map[string]string{
+					"k8s-app": "asdf",
+				},
+			},
+		},
+		&corev1.ServiceAccount{
+			ObjectMeta: metav1.ObjectMeta{
+				Name:      "sa2",
+				Namespace: "namespace1",
+				Labels: map[string]string{
+					"k8s-app": "asdf",
+				},
+			},
+		},
+	}
+
 	deployments := []runtime.Object{
 		&appsv1.Deployment{
 			ObjectMeta: metav1.ObjectMeta{
@@ -59,7 +80,13 @@ func GetTestClient() *K8Client {
 		},
 	}
 
-	client := fake.NewSimpleClientset(append(append(nodes, deployments...), pods...)...)
+	objs := []runtime.Object{}
+	objs = append(objs, deployments...)
+	objs = append(objs, pods...)
+	objs = append(objs, nodes...)
+	objs = append(objs, serviceAccounts...)
+
+	client := fake.NewSimpleClientset(objs...)
 	return &K8Client{
 		K8: client,
 	}

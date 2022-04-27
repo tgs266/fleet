@@ -17,6 +17,7 @@ import PodList from './views/PodList/PodList';
 import Namespace from './views/Namespace/Namespace';
 import NamespaceList from './views/NamespaceList/NamespaceList';
 import ServiceList from './views/ServiceList/ServiceList';
+import ServiceAccountList from './views/ServiceAccountList/ServiceAccountList';
 
 function getCookie(name: string) {
     const value = `; ${document.cookie}`;
@@ -64,6 +65,8 @@ function App() {
 
                 <Route path="namespaces" element={<NamespaceList />} />
                 <Route path="namespaces/:namespace" element={<Namespace />} />
+
+                <Route path="serviceAccounts/" element={<ServiceAccountList />} />
             </Route>
         </Routes>
     );
