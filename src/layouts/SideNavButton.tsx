@@ -1,14 +1,23 @@
 import * as React from 'react';
-import { Icon, Position, IconName } from '@blueprintjs/core';
+import { Icon, Position, IconName, Menu, MenuItem } from '@blueprintjs/core';
 import { useLocation, useNavigate } from 'react-router';
-import { Tooltip2 } from '@blueprintjs/popover2';
+import { Tooltip2, Popover2 } from '@blueprintjs/popover2';
 
 export interface NavButton {
+    type: string;
+    children?: NavMenuItem[];
+    target?: string;
+    icon: IconName;
+    id?: string;
+    name?: string;
+    activeSelector?: (arg: string) => boolean;
+}
+
+export interface NavMenuItem {
     target: string;
     icon: IconName;
     id: string;
     name?: string;
-    activeSelector?: (arg: string) => boolean;
 }
 
 export default function SideNavButton(props: NavButton) {
@@ -22,25 +31,53 @@ export default function SideNavButton(props: NavButton) {
         active = loc.pathname.startsWith(props.target);
     }
 
-    const inner = (
-        <div
-            className={`sidebar-icon no-outline ${active ? 'sidebar-active' : ''}`}
-            id={props.id}
-            onClick={() => {
-                navigate(props.target);
-            }}
-        >
-            <Icon size={22} icon={props.icon} />
-        </div>
-    );
-
-    if (props.name) {
-        return (
-            <Tooltip2 position={Position.RIGHT} content={props.name} hoverOpenDelay={0}>
-                {inner}
-            </Tooltip2>
+    if (props.type === 'button') {
+        const inner = (
+            <div
+                className={`sidebar-icon no-outline ${active ? 'sidebar-active' : ''}`}
+                id={props.id}
+                onClick={() => {
+                    navigate(props.target);
+                }}
+            >
+                <Icon size={22} icon={props.icon} />
+            </div>
         );
+
+        if (props.name) {
+            return (
+                <Tooltip2 position={Position.RIGHT} content={props.name} hoverOpenDelay={0}>
+                    {inner}
+                </Tooltip2>
+            );
+        }
+        return inner;
     }
 
-    return inner;
+    const menu = (
+        <Menu>
+            {props.children.map((c) => (
+                <MenuItem
+                    key={c.id}
+                    onClick={() => navigate(c.target)}
+                    text={c.name}
+                    icon={c.icon}
+                    id={c.id}
+                />
+            ))}
+        </Menu>
+    );
+
+    const btn = (
+        <Popover2 popoverClassName="bp4-dark" content={menu} position={Position.RIGHT}>
+            <div
+                className={`sidebar-icon no-outline ${active ? 'sidebar-active' : ''}`}
+                id={props.id}
+            >
+                <Icon size={22} icon={props.icon} />
+            </div>
+        </Popover2>
+    );
+
+    return btn;
 }

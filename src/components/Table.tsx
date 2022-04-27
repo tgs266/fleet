@@ -1,5 +1,6 @@
 import * as React from 'react';
 import PropTypes from 'prop-types'; // ES6
+import Text from './Text/Text';
 
 export interface PaginationProps {
     page: number;
@@ -10,6 +11,7 @@ export interface PaginationProps {
 
 export default function Table(props: {
     className?: string;
+    title?: string;
     style?: React.CSSProperties;
     children: PropTypes.ReactNodeLike;
 }) {
@@ -22,11 +24,14 @@ export default function Table(props: {
         style = { width: '100%', ...style };
     }
     return (
-        <table
-            className={`${props.className} bp4-html-table bp4-html-table-condensed bp4-html-table-striped`}
-            style={style}
-        >
-            {children}
-        </table>
+        <div>
+            {props.title && <Text large>{props.title}</Text>}
+            <table
+                className={`${props.className} bp4-html-table bp4-html-table-condensed bp4-html-table-striped`}
+                style={style}
+            >
+                {children}
+            </table>
+        </div>
     );
 }

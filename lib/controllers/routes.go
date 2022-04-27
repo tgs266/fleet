@@ -37,6 +37,11 @@ func initializeServiceAccountRoutes(app *api.API) {
 	app.Get("/api/v1/serviceaccounts/:namespace/:name", GetServiceAccount)
 }
 
+func initializeRoleRoutes(app *api.API) {
+	app.Get("/api/v1/roles/:namespace/", GetRoles)
+	app.Get("/api/v1/roles/:namespace/:name", GetRole)
+}
+
 func initializeOtherRoutes(app *api.API) {
 	app.Get("/api/v1/auth/cani", CanI)
 	app.Post("/api/v1/auth/login", Login)
@@ -63,5 +68,6 @@ func InitializeRoutes(app *api.API) {
 	initializeNodeRoutes(app)
 	initializeServiceRoutes(app)
 	initializeServiceAccountRoutes(app)
+	initializeRoleRoutes(app)
 	initializeOtherRoutes(app)
 }
