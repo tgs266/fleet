@@ -19,6 +19,7 @@ import NamespaceList from './views/NamespaceList/NamespaceList';
 import ServiceList from './views/ServiceList/ServiceList';
 import ServiceAccountList from './views/ServiceAccountList/ServiceAccountList';
 import RoleList from './views/RoleList/RoleList';
+import RoleDetails from './views/RoleDetails/RoleDetails';
 
 function getCookie(name: string) {
     const value = `; ${document.cookie}`;
@@ -70,6 +71,7 @@ function App() {
                 <Route path="serviceAccounts/" element={<ServiceAccountList />} />
 
                 <Route path="roles/" element={<RoleList />} />
+                <Route path="roles/:namespace/:roleName" element={<RoleDetails />} />
             </Route>
         </Routes>
     );

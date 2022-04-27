@@ -6,20 +6,11 @@ import { setupServer } from 'msw/node';
 import '@testing-library/jest-dom';
 import Layout from '../../layouts/Layout';
 import { delay } from '../../testing/utils';
-import { RoleMeta } from '../../models/role.model';
 import Roles from '../../services/k8/role.service';
 import RoleList from './RoleList';
 import ClusterRoles from '../../services/k8/clusterrole.service';
 import { ClusterRoleMeta } from '../../models/clusterrole.model';
-
-const generateRole = (name: string): RoleMeta => ({
-    name,
-    namespace: 'asdf',
-    uid: name,
-    createdAt: 0,
-    labels: { adsf: 'asdf' },
-    annotations: { asdf: 'asdf' },
-});
+import { generateRole } from '../../testing/type_mocks';
 
 const generateClusterRole = (name: string): ClusterRoleMeta => ({
     name,
