@@ -12,6 +12,7 @@ type RoleBindingMeta struct {
 	CreatedAt   uint              `json:"createdAt"`
 	Labels      map[string]string `json:"labels"`
 	Annotations map[string]string `json:"annotations"`
+	RoleName    string            `json:"roleName"`
 }
 
 type RoleBinding struct {
@@ -27,6 +28,7 @@ func BuildRoleBindingMeta(binding *rbac.RoleBinding) RoleBindingMeta {
 		UID:         string(binding.UID),
 		Labels:      binding.Labels,
 		Annotations: common.CleanAnnotations(binding.GetAnnotations()),
+		RoleName:    binding.RoleRef.Name,
 	}
 }
 

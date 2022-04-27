@@ -2,7 +2,9 @@ package serviceaccount
 
 import (
 	"github.com/tgs266/fleet/lib/kubernetes/common"
+	"github.com/tgs266/fleet/lib/kubernetes/resources/rolebinding"
 	v1 "k8s.io/api/core/v1"
+	rbac "k8s.io/api/rbac/v1"
 )
 
 type ServiceAccountMeta struct {
@@ -16,6 +18,7 @@ type ServiceAccountMeta struct {
 
 type ServiceAccount struct {
 	ServiceAccountMeta `json:",inline"`
+	RoleBindings       []rolebinding.RoleBindingMeta `json:"roleBindings"`
 }
 
 func BuildServiceAccountMeta(sa *v1.ServiceAccount) ServiceAccountMeta {
@@ -29,9 +32,16 @@ func BuildServiceAccountMeta(sa *v1.ServiceAccount) ServiceAccountMeta {
 	}
 }
 
-func BuildServiceAccount(sa *v1.ServiceAccount) *ServiceAccount {
+func BuildServiceAccount(sa *v1.ServiceAccount, roleBindings *rbac.RoleBindingList) *ServiceAccount {
 	meta := BuildServiceAccountMeta(sa)
+
+	roleBindingMetas := []rolebinding.RoleBindingMeta{}
+	for _, item := range roleBindings.Items {
+		roleBindingMetas = append(roleBindingMetas, rolebinding.BuildRoleBindingMeta(&item))
+	}
+
 	return &ServiceAccount{
 		ServiceAccountMeta: meta,
+		RoleBindings:       roleBindingMetas,
 	}
 }
