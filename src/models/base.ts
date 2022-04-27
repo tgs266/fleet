@@ -39,3 +39,11 @@ export interface Filter {
     operator: string;
     value: number | string;
 }
+
+export interface Rule {
+    verbs: string[];
+    apiGroups: string[];
+    resources: string[];
+    resourceNames: string[];
+    nonResourceURLs: string[];
+}

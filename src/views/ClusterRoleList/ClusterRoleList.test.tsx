@@ -6,20 +6,9 @@ import { setupServer } from 'msw/node';
 import '@testing-library/jest-dom';
 import Layout from '../../layouts/Layout';
 import { delay } from '../../testing/utils';
-import { RoleMeta } from '../../models/role.model';
-import Roles from '../../services/k8/role.service';
-import RoleList from './RoleList';
-import ClusterRoles from '../../services/k8/clusterrole.service';
 import { ClusterRoleMeta } from '../../models/clusterrole.model';
-
-const generateRole = (name: string): RoleMeta => ({
-    name,
-    namespace: 'asdf',
-    uid: name,
-    createdAt: 0,
-    labels: { adsf: 'asdf' },
-    annotations: { asdf: 'asdf' },
-});
+import ClusterRoleList from './ClusterRoleList';
+import ClusterRoles from '../../services/k8/clusterrole.service';
 
 const generateClusterRole = (name: string): ClusterRoleMeta => ({
     name,
@@ -30,19 +19,6 @@ const generateClusterRole = (name: string): ClusterRoleMeta => ({
 });
 
 const server = setupServer(
-    rest.get(`${Roles.base}/*`, (req, res, ctx) => {
-        const count = 20;
-        const items = [];
-        for (let i = 0; i < count; i += 1) {
-            items.push(generateRole(`${i}-asdf`));
-        }
-        return res(
-            ctx.json({
-                items,
-                total: items.length,
-            })
-        );
-    }),
     rest.get(`${ClusterRoles.base}/*`, (req, res, ctx) => {
         const count = 20;
         const items = [];
@@ -67,7 +43,7 @@ test('renders without crashing', async () => {
         <MemoryRouter initialEntries={['/']}>
             <Routes>
                 <Route path="/" element={<Layout />}>
-                    <Route path="" element={<RoleList />} />
+                    <Route path="" element={<ClusterRoleList />} />
                 </Route>
             </Routes>
         </MemoryRouter>
@@ -80,17 +56,17 @@ test('can go forwards and backwards in table', async () => {
         <MemoryRouter initialEntries={['/']}>
             <Routes>
                 <Route path="/" element={<Layout />}>
-                    <Route path="" element={<RoleList />} />
+                    <Route path="" element={<ClusterRoleList />} />
                 </Route>
             </Routes>
         </MemoryRouter>
     );
 
     await delay(1000).then(async () => {
-        const forwardBtn = wrapper.getAllByTestId('next-page')[0];
+        const forwardBtn = wrapper.getByTestId('next-page');
         fireEvent.click(forwardBtn);
         await delay(1000).then(() => {
-            const backwardBtn = wrapper.getAllByTestId('prev-page')[0];
+            const backwardBtn = wrapper.getByTestId('prev-page');
             fireEvent.click(backwardBtn);
         });
     });

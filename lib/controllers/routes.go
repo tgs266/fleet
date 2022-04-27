@@ -40,6 +40,9 @@ func initializeServiceAccountRoutes(app *api.API) {
 func initializeRoleRoutes(app *api.API) {
 	app.Get("/api/v1/roles/:namespace/", GetRoles)
 	app.Get("/api/v1/roles/:namespace/:name", GetRole)
+
+	app.Get("/api/v1/clusterroles/", GetClusterRoles)
+	app.Get("/api/v1/clusterroles/:name", GetClusterRole)
 }
 
 func initializeOtherRoutes(app *api.API) {

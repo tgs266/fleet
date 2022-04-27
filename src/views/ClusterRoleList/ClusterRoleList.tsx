@@ -1,10 +1,9 @@
 import * as React from 'react';
 import { useNavContext } from '../../layouts/Navigation';
 import setOnce from '../../utils/breadcrumbs';
-import ClusterRoleTable from '../ClusterRoleList/ClusterRoleTable';
-import RoleTable from './RoleTable';
+import ClusterRoleTable from './ClusterRoleTable';
 
-export default function RoleList() {
+export default function ClusterRoleList() {
     const [, setState] = useNavContext();
     setOnce(setState, {
         breadcrumbs: [
@@ -17,10 +16,7 @@ export default function RoleList() {
     });
     return (
         <div style={{ margin: '1em' }}>
-            <RoleTable />
-            <div style={{ marginTop: '1em' }}>
-                <ClusterRoleTable />
-            </div>
+            <ClusterRoleTable />
         </div>
     );
 }

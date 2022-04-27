@@ -1,12 +1,4 @@
-import { NamespacedMeta } from './base';
-
-interface Rule {
-    verbs: string[];
-    apiGroups: string[];
-    resources: string[];
-    resourceNames: string[];
-    nonResourceURLs: string[];
-}
+import { NamespacedMeta, Rule } from './base';
 
 export interface RoleMeta extends NamespacedMeta {}
 
