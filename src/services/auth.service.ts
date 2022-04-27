@@ -25,4 +25,13 @@ export default class Auth {
     static canUseOIDC(): Promise<AxiosResponse<{ available: boolean }>> {
         return axios.get(`${Auth.base}/oauth2`);
     }
+
+    static canI(
+        resource: string,
+        verb: string,
+        name?: string,
+        namespace?: string
+    ): Promise<AxiosResponse<{ allowed: boolean }>> {
+        return axios.get(`${Auth.base}/cani`, { params: { resource, verb, name, namespace } });
+    }
 }
