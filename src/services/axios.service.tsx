@@ -17,16 +17,17 @@ export function getWSUrl(path: string): string {
 const api = axios.create();
 let dialog: HTMLDivElement = null;
 
-api.defaults.baseURL = `${window.location.href.replace(window.location.hash, '')}`;
+if (!process.env.TEST_ENV) {
+    api.defaults.baseURL = `${window.location.href.replace(window.location.hash, '')}`;
+    api.interceptors.request.use((config: AxiosRequestConfig<any>) => {
+        const token = localStorage.getItem('jwe');
+        if (token) {
+            config.headers.jweToken = token;
+        }
 
-api.interceptors.request.use((config: AxiosRequestConfig<any>) => {
-    const token = localStorage.getItem('jwe');
-    if (token) {
-        config.headers.jweToken = token;
-    }
-
-    return config;
-});
+        return config;
+    });
+}
 
 api.interceptors.response.use(
     (response: AxiosResponse<any, any> | Promise<AxiosResponse<any, any>>) => response,

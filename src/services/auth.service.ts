@@ -32,6 +32,20 @@ export default class Auth {
         name?: string,
         namespace?: string
     ): Promise<AxiosResponse<{ allowed: boolean }>> {
+        if (process.env.TEST_ENV) {
+            return new Promise((resolve) => {
+                const x: AxiosResponse<{ allowed: boolean }> = {
+                    config: {},
+                    status: 200,
+                    statusText: 'asdf',
+                    headers: {},
+                    data: {
+                        allowed: true,
+                    },
+                };
+                resolve(x);
+            });
+        }
         return axios.get(`${Auth.base}/cani`, { params: { resource, verb, name, namespace } });
     }
 }

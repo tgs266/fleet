@@ -10,8 +10,10 @@ import ServiceList from './ServiceList';
 import Services from '../../services/k8/service.service';
 import ServiceTable from './ServiceTable';
 import { delay } from '../../testing/utils';
+import Auth from '../../services/auth.service';
 
 const server = setupServer(
+    rest.get(`${Auth.base}/cani`, (req, res, ctx) => res(ctx.json({ allowed: true }))),
     rest.get(`${Services.base}/*`, (req, res, ctx) => {
         const count = 20;
         const items = [];
