@@ -16,8 +16,14 @@ func TestSetupBackend(t *testing.T) {
 	logging.Init(logging.LVL_INFO)
 
 	useAuth := true
+	str := "asdf"
+
 	flags := Flags{
-		useAuth: &useAuth,
+		useAuth:          &useAuth,
+		oidcIssuerUrl:    &str,
+		oidcClientId:     &str,
+		oidcClientSecret: &str,
+		host:             &str,
 	}
 
 	setupBackend(flags)
@@ -38,6 +44,7 @@ func TestSetupBackend2(t *testing.T) {
 		oidcIssuerUrl:    &str,
 		oidcClientId:     &str,
 		oidcClientSecret: &str,
+		host:             &str,
 	}
 
 	setupBackend(flags)
