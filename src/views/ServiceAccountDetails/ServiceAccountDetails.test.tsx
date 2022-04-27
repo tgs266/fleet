@@ -7,12 +7,11 @@ import '@testing-library/jest-dom';
 import ServiceAccountDetails from './ServiceAccountDetails';
 import Layout from '../../layouts/Layout';
 import { delay } from '../../testing/utils';
-import { generateRole, generateServiceAccount } from '../../testing/type_mocks';
-import Roles from '../../services/k8/role.service';
+import { generateServiceAccount } from '../../testing/type_mocks';
 import ServiceAccounts from '../../services/k8/serviceaccount.service';
 
-const generateRoleWithoutLabelsAndAnnotations = (name: string) => {
-    const role = generateRole(name);
+const generateServiceAccountWithoutLabelsAndAnnotations = (name: string) => {
+    const role = generateServiceAccount(name);
     role.annotations = {};
     role.labels = {};
     return role;
@@ -46,8 +45,8 @@ test('renders without crashing', async () => {
 
 test('renders without crashing without labels and annotations', async () => {
     await server.use(
-        rest.get(`${Roles.base}/test/test`, (req, res, ctx) =>
-            res(ctx.json(generateRoleWithoutLabelsAndAnnotations('test')))
+        rest.get(`${ServiceAccounts.base}/test/test`, (req, res, ctx) =>
+            res(ctx.json(generateServiceAccountWithoutLabelsAndAnnotations('test')))
         )
     );
 
@@ -83,7 +82,9 @@ test('can refresh', async () => {
     await waitFor(() => expect(wrapper.queryByTestId('infocard-title').innerHTML).toBe('test'));
 
     await server.use(
-        rest.get(`${Roles.base}/test/test`, (req, res, ctx) => res(ctx.json(generateRole('test1'))))
+        rest.get(`${ServiceAccounts.base}/test/test`, (req, res, ctx) =>
+            res(ctx.json(generateServiceAccount('test1')))
+        )
     );
 
     fireEvent.click(wrapper.getByTestId('refresh'));

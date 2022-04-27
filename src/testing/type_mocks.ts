@@ -3,9 +3,9 @@ import { Container, ContainerSpec } from '../models/container.model';
 import { Deployment } from '../models/deployment.model';
 import { Node } from '../models/node.model';
 import { Pod } from '../models/pod.model';
-import { RoleBinding, RoleMeta } from '../models/role.model';
+import { Role, RoleBinding } from '../models/role.model';
 import { ServiceMeta } from '../models/service.model';
-import { ServiceAccountMeta } from '../models/serviceaccount.model';
+import { ServiceAccount } from '../models/serviceaccount.model';
 import { SystemResources } from '../models/system.model';
 
 export const generateRoleBinding = (name: string): RoleBinding => ({
@@ -25,22 +25,42 @@ export const generateRoleBinding = (name: string): RoleBinding => ({
     ],
 });
 
-export const generateRole = (name: string): RoleMeta => ({
+export const generateRole = (name: string): Role => ({
     name,
     namespace: 'test',
     uid: name,
     createdAt: 0,
     labels: { adsf: 'asdf' },
     annotations: { asdf: 'asdf' },
+    rules: [
+        {
+            verbs: [],
+            apiGroups: ['asdf'],
+            nonResourceURLs: [],
+            resourceNames: [],
+            resources: ['pods'],
+        },
+    ],
 });
 
-export const generateServiceAccount = (name: string): ServiceAccountMeta => ({
+export const generateServiceAccount = (name: string): ServiceAccount => ({
     name,
     namespace: 'asdf',
     uid: name,
     createdAt: 0,
     labels: { adsf: 'asdf' },
     annotations: { asdf: 'asdf' },
+    roleBindings: [
+        {
+            name: 'asdf',
+            namespace: 'asdf',
+            roleName: 'asdf',
+            createdAt: 0,
+            labels: {},
+            annotations: {},
+            uid: 'UID',
+        },
+    ],
 });
 
 export const generatePod = (name: string): Pod => ({

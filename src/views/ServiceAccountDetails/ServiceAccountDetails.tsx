@@ -89,7 +89,6 @@ class ServiceAccountDetails extends React.Component<IWithRouterProps, IServiceAc
             return null;
         }
         const { serviceAccount } = this.state;
-        console.log(serviceAccount);
         return (
             <div>
                 <div style={{ margin: '1em', marginBottom: 0 }}>
