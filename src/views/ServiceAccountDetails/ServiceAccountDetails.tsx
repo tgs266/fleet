@@ -1,6 +1,6 @@
 /* eslint-disable react/static-property-placement */
 import * as React from 'react';
-import { Button, Intent, Tag, Card } from '@blueprintjs/core';
+import { Button, Card } from '@blueprintjs/core';
 import { Tooltip2, Classes } from '@blueprintjs/popover2';
 import { Link } from 'react-router-dom';
 import { IWithRouterProps, withRouter } from '../../utils/withRouter';
@@ -8,10 +8,7 @@ import K8 from '../../services/k8.service';
 import { IBreadcrumb, NavContext } from '../../layouts/Navigation';
 import InfoCard from '../../components/InfoCard';
 import LabeledText from '../../components/LabeledText';
-import Label from '../../components/Label';
-import Text from '../../components/Text/Text';
 import AgeText from '../../components/AgeText';
-import TagList from '../../components/TagList';
 import { ServiceAccount } from '../../models/serviceaccount.model';
 import Table from '../../components/Table';
 import TitledCard from '../../components/TitledCard';
@@ -21,6 +18,8 @@ import TableBody from '../../components/TableBody';
 import TableRow from '../../components/TableRow';
 import { createdAtToOrigination } from '../../utils/time';
 import { buildLinkToRole } from '../../utils/routing';
+import LabeledAnnotationsTagList from '../../components/AnnotationsTagList';
+import LabeledLabelsTagList from '../../components/LabelsTagList';
 
 interface IServiceAccountDetailsState {
     serviceAccount: ServiceAccount;
@@ -90,6 +89,7 @@ class ServiceAccountDetails extends React.Component<IWithRouterProps, IServiceAc
             return null;
         }
         const { serviceAccount } = this.state;
+        console.log(serviceAccount);
         return (
             <div>
                 <div style={{ margin: '1em', marginBottom: 0 }}>
@@ -110,34 +110,10 @@ class ServiceAccountDetails extends React.Component<IWithRouterProps, IServiceAc
                                 </LabeledText>
                             </div>
                             <div style={{ marginTop: '0.25em', display: 'flex' }}>
-                                {serviceAccount.labels && (
-                                    <Label label="LABELS">
-                                        <TagList>
-                                            {Object.keys(serviceAccount.labels).map((key) => (
-                                                <Tag key={key} intent={Intent.NONE} round>
-                                                    <Text small>
-                                                        {key}: {serviceAccount.labels[key]}
-                                                    </Text>
-                                                </Tag>
-                                            ))}
-                                        </TagList>
-                                    </Label>
-                                )}
+                                <LabeledLabelsTagList obj={serviceAccount} />
                             </div>
                             <div style={{ marginTop: '0.25em', display: 'flex' }}>
-                                {serviceAccount.annotations && (
-                                    <Label label="ANNOTATIONS">
-                                        <TagList>
-                                            {Object.keys(serviceAccount.annotations).map((key) => (
-                                                <Tag key={key} intent={Intent.NONE} round>
-                                                    <Text small>
-                                                        {key}: {serviceAccount.annotations[key]}
-                                                    </Text>
-                                                </Tag>
-                                            ))}
-                                        </TagList>
-                                    </Label>
-                                )}
+                                <LabeledAnnotationsTagList obj={serviceAccount} />
                             </div>
                         </InfoCard>
 

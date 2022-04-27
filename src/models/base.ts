@@ -47,3 +47,9 @@ export interface Rule {
     resourceNames: string[];
     nonResourceURLs: string[];
 }
+
+export interface Subject {
+    name: string;
+    namespace: string;
+    kind: string;
+}

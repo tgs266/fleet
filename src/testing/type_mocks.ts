@@ -3,10 +3,27 @@ import { Container, ContainerSpec } from '../models/container.model';
 import { Deployment } from '../models/deployment.model';
 import { Node } from '../models/node.model';
 import { Pod } from '../models/pod.model';
-import { RoleMeta } from '../models/role.model';
+import { RoleBinding, RoleMeta } from '../models/role.model';
 import { ServiceMeta } from '../models/service.model';
 import { ServiceAccountMeta } from '../models/serviceaccount.model';
 import { SystemResources } from '../models/system.model';
+
+export const generateRoleBinding = (name: string): RoleBinding => ({
+    name,
+    namespace: 'test',
+    uid: name,
+    createdAt: 0,
+    labels: { adsf: 'asdf' },
+    annotations: { asdf: 'asdf' },
+    roleName: 'asdf',
+    subjects: [
+        {
+            name: 'asdf',
+            namespace: 'asdf',
+            kind: 'group',
+        },
+    ],
+});
 
 export const generateRole = (name: string): RoleMeta => ({
     name,

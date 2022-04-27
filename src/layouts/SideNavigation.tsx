@@ -1,3 +1,4 @@
+import { Intent, Tag } from '@blueprintjs/core';
 import { AxiosResponse } from 'axios';
 import * as React from 'react';
 import Auth from '../services/auth.service';
@@ -51,6 +52,13 @@ const navBtns: NavButton[] = [
 
 export default function SideNavigation() {
     const [buttons, setButtons] = React.useState(navBtns);
+    const [usingAuth, setUsingAuth] = React.useState(false);
+
+    React.useEffect(() => {
+        Auth.using().then((r) => {
+            setUsingAuth(r.data.usingAuth);
+        });
+    }, []);
 
     React.useEffect(() => {
         const promiseArray: Promise<
@@ -63,6 +71,7 @@ export default function SideNavigation() {
         >[] = [];
         promiseArray.push(Auth.canI('serviceaccounts', 'list'));
         promiseArray.push(Auth.canI('roles', 'list'));
+        promiseArray.push(Auth.canI('rolebindings', 'list'));
 
         const menuItems: NavMenuItem[] = [];
 
@@ -88,6 +97,17 @@ export default function SideNavigation() {
                     });
                 }
             }
+            if (response[2].status === 'fulfilled') {
+                // role bindings
+                if (response[2].value.data.allowed) {
+                    menuItems.push({
+                        target: '/rolebindings',
+                        icon: 'inner-join',
+                        name: 'Role Bindings',
+                        id: 'RoleBindings',
+                    });
+                }
+            }
             if (menuItems.length !== 0) {
                 setButtons([
                     ...buttons,
@@ -107,6 +127,23 @@ export default function SideNavigation() {
                 {buttons.map((btn) => (
                     <SideNavButton key={btn.name} {...btn} />
                 ))}
+                <div style={{ flexGrow: 1 }} />
+                <SideNavButton
+                    key="user"
+                    icon="user"
+                    type="hover"
+                    hoverEle={
+                        <div>
+                            Authentication:
+                            <Tag
+                                style={{ marginLeft: '0.5em' }}
+                                intent={usingAuth ? Intent.SUCCESS : Intent.DANGER}
+                            >
+                                {usingAuth ? 'ENABLED' : 'DISABLED'}
+                            </Tag>
+                        </div>
+                    }
+                />
             </div>
         </div>
     );

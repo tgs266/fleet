@@ -6,6 +6,7 @@ import { Tooltip2, Popover2 } from '@blueprintjs/popover2';
 export interface NavButton {
     type: string;
     children?: NavMenuItem[];
+    hoverEle?: JSX.Element;
     target?: string;
     icon: IconName;
     id?: string;
@@ -53,31 +54,43 @@ export default function SideNavButton(props: NavButton) {
         }
         return inner;
     }
+    if (props.type === 'menu') {
+        const menu = (
+            <Menu>
+                {props.children.map((c) => (
+                    <MenuItem
+                        key={c.id}
+                        onClick={() => navigate(c.target)}
+                        text={c.name}
+                        icon={c.icon}
+                        id={c.id}
+                    />
+                ))}
+            </Menu>
+        );
 
-    const menu = (
-        <Menu>
-            {props.children.map((c) => (
-                <MenuItem
-                    key={c.id}
-                    onClick={() => navigate(c.target)}
-                    text={c.name}
-                    icon={c.icon}
-                    id={c.id}
-                />
-            ))}
-        </Menu>
-    );
+        const btn = (
+            <Popover2 popoverClassName="bp4-dark" content={menu} position={Position.RIGHT}>
+                <div
+                    className={`sidebar-icon no-outline ${active ? 'sidebar-active' : ''}`}
+                    id={props.id}
+                >
+                    <Icon size={22} icon={props.icon} />
+                </div>
+            </Popover2>
+        );
+        return btn;
+    }
 
     const btn = (
-        <Popover2 popoverClassName="bp4-dark" content={menu} position={Position.RIGHT}>
+        <Tooltip2 content={props.hoverEle} position={Position.RIGHT}>
             <div
                 className={`sidebar-icon no-outline ${active ? 'sidebar-active' : ''}`}
                 id={props.id}
             >
                 <Icon size={22} icon={props.icon} />
             </div>
-        </Popover2>
+        </Tooltip2>
     );
-
     return btn;
 }

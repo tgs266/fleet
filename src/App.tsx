@@ -21,6 +21,8 @@ import ServiceAccountList from './views/ServiceAccountList/ServiceAccountList';
 import RoleList from './views/RoleList/RoleList';
 import RoleDetails from './views/RoleDetails/RoleDetails';
 import ServiceAccountDetails from './views/ServiceAccountDetails/ServiceAccountDetails';
+import RoleBindingList from './views/RoleBindingList/RoleBindingList';
+import RoleBindingDetails from './views/RoleBindingDetails/RoleBindingDetails';
 
 function getCookie(name: string) {
     const value = `; ${document.cookie}`;
@@ -77,6 +79,12 @@ function App() {
 
                 <Route path="roles/" element={<RoleList />} />
                 <Route path="roles/:namespace/:roleName" element={<RoleDetails />} />
+
+                <Route path="rolebindings/" element={<RoleBindingList />} />
+                <Route
+                    path="rolebindings/:namespace/:roleBindingName"
+                    element={<RoleBindingDetails />}
+                />
             </Route>
         </Routes>
     );
