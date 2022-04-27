@@ -1,4 +1,4 @@
-package clusterrole
+package rolebinding
 
 import (
 	"testing"
@@ -20,11 +20,12 @@ func TestGet(t *testing.T) {
 		expectedCount   int
 	}{
 		{
-			name: "list_roles1",
+			name: "list_bindings1",
 			roles: []runtime.Object{
-				&rbac.ClusterRole{
+				&rbac.RoleBinding{
 					ObjectMeta: metav1.ObjectMeta{
-						Name: "asdf",
+						Name:      "asdf",
+						Namespace: "asdf",
 					},
 				},
 			},
@@ -33,16 +34,24 @@ func TestGet(t *testing.T) {
 			expectedCount:   1,
 		},
 		{
-			name: "list_roles1",
+			name: "list_bindings2",
 			roles: []runtime.Object{
-				&rbac.ClusterRole{
+				&rbac.RoleBinding{
 					ObjectMeta: metav1.ObjectMeta{
-						Name: "asdf1",
+						Name:      "asdf1",
+						Namespace: "asdf",
 					},
 				},
-				&rbac.ClusterRole{
+				&rbac.RoleBinding{
 					ObjectMeta: metav1.ObjectMeta{
-						Name: "asdf2",
+						Name:      "asdf2",
+						Namespace: "asdf",
+					},
+				},
+				&rbac.RoleBinding{
+					ObjectMeta: metav1.ObjectMeta{
+						Name:      "asdf2",
+						Namespace: "asdf-different",
 					},
 				},
 			},
@@ -57,10 +66,11 @@ func TestGet(t *testing.T) {
 			fakeClientset := fake.NewSimpleClientset(test.roles...)
 			role, err := Get(&kubernetes.K8Client{
 				K8: fakeClientset,
-			}, test.targetName)
+			}, test.targetNamespace, test.targetName)
 
 			assert.Nil(t, err)
-			assert.Equal(t, test.targetName, role.ClusterRoleMeta.Name)
+			assert.Equal(t, test.targetNamespace, role.RoleBindingMeta.Namespace)
+			assert.Equal(t, test.targetName, role.RoleBindingMeta.Name)
 
 		})
 	}
