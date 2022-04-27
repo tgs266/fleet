@@ -8,7 +8,7 @@ import { TableSort } from '../../components/SortableTableHeaderCell';
 import { Pagination } from '../../models/component.model';
 import { ServiceAccountMeta } from '../../models/serviceaccount.model';
 import K8 from '../../services/k8.service';
-import { buildLinkToNamespace } from '../../utils/routing';
+import { buildLinkToNamespace, buildLinkToServiceAccount } from '../../utils/routing';
 import getOffset from '../../utils/table';
 import { createdAtToHumanReadable, createdAtToOrigination } from '../../utils/time';
 
@@ -104,7 +104,11 @@ class ServiceAccountTable extends React.Component<
                             key: 'name',
                             columnName: 'Name',
                             sortableId: 'name',
-                            columnFunction: (row: ServiceAccountMeta) => row.name,
+                            columnFunction: (row: ServiceAccountMeta) => (
+                                <Link to={buildLinkToServiceAccount(row.namespace, row.name)}>
+                                    {row.name}
+                                </Link>
+                            ),
                         },
                         {
                             key: 'namespace',

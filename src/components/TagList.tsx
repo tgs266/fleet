@@ -17,17 +17,18 @@ export default function TagList(props: {
                 alignItems: 'center',
             }}
         >
-            {props.children.map((child: Tag, idx: number) => (
-                <div
-                    style={{
-                        ...props.chipStyle,
-                        margin: props.spacing || '0.25em',
-                        marginLeft: idx !== 0 ? null : 0,
-                    }}
-                >
-                    {child}
-                </div>
-            ))}
+            {props.children &&
+                props.children.map((child: Tag, idx: number) => (
+                    <div
+                        style={{
+                            ...props.chipStyle,
+                            margin: props.spacing || '0.25em',
+                            marginLeft: idx !== 0 ? null : 0,
+                        }}
+                    >
+                        {child}
+                    </div>
+                ))}
         </div>
     );
 }

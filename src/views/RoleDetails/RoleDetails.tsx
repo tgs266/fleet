@@ -11,6 +11,7 @@ import Text from '../../components/Text/Text';
 import AgeText from '../../components/AgeText';
 import TagList from '../../components/TagList';
 import { Role } from '../../models/role.model';
+import RuleAccordionList from './RuleAccordionList';
 
 interface IRoleDetailsState {
     role: Role;
@@ -128,6 +129,8 @@ class RoleDetails extends React.Component<IWithRouterProps, IRoleDetailsState> {
                                 )}
                             </div>
                         </InfoCard>
+
+                        <RuleAccordionList style={{ marginTop: '1em' }} rules={role.rules} />
                     </div>
                 </div>
             </div>

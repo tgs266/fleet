@@ -6,18 +6,9 @@ import { setupServer } from 'msw/node';
 import '@testing-library/jest-dom';
 import Layout from '../../layouts/Layout';
 import { delay } from '../../testing/utils';
-import { ServiceAccountMeta } from '../../models/serviceaccount.model';
 import ServiceAccounts from '../../services/k8/serviceaccount.service';
 import ServiceAccountList from './ServiceAccountList';
-
-const generateServiceAccount = (name: string): ServiceAccountMeta => ({
-    name,
-    namespace: 'asdf',
-    uid: name,
-    createdAt: 0,
-    labels: { adsf: 'asdf' },
-    annotations: { asdf: 'asdf' },
-});
+import { generateServiceAccount } from '../../testing/type_mocks';
 
 const server = setupServer(
     rest.get(`${ServiceAccounts.base}/*`, (req, res, ctx) => {

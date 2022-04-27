@@ -9,7 +9,7 @@ import Text from '../../components/Text/Text';
 import { Pagination } from '../../models/component.model';
 import { RoleMeta } from '../../models/role.model';
 import K8 from '../../services/k8.service';
-import { buildLinkToNamespace } from '../../utils/routing';
+import { buildLinkToNamespace, buildLinkToRole } from '../../utils/routing';
 import getOffset from '../../utils/table';
 import { createdAtToHumanReadable, createdAtToOrigination } from '../../utils/time';
 
@@ -106,7 +106,11 @@ class RoleTable extends React.Component<IRoleTableProps, IRoleTableState> {
                                 key: 'name',
                                 columnName: 'Name',
                                 sortableId: 'name',
-                                columnFunction: (row: RoleMeta) => row.name,
+                                columnFunction: (row: RoleMeta) => (
+                                    <Link to={buildLinkToRole(row.namespace, row.name)}>
+                                        {row.name}
+                                    </Link>
+                                ),
                             },
                             {
                                 key: 'namespace',
