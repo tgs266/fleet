@@ -32,7 +32,7 @@ type ClientManager struct {
 	// cluster cfg to use if config path not provided
 	clusterConfig *rest.Config
 
-	useAuth bool
+	UseAuth bool
 
 	authManager *auth.AuthManager
 	oidcManager *oidc.OIDCManager
@@ -52,7 +52,7 @@ func NewClientManager(useAuth bool) *ClientManager {
 
 	client := &ClientManager{
 		kubeConfigPath: kubeConfigPath,
-		useAuth:        useAuth,
+		UseAuth:        useAuth,
 		authManager:    authManager,
 	}
 
@@ -105,7 +105,7 @@ func (client *ClientManager) getK8Client(c *fiber.Ctx) (*kubernetes.K8Client, er
 		return nil, err
 	}
 
-	if client.useAuth {
+	if client.UseAuth {
 		authInfo, err := client.getAuthInfo(c)
 		if err != nil && !client.TestAuthMode {
 			return nil, err

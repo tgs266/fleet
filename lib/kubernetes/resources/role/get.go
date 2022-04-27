@@ -13,5 +13,6 @@ func Get(K8 *kubernetes.K8Client, namespace string, name string) (*Role, error) 
 	if err != nil {
 		return nil, errors.ParseInternalError(err)
 	}
+
 	return BuildRole(role), nil
 }

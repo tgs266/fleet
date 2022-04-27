@@ -17,7 +17,7 @@ type RoleBindingMeta struct {
 
 type RoleBinding struct {
 	RoleBindingMeta `json:",inline"`
-	Subjects        []rbac.Subject `json:"rules"`
+	Subjects        []rbac.Subject `json:"subjects"`
 }
 
 func BuildRoleBindingMeta(binding *rbac.RoleBinding) RoleBindingMeta {

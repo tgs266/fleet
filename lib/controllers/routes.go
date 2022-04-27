@@ -51,6 +51,7 @@ func initializeRoleBindingRoutes(app *api.API) {
 }
 
 func initializeOtherRoutes(app *api.API) {
+	app.Get("/api/v1/auth/", UsingAuth)
 	app.Get("/api/v1/auth/cani", CanI)
 	app.Post("/api/v1/auth/login", Login)
 	app.Post("/api/v1/auth/refresh", Refresh)
