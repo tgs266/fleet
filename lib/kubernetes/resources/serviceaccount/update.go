@@ -32,3 +32,27 @@ func ConnectToRoleBinding(K8 *kubernetes.K8Client, namespace, name string, saBin
 	}
 	return nil
 }
+
+func ConnectToClusterRoleBinding(K8 *kubernetes.K8Client, namespace, name string, saBindRequest BindRequest) error {
+	sa, err := K8.K8.CoreV1().ServiceAccounts(namespace).Get(context.Background(), name, metaV1.GetOptions{})
+	if err != nil {
+		return errors.ParseInternalError(err)
+	}
+
+	binding, err := K8.K8.RbacV1().ClusterRoleBindings().Get(context.Background(), saBindRequest.TargetRoleName, metaV1.GetOptions{})
+	if err != nil {
+		return errors.ParseInternalError(err)
+	}
+
+	binding.Subjects = append(binding.Subjects, v1.Subject{
+		Name:      sa.Name,
+		Namespace: sa.Namespace,
+		Kind:      "ServiceAccount",
+	})
+
+	_, err = K8.K8.RbacV1().ClusterRoleBindings().Update(context.Background(), binding, metaV1.UpdateOptions{})
+	if err != nil {
+		return errors.ParseInternalError(err)
+	}
+	return nil
+}

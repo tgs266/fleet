@@ -35,7 +35,8 @@ func initializeServiceRoutes(app *api.API) {
 func initializeServiceAccountRoutes(app *api.API) {
 	app.Get("/api/v1/serviceaccounts/:namespace/", GetServiceAccounts)
 	app.Get("/api/v1/serviceaccounts/:namespace/:name", GetServiceAccount)
-	app.Put("/api/v1/serviceaccounts/:namespace/:name/bind", ConnectToRoleBinding)
+	app.Put("/api/v1/serviceaccounts/:namespace/:name/bind/role", ConnectToRoleBinding)
+	app.Put("/api/v1/serviceaccounts/:namespace/:name/bind/clusterrole", ConnectToClusterRoleBinding)
 }
 
 func initializeRoleRoutes(app *api.API) {

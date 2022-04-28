@@ -28,13 +28,15 @@ import {
 } from '../../utils/routing';
 import LabeledAnnotationsTagList from '../../components/AnnotationsTagList';
 import LabeledLabelsTagList from '../../components/LabelsTagList';
-import BindDialog from './BindDialog';
 import ServiceAccounts from '../../services/k8/serviceaccount.service';
+import RoleBindDialog from './RoleBindDialog';
+import ClusterRoleBindDialog from './ClusterRoleBindDialog';
 
 interface IServiceAccountDetailsState {
     serviceAccount: ServiceAccount;
     pollId: NodeJS.Timer;
-    isBindOpen: boolean;
+    isRoleBindOpen: boolean;
+    isClusterRoleBindOpen: boolean;
 }
 
 class ServiceAccountDetails extends React.Component<IWithRouterProps, IServiceAccountDetailsState> {
@@ -45,7 +47,8 @@ class ServiceAccountDetails extends React.Component<IWithRouterProps, IServiceAc
         this.state = {
             serviceAccount: null,
             pollId: null,
-            isBindOpen: false,
+            isRoleBindOpen: false,
+            isClusterRoleBindOpen: false,
         };
     }
 
@@ -88,8 +91,16 @@ class ServiceAccountDetails extends React.Component<IWithRouterProps, IServiceAc
         clearInterval(this.state.pollId);
     }
 
-    toggleBindDialog = () => {
-        this.setState({ isBindOpen: !this.state.isBindOpen });
+    toggleRoleBindDialog = () => {
+        this.setState({ isRoleBindOpen: !this.state.isRoleBindOpen });
+    };
+
+    toggleClusterRoleBindDialog = () => {
+        this.setState({ isClusterRoleBindOpen: !this.state.isClusterRoleBindOpen });
+    };
+
+    closeBothBindDialogs = () => {
+        this.setState({ isClusterRoleBindOpen: false, isRoleBindOpen: false });
     };
 
     pull = () => {
@@ -101,20 +112,20 @@ class ServiceAccountDetails extends React.Component<IWithRouterProps, IServiceAc
     };
 
     bindTo = (br: BindRequest) => {
-        ServiceAccounts.bindTo(
-            this.props.params.serviceAccountName,
-            this.props.params.namespace,
-            br
-        )
+        let call = ServiceAccounts.bindToRole;
+        if (this.state.isClusterRoleBindOpen) {
+            call = ServiceAccounts.bindToClusterRole;
+        }
+        call(this.props.params.serviceAccountName, this.props.params.namespace, br)
             .then(() => {
-                this.toggleBindDialog();
+                this.closeBothBindDialogs();
                 Toaster.show({
-                    message: 'Successfully added role binding',
+                    message: 'Successfully added binding',
                     intent: Intent.SUCCESS,
                 });
             })
             .catch((err: AxiosError<FleetError>) => {
-                this.toggleBindDialog();
+                this.closeBothBindDialogs();
                 Toaster.show({ message: err.response.data.message, intent: Intent.DANGER });
             });
     };
@@ -126,9 +137,14 @@ class ServiceAccountDetails extends React.Component<IWithRouterProps, IServiceAc
         const { serviceAccount } = this.state;
         return (
             <div>
-                <BindDialog
-                    isOpen={this.state.isBindOpen}
-                    onFailure={this.toggleBindDialog}
+                <RoleBindDialog
+                    isOpen={this.state.isRoleBindOpen}
+                    onFailure={this.toggleRoleBindDialog}
+                    onSuccess={this.bindTo}
+                />
+                <ClusterRoleBindDialog
+                    isOpen={this.state.isClusterRoleBindOpen}
+                    onFailure={this.toggleClusterRoleBindDialog}
                     onSuccess={this.bindTo}
                 />
                 <div style={{ margin: '1em', marginBottom: 0 }}>
@@ -159,7 +175,7 @@ class ServiceAccountDetails extends React.Component<IWithRouterProps, IServiceAc
                         <TitledCard
                             style={{ marginTop: '1em' }}
                             title="Role Bindings"
-                            rightElement={<Button icon="add" onClick={this.toggleBindDialog} />}
+                            rightElement={<Button icon="add" onClick={this.toggleRoleBindDialog} />}
                         >
                             <Card style={{ padding: 0 }}>
                                 <Table>
@@ -208,7 +224,13 @@ class ServiceAccountDetails extends React.Component<IWithRouterProps, IServiceAc
                             </Card>
                         </TitledCard>
 
-                        <TitledCard style={{ marginTop: '1em' }} title="Cluster Role Bindings">
+                        <TitledCard
+                            style={{ marginTop: '1em' }}
+                            title="Cluster Role Bindings"
+                            rightElement={
+                                <Button icon="add" onClick={this.toggleClusterRoleBindDialog} />
+                            }
+                        >
                             <Card style={{ padding: 0 }}>
                                 <Table>
                                     <TableHeader>

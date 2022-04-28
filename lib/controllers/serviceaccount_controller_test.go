@@ -42,3 +42,18 @@ func TestConnectToRoleBinding(t *testing.T) {
 
 	app.Test(req)
 }
+
+func TestConnectToClusterRoleBinding(t *testing.T) {
+	app := setupApp()
+	app.Put("/:namespace/:name/bind", ConnectToClusterRoleBinding)
+
+	data := serviceaccount.BindRequest{
+		TargetRoleName: "asdf",
+	}
+
+	dataBytes, _ := json.Marshal(data)
+
+	req := httptest.NewRequest("PUT", "/asdf/asdf/bind", bytes.NewBuffer(dataBytes))
+
+	app.Test(req)
+}

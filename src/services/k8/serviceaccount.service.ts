@@ -26,11 +26,19 @@ export default class ServiceAccounts {
         });
     }
 
-    static bindTo(
+    static bindToRole(
         name: string,
         namespace: string,
         req: BindRequest
     ): Promise<AxiosResponse<PaginationResponse<ServiceAccountMeta>>> {
-        return api.put(`${ServiceAccounts.base}/${namespace}/${name}/bind`, req);
+        return api.put(`${ServiceAccounts.base}/${namespace}/${name}/bind/role`, req);
+    }
+
+    static bindToClusterRole(
+        name: string,
+        namespace: string,
+        req: BindRequest
+    ): Promise<AxiosResponse<PaginationResponse<ServiceAccountMeta>>> {
+        return api.put(`${ServiceAccounts.base}/${namespace}/${name}/bind/clusterrole`, req);
     }
 }

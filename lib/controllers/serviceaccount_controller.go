@@ -65,3 +65,25 @@ func ConnectToRoleBinding(c *fiber.Ctx, client *client.ClientManager) error {
 	}
 	return c.SendStatus(fiber.StatusCreated)
 }
+
+func ConnectToClusterRoleBinding(c *fiber.Ctx, client *client.ClientManager) error {
+	K8, err := client.Client(c)
+	if err != nil {
+		return err
+	}
+
+	namespace := shared.GetNamespace(c.Params("namespace"))
+	name := c.Params("name")
+
+	body := new(serviceaccount.BindRequest)
+
+	if err := json.Unmarshal(c.Body(), &body); err != nil {
+		return err
+	}
+
+	err = serviceaccount.ConnectToClusterRoleBinding(K8, namespace, name, *body)
+	if err != nil {
+		return errors.ParseInternalError(err)
+	}
+	return c.SendStatus(fiber.StatusCreated)
+}
