@@ -26,7 +26,6 @@ import {
     buildLinkToRole,
     buildLinkToRoleBinding,
 } from '../../utils/routing';
-import { buildLinkToClusterRole, buildLinkToRole } from '../../utils/routing';
 import LabeledAnnotationsTagList from '../../components/AnnotationsTagList';
 import LabeledLabelsTagList from '../../components/LabelsTagList';
 import BindDialog from './BindDialog';
