@@ -24,8 +24,7 @@ func TestGet(t *testing.T) {
 			roles: []runtime.Object{
 				&rbac.ClusterRoleBinding{
 					ObjectMeta: metav1.ObjectMeta{
-						Name:      "asdf",
-						Namespace: "asdf",
+						Name: "asdf",
 					},
 				},
 			},
@@ -38,20 +37,17 @@ func TestGet(t *testing.T) {
 			roles: []runtime.Object{
 				&rbac.ClusterRoleBinding{
 					ObjectMeta: metav1.ObjectMeta{
-						Name:      "asdf1",
-						Namespace: "asdf",
+						Name: "asdf1",
 					},
 				},
 				&rbac.ClusterRoleBinding{
 					ObjectMeta: metav1.ObjectMeta{
-						Name:      "asdf2",
-						Namespace: "asdf",
+						Name: "asdf2",
 					},
 				},
 				&rbac.ClusterRoleBinding{
 					ObjectMeta: metav1.ObjectMeta{
-						Name:      "asdf2",
-						Namespace: "asdf-different",
+						Name: "asdf3",
 					},
 				},
 			},

@@ -25,8 +25,7 @@ func TestListMetas(t *testing.T) {
 			roles: []runtime.Object{
 				&rbac.ClusterRoleBinding{
 					ObjectMeta: metav1.ObjectMeta{
-						Name:      "asdf",
-						Namespace: "asdf",
+						Name: "asdf",
 					},
 				},
 			},
@@ -46,14 +45,12 @@ func TestListMetas(t *testing.T) {
 			roles: []runtime.Object{
 				&rbac.ClusterRoleBinding{
 					ObjectMeta: metav1.ObjectMeta{
-						Name:      "asdf1",
-						Namespace: "asdf",
+						Name: "asdf1",
 					},
 				},
 				&rbac.ClusterRoleBinding{
 					ObjectMeta: metav1.ObjectMeta{
-						Name:      "asdf2",
-						Namespace: "asdf",
+						Name: "asdf2",
 					},
 				},
 			},
