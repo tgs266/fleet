@@ -23,7 +23,7 @@ func ConnectToRoleBinding(K8 *kubernetes.K8Client, namespace, name string, saBin
 	binding.Subjects = append(binding.Subjects, v1.Subject{
 		Name:      sa.Name,
 		Namespace: sa.Namespace,
-		Kind:      sa.Kind,
+		Kind:      "ServiceAccount",
 	})
 
 	_, err = K8.K8.RbacV1().RoleBindings(namespace).Update(context.Background(), binding, metaV1.UpdateOptions{})
