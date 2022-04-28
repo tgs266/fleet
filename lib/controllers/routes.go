@@ -50,7 +50,7 @@ func initializeRoleBindingRoutes(app *api.API) {
 	app.Get("/api/v1/rolebindings/:namespace/:name", GetRoleBinding)
 
 	app.Get("/api/v1/clusterrolebindings/", GetClusterRoleBindings)
-	app.Get("/api/v1/clusterrolebindings/:namespace", GetClusterRoleBinding)
+	app.Get("/api/v1/clusterrolebindings/:name", GetClusterRoleBinding)
 }
 
 func initializeOtherRoutes(app *api.API) {
