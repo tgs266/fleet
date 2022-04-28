@@ -17,6 +17,11 @@ type ServiceAccountMeta struct {
 	Annotations map[string]string `json:"annotations"`
 }
 
+type BindRequest struct {
+	TargetRoleName      string `json:"targetRoleName"`
+	TargetRoleNamespace string `json:"targetRoleNamespace"`
+}
+
 type ServiceAccount struct {
 	ServiceAccountMeta  `json:",inline"`
 	RoleBindings        []rolebinding.RoleBindingMeta               `json:"roleBindings"`

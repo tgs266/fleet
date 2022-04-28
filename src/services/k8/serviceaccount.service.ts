@@ -1,7 +1,7 @@
 import { AxiosResponse } from 'axios';
 import { TableSort } from '../../components/SortableTableHeaderCell';
 import { PaginationResponse } from '../../models/base';
-import { ServiceAccount, ServiceAccountMeta } from '../../models/serviceaccount.model';
+import { BindRequest, ServiceAccount, ServiceAccountMeta } from '../../models/serviceaccount.model';
 import getSortBy from '../../utils/sort';
 import api from '../axios.service';
 
@@ -24,5 +24,13 @@ export default class ServiceAccounts {
         return api.get(`${ServiceAccounts.base}/${namespace || '_all_'}/`, {
             params: { sortBy: getSortBy(sort), offset, pageSize },
         });
+    }
+
+    static bindTo(
+        name: string,
+        namespace: string,
+        req: BindRequest
+    ): Promise<AxiosResponse<PaginationResponse<ServiceAccountMeta>>> {
+        return api.put(`${ServiceAccounts.base}/${namespace}/${name}/bind`, req);
     }
 }

@@ -8,3 +8,8 @@ export interface ServiceAccount extends ServiceAccountMeta {
     roleBindings: RoleBindingMeta[];
     clusterRoleBindings: ClusterRoleBindingMeta[];
 }
+
+export interface BindRequest {
+    targetRoleName: string;
+    targetRoleNamespace: string;
+}
