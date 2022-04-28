@@ -1,4 +1,5 @@
 /* eslint-disable import/prefer-default-export */
+import { ClusterRole, ClusterRoleBinding } from '../models/clusterrole.model';
 import { Container, ContainerSpec } from '../models/container.model';
 import { Deployment } from '../models/deployment.model';
 import { Node } from '../models/node.model';
@@ -11,6 +12,22 @@ import { SystemResources } from '../models/system.model';
 export const generateRoleBinding = (name: string): RoleBinding => ({
     name,
     namespace: 'test',
+    uid: name,
+    createdAt: 0,
+    labels: { adsf: 'asdf' },
+    annotations: { asdf: 'asdf' },
+    roleName: 'asdf',
+    subjects: [
+        {
+            name: 'asdf',
+            namespace: 'asdf',
+            kind: 'group',
+        },
+    ],
+});
+
+export const generateClusterRoleBinding = (name: string): ClusterRoleBinding => ({
+    name,
     uid: name,
     createdAt: 0,
     labels: { adsf: 'asdf' },
@@ -43,6 +60,23 @@ export const generateRole = (name: string): Role => ({
     ],
 });
 
+export const generateClusterRole = (name: string): ClusterRole => ({
+    name,
+    uid: name,
+    createdAt: 0,
+    labels: { adsf: 'asdf' },
+    annotations: { asdf: 'asdf' },
+    rules: [
+        {
+            verbs: [],
+            apiGroups: ['asdf'],
+            nonResourceURLs: [],
+            resourceNames: [],
+            resources: ['pods'],
+        },
+    ],
+});
+
 export const generateServiceAccount = (name: string): ServiceAccount => ({
     name,
     namespace: 'asdf',
@@ -54,6 +88,16 @@ export const generateServiceAccount = (name: string): ServiceAccount => ({
         {
             name: 'asdf',
             namespace: 'asdf',
+            roleName: 'asdf',
+            createdAt: 0,
+            labels: {},
+            annotations: {},
+            uid: 'UID',
+        },
+    ],
+    clusterRoleBindings: [
+        {
+            name: 'asdf',
             roleName: 'asdf',
             createdAt: 0,
             labels: {},

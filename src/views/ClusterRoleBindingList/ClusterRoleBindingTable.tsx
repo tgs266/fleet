@@ -6,24 +6,24 @@ import { Link } from 'react-router-dom';
 import ResourceTable from '../../components/ResourceTable';
 import { TableSort } from '../../components/SortableTableHeaderCell';
 import Text from '../../components/Text/Text';
-import { ClusterRoleMeta } from '../../models/clusterrole.model';
+import { ClusterRoleBindingMeta } from '../../models/clusterrole.model';
 import { Pagination } from '../../models/component.model';
 import K8 from '../../services/k8.service';
-import { buildLinkToClusterRole } from '../../utils/routing';
+import { buildLinkToClusterRoleBinding } from '../../utils/routing';
 import getOffset from '../../utils/table';
 import { createdAtToHumanReadable, createdAtToOrigination } from '../../utils/time';
 
-interface IClusterRoleTableState extends Pagination {
-    roles: ClusterRoleMeta[];
+interface IClusterRoleBindingTableState extends Pagination {
+    bindings: ClusterRoleBindingMeta[];
     sort: TableSort;
     pollId: NodeJS.Timer;
 }
 
-class ClusterRoleTable extends React.Component<unknown, IClusterRoleTableState> {
+class ClusterRoleBindingTable extends React.Component<unknown, IClusterRoleBindingTableState> {
     constructor(props: any) {
         super(props);
         this.state = {
-            roles: [],
+            bindings: [],
             sort: {
                 sortableId: 'name',
                 ascending: false,
@@ -36,11 +36,11 @@ class ClusterRoleTable extends React.Component<unknown, IClusterRoleTableState> 
     }
 
     componentDidMount() {
-        K8.clusterRoles
-            .getClusterRoles(this.state.sort, 0, this.state.pageSize)
+        K8.clusterRoleBindings
+            .getClusterRoleBindings(this.state.sort, 0, this.state.pageSize)
             .then((response) => {
                 this.setState({
-                    roles: response.data.items,
+                    bindings: response.data.items,
                     total: response.data.total,
                     pollId: K8.pollFunction(5000, () => this.pull(null, null)),
                 });
@@ -54,15 +54,15 @@ class ClusterRoleTable extends React.Component<unknown, IClusterRoleTableState> 
     pull = (sort?: TableSort, page?: number) => {
         const usingSort = sort || this.state.sort;
         const usingPage = page !== null ? page : this.state.page;
-        K8.clusterRoles
-            .getClusterRoles(
+        K8.clusterRoleBindings
+            .getClusterRoleBindings(
                 usingSort,
                 getOffset(usingPage, this.state.pageSize, this.state.total),
                 this.state.pageSize
             )
             .then((response) => {
                 this.setState({
-                    roles: response.data.items,
+                    bindings: response.data.items,
                     sort: usingSort,
                     page: usingPage,
                     total: response.data.total,
@@ -82,10 +82,10 @@ class ClusterRoleTable extends React.Component<unknown, IClusterRoleTableState> 
         return (
             <div>
                 <Text muted style={{ marginBottom: '0.25em', marginLeft: '0.25em' }}>
-                    Cluster Roles
+                    Cluster Role Bindings
                 </Text>
                 <Card style={{ padding: 0, minWidth: '40em' }}>
-                    <ResourceTable<ClusterRoleMeta>
+                    <ResourceTable<ClusterRoleBindingMeta>
                         paginationProps={{
                             page: this.state.page,
                             pageSize: this.state.pageSize,
@@ -94,22 +94,24 @@ class ClusterRoleTable extends React.Component<unknown, IClusterRoleTableState> 
                         }}
                         onSortChange={this.sortChange}
                         sort={this.state.sort}
-                        data={this.state.roles}
+                        data={this.state.bindings}
                         keyPath="uid"
                         columns={[
                             {
                                 key: 'name',
                                 columnName: 'Name',
                                 sortableId: 'name',
-                                columnFunction: (row: ClusterRoleMeta) => (
-                                    <Link to={buildLinkToClusterRole(row.name)}>{row.name}</Link>
+                                columnFunction: (row: ClusterRoleBindingMeta) => (
+                                    <Link to={buildLinkToClusterRoleBinding(row.name)}>
+                                        {row.name}
+                                    </Link>
                                 ),
                             },
                             {
                                 key: 'age',
                                 columnName: 'Age',
                                 sortableId: 'created_at',
-                                columnFunction: (row: ClusterRoleMeta) => (
+                                columnFunction: (row: ClusterRoleBindingMeta) => (
                                     <Tooltip2
                                         className={Classes.TOOLTIP2_INDICATOR}
                                         content={createdAtToOrigination(row.createdAt)}
@@ -126,4 +128,4 @@ class ClusterRoleTable extends React.Component<unknown, IClusterRoleTableState> 
     }
 }
 
-export default ClusterRoleTable;
+export default ClusterRoleBindingTable;

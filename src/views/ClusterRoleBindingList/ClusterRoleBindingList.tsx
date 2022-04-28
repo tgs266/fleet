@@ -1,15 +1,14 @@
 import * as React from 'react';
 import { useNavContext } from '../../layouts/Navigation';
 import setOnce from '../../utils/breadcrumbs';
-import ClusterRoleBindingTable from '../ClusterRoleBindingList/ClusterRoleBindingTable';
-import RoleBindingTable from './RoleBindingTable';
+import ClusterRoleBindingTable from './ClusterRoleBindingTable';
 
-export default function RoleBindingList() {
+export default function ClusterRoleBindingList() {
     const [, setState] = useNavContext();
     setOnce(setState, {
         breadcrumbs: [
             {
-                text: 'role bindings',
+                text: 'cluster role bindings',
             },
         ],
         buttons: [],
@@ -17,10 +16,7 @@ export default function RoleBindingList() {
     });
     return (
         <div style={{ margin: '1em' }}>
-            <RoleBindingTable />
-            <div style={{ marginTop: '1em' }}>
-                <ClusterRoleBindingTable />
-            </div>
+            <ClusterRoleBindingTable />
         </div>
     );
 }

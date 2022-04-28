@@ -2,11 +2,11 @@
 /* eslint-disable indent */
 import * as React from 'react';
 import { Tag, Intent, Card } from '@blueprintjs/core';
-import { Rule } from '../../models/base';
-import Label from '../../components/Label';
-import TagList from '../../components/TagList';
-import Text from '../../components/Text/Text';
-import Accordion from '../../components/Accordion';
+import { Rule } from '../models/base';
+import Label from './Label';
+import TagList from './TagList';
+import Text from './Text/Text';
+import Accordion from './Accordion';
 
 export default function RuleAccordionList(props: { rules: Rule[]; style?: React.CSSProperties }) {
     const { rules, style } = props;

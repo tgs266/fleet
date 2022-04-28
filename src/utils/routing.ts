@@ -25,3 +25,7 @@ export const buildLinkToRoleBinding = (ns: string, roleBindingName: string) =>
     `/rolebindings/${ns}/${roleBindingName}`;
 
 export const buildLinkToServiceAccount = (ns: string, sa: string) => `/serviceaccounts/${ns}/${sa}`;
+
+export const buildLinkToClusterRole = (roleName: string) => `/clusterroles/${roleName}`;
+export const buildLinkToClusterRoleBinding = (roleBindingName: string) =>
+    `/clusterrolebindings/${roleBindingName}`;

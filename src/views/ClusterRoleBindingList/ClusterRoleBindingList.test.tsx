@@ -6,36 +6,27 @@ import { setupServer } from 'msw/node';
 import '@testing-library/jest-dom';
 import Layout from '../../layouts/Layout';
 import { delay } from '../../testing/utils';
-import { RoleBindingMeta } from '../../models/role.model';
-import RoleBindings from '../../services/k8/rolebinding.service';
-import RoleBindingList from './RoleBindingList';
+import { ClusterRoleBinding } from '../../models/clusterrole.model';
+import ClusterRoleBindingList from './ClusterRoleBindingList';
 import ClusterRoleBindings from '../../services/k8/clusterrolebinding.service';
-import { generateClusterRoleBinding } from '../../testing/type_mocks';
 
-const generateRoleBinding = (name: string): RoleBindingMeta => ({
+const generateClusterRoleBinding = (name: string): ClusterRoleBinding => ({
     name,
-    namespace: 'asdf',
     roleName: 'test',
     uid: name,
     createdAt: 0,
     labels: { adsf: 'asdf' },
     annotations: { asdf: 'asdf' },
+    subjects: [
+        {
+            kind: 'asdf',
+            name: 'asdf',
+            namespace: 'asdf',
+        },
+    ],
 });
 
 const server = setupServer(
-    rest.get(`${RoleBindings.base}/*`, (req, res, ctx) => {
-        const count = 20;
-        const items = [];
-        for (let i = 0; i < count; i += 1) {
-            items.push(generateRoleBinding(`${i}-asdf`));
-        }
-        return res(
-            ctx.json({
-                items,
-                total: items.length,
-            })
-        );
-    }),
     rest.get(`${ClusterRoleBindings.base}/*`, (req, res, ctx) => {
         const count = 20;
         const items = [];
@@ -60,7 +51,7 @@ test('renders without crashing', async () => {
         <MemoryRouter initialEntries={['/']}>
             <Routes>
                 <Route path="/" element={<Layout />}>
-                    <Route path="" element={<RoleBindingList />} />
+                    <Route path="" element={<ClusterRoleBindingList />} />
                 </Route>
             </Routes>
         </MemoryRouter>
@@ -73,7 +64,7 @@ test('can go forwards and backwards in table', async () => {
         <MemoryRouter initialEntries={['/']}>
             <Routes>
                 <Route path="/" element={<Layout />}>
-                    <Route path="" element={<RoleBindingList />} />
+                    <Route path="" element={<ClusterRoleBindingList />} />
                 </Route>
             </Routes>
         </MemoryRouter>

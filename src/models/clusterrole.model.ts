@@ -1,4 +1,12 @@
-import { BaseMeta, Rule } from './base';
+import { BaseMeta, Rule, Subject } from './base';
+
+export interface ClusterRoleBindingMeta extends BaseMeta {
+    roleName: string;
+}
+
+export interface ClusterRoleBinding extends ClusterRoleBindingMeta {
+    subjects: Subject[];
+}
 
 export interface ClusterRoleMeta extends BaseMeta {}
 
