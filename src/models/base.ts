@@ -52,4 +52,5 @@ export interface Subject {
     name: string;
     namespace: string;
     kind: string;
+    apiGroup: string;
 }

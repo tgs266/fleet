@@ -175,6 +175,12 @@ class DeploymentTable extends React.Component<IDeploymentTableProps, IDeployment
                                 </Tooltip2>
                             ),
                         },
+                        {
+                            key: 'pods',
+                            columnName: 'Pods',
+                            columnFunction: (row: DeploymentMeta) =>
+                                `${row.readyReplicas}/${row.replicas}`,
+                        },
                     ]}
                 />
             </Card>

@@ -1,3 +1,4 @@
+/* eslint-disable react/no-children-prop */
 import { Intent, Tag } from '@blueprintjs/core';
 import { AxiosResponse } from 'axios';
 import * as React from 'react';
@@ -127,7 +128,21 @@ export default function SideNavigation() {
                 {buttons.map((btn) => (
                     <SideNavButton key={btn.name} {...btn} />
                 ))}
+                <SideNavButton
+                    key="storage"
+                    icon="database"
+                    type="menu"
+                    children={[
+                        {
+                            target: '/',
+                            icon: 'add',
+                            id: 'storage1',
+                        },
+                    ]}
+                />
                 <div style={{ flexGrow: 1 }} />
+
+                <SideNavButton key="search" icon="search" type="hover" hoverEle={<div />} />
                 <SideNavButton
                     key="user"
                     icon="user"

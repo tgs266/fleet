@@ -175,7 +175,13 @@ class ServiceAccountDetails extends React.Component<IWithRouterProps, IServiceAc
                         <TitledCard
                             style={{ marginTop: '1em' }}
                             title="Role Bindings"
-                            rightElement={<Button icon="add" onClick={this.toggleRoleBindDialog} />}
+                            rightElement={
+                                <Button
+                                    data-testid="open-role-binding"
+                                    icon="add"
+                                    onClick={this.toggleRoleBindDialog}
+                                />
+                            }
                         >
                             <Card style={{ padding: 0 }}>
                                 <Table>
@@ -228,7 +234,11 @@ class ServiceAccountDetails extends React.Component<IWithRouterProps, IServiceAc
                             style={{ marginTop: '1em' }}
                             title="Cluster Role Bindings"
                             rightElement={
-                                <Button icon="add" onClick={this.toggleClusterRoleBindDialog} />
+                                <Button
+                                    icon="add"
+                                    data-testid="open-cluster-role-binding"
+                                    onClick={this.toggleClusterRoleBindDialog}
+                                />
                             }
                         >
                             <Card style={{ padding: 0 }}>

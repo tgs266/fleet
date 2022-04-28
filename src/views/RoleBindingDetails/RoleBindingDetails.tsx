@@ -120,6 +120,7 @@ class RoleBindingDetails extends React.Component<IWithRouterProps, IRoleBindingS
                                         <TableCell>Name</TableCell>
                                         <TableCell>Namespace</TableCell>
                                         <TableCell>Kind</TableCell>
+                                        <TableCell>API Group</TableCell>
                                         <TableCell alignment={Alignment.RIGHT}>
                                             <Tooltip2
                                                 popoverClassName="small-help"
@@ -146,6 +147,7 @@ class RoleBindingDetails extends React.Component<IWithRouterProps, IRoleBindingS
                                                     <TableCell>{subject.name}</TableCell>
                                                     <TableCell>{subject.namespace}</TableCell>
                                                     <TableCell>{subject.kind}</TableCell>
+                                                    <TableCell>{subject.apiGroup}</TableCell>
                                                     <TableCell />
                                                 </TableRow>
                                             ))}

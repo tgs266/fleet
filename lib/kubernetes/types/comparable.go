@@ -38,7 +38,7 @@ func getComparable(v interface{}) Comparable {
 
 func (c ComparableString) Compare(other Comparable) int {
 	o := other.(ComparableString)
-	return strings.Compare(string(c), string(o))
+	return -strings.Compare(string(c), string(o))
 }
 
 func (c ComparableString) GTE(other Comparable) bool {

@@ -25,8 +25,8 @@ class ClusterRoleTable extends React.Component<unknown, IClusterRoleTableState> 
         this.state = {
             roles: [],
             sort: {
-                sortableId: 'name',
-                ascending: false,
+                sortableId: 'created_at',
+                ascending: true,
             },
             page: 0,
             pageSize: 10,

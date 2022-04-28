@@ -29,8 +29,8 @@ class RoleTable extends React.Component<IRoleTableProps, IRoleTableState> {
         this.state = {
             roles: [],
             sort: {
-                sortableId: 'name',
-                ascending: false,
+                sortableId: 'created_at',
+                ascending: true,
             },
             page: 0,
             pageSize: 10,

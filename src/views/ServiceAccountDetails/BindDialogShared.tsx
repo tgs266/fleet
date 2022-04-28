@@ -62,7 +62,7 @@ export default function BindDialogShared(props: {
             isOpen={props.isOpen}
             maxWidth="md"
         >
-            <div>
+            <div id={props.title}>
                 <Suggest
                     fill
                     popoverProps={{
