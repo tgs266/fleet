@@ -122,6 +122,7 @@ class RoleBindingDetails extends React.Component<IWithRouterProps, IRoleBindingS
                                         <TableCell>Kind</TableCell>
                                         <TableCell alignment={Alignment.RIGHT}>
                                             <Tooltip2
+                                                popoverClassName="small-help"
                                                 content={
                                                     <div>
                                                         hese subjects may not be actual resources in

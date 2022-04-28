@@ -123,6 +123,7 @@ class ClusterRoleBindingDetails extends React.Component<
                                         <TableCell>Kind</TableCell>
                                         <TableCell alignment={Alignment.RIGHT}>
                                             <Tooltip2
+                                                popoverClassName="small-help"
                                                 content={
                                                     <div>
                                                         These subjects may not be actual resources
