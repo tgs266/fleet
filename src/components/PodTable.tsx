@@ -28,7 +28,7 @@ export default function PodTable(props: {
             columns={[
                 {
                     key: 'icon',
-                    alignment: Alignment.CENTER,
+                    alignment: Alignment.LEFT,
                     columnName: '',
                     columnFunction: (row: PodMeta) => {
                         const statusColor = getStatusColor(row);

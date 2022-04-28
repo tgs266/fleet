@@ -115,7 +115,7 @@ class DeploymentTable extends React.Component<IDeploymentTableProps, IDeployment
                     columns={[
                         {
                             key: 'icon',
-                            alignment: Alignment.CENTER,
+                            alignment: Alignment.LEFT,
                             columnName: '',
                             columnFunction: (row: DeploymentMeta) => {
                                 let color;
@@ -177,58 +177,6 @@ class DeploymentTable extends React.Component<IDeploymentTableProps, IDeployment
                         },
                     ]}
                 />
-                {/* <Table>
-                    <TableHeader>
-                        <SortableTableHeaderCell
-                            sort={this.state.sort}
-                            onSortChange={this.onSortChange}
-                            sortableId="name"
-                        >
-                            Name
-                        </SortableTableHeaderCell>
-                        <SortableTableHeaderCell
-                            sort={this.state.sort}
-                            onSortChange={this.onSortChange}
-                            sortableId="namespace"
-                        >
-                            Namespace
-                        </SortableTableHeaderCell>
-                        <SortableTableHeaderCell
-                            sort={this.state.sort}
-                            onSortChange={this.onSortChange}
-                            sortableId="createdAt"
-                        >
-                            Age
-                        </SortableTableHeaderCell>
-                        <TableCell>Replicas</TableCell>
-                    </TableHeader>
-                    <TableBody>
-                        {this.state.deployments.map((deployment) => (
-                            <TableRow key={deployment.name}>
-                                <TableCell>
-                                    <Link
-                                        to={buildLinkToDeployment(
-                                            deployment.name,
-                                            deployment.namespace
-                                        )}
-                                    >
-                                        {deployment.name}
-                                    </Link>
-                                </TableCell>
-                                <TableCell>{deployment.namespace}</TableCell>
-                                <TableCell>
-                                    <Tooltip2
-                                        className={Classes.TOOLTIP2_INDICATOR}
-                                        content={createdAtToOrigination(deployment.createdAt)}
-                                    >
-                                        {createdAtToHumanReadable(deployment.createdAt)}
-                                    </Tooltip2>
-                                </TableCell>
-                                <TableCell>{`${deployment.readyReplicas}/${deployment.replicas}`}</TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table> */}
             </Card>
         );
     }
