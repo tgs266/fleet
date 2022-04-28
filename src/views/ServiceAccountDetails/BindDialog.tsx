@@ -71,6 +71,7 @@ export default function BindDialog(props: {
             onFailure={props.onFailure}
             onSuccess={successWrapper}
             isOpen={props.isOpen}
+            maxWidth="md"
         >
             <div>
                 <Suggest
@@ -84,20 +85,21 @@ export default function BindDialog(props: {
                         if (!itemPrps.modifiers.matchesPredicate) {
                             return null;
                         }
-                        const text = `${item.name}`;
+                        const text = `${item.name}/${item.namespace}`;
                         return (
                             <MenuItem
                                 active={itemPrps.modifiers.active}
                                 disabled={itemPrps.modifiers.disabled}
                                 onClick={itemPrps.handleClick}
-                                label={item.namespace}
+                                label={`Role: ${item.roleName}`}
                                 key={item.uid}
                                 text={highlightText(text, itemPrps.query)}
                             />
                         );
                     }}
                     itemPredicate={(query, item: RoleBinding, _index, exactMatch) => {
-                        const normalizedTitle = item.name.toLowerCase();
+                        const text = `${item.name}/${item.namespace}`;
+                        const normalizedTitle = text.toLowerCase();
                         const normalizedQuery = query.toLowerCase();
 
                         if (exactMatch) {

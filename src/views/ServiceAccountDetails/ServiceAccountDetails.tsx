@@ -20,7 +20,12 @@ import TableHeader from '../../components/TableHeader';
 import TableBody from '../../components/TableBody';
 import TableRow from '../../components/TableRow';
 import { createdAtToOrigination } from '../../utils/time';
-import { buildLinkToClusterRole, buildLinkToRole } from '../../utils/routing';
+import {
+    buildLinkToClusterRole,
+    buildLinkToClusterRoleBinding,
+    buildLinkToRole,
+    buildLinkToRoleBinding,
+} from '../../utils/routing';
 import LabeledAnnotationsTagList from '../../components/AnnotationsTagList';
 import LabeledLabelsTagList from '../../components/LabelsTagList';
 import BindDialog from './BindDialog';
@@ -166,7 +171,16 @@ class ServiceAccountDetails extends React.Component<IWithRouterProps, IServiceAc
                                     <TableBody>
                                         {serviceAccount.roleBindings.map((role) => (
                                             <TableRow key={role.uid}>
-                                                <TableCell>{role.name}</TableCell>
+                                                <TableCell>
+                                                    <Link
+                                                        to={buildLinkToRoleBinding(
+                                                            role.namespace,
+                                                            role.name
+                                                        )}
+                                                    >
+                                                        {role.name}
+                                                    </Link>
+                                                </TableCell>
                                                 <TableCell>
                                                     <Link
                                                         to={buildLinkToRole(
@@ -205,7 +219,15 @@ class ServiceAccountDetails extends React.Component<IWithRouterProps, IServiceAc
                                     <TableBody>
                                         {serviceAccount.clusterRoleBindings.map((role) => (
                                             <TableRow key={role.uid}>
-                                                <TableCell>{role.name}</TableCell>
+                                                <TableCell>
+                                                    <Link
+                                                        to={buildLinkToClusterRoleBinding(
+                                                            role.name
+                                                        )}
+                                                    >
+                                                        {role.name}
+                                                    </Link>
+                                                </TableCell>
                                                 <TableCell>
                                                     <Link
                                                         to={buildLinkToClusterRole(role.roleName)}
