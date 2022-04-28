@@ -124,12 +124,13 @@ class RoleBindingDetails extends React.Component<IWithRouterProps, IRoleBindingS
                                             <Tooltip2
                                                 content={
                                                     <div>
-                                                        These subjects may not be actual resources
-                                                        in Kubernetes. For example,{' '}
+                                                        hese subjects may not be actual resources in
+                                                        Kubernetes. For example,{' '}
                                                         <Text code>Kind: Group</Text> and{' '}
                                                         <Text code>Kind: User</Text> are properties
-                                                        that are returned by authentication systems
-                                                        (like OIDC).
+                                                        that could be used by authentication systems
+                                                        (like OIDC), or by Kubernetes itself to
+                                                        identify actors in the system.
                                                     </div>
                                                 }
                                             >
