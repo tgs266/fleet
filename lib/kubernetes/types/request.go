@@ -109,12 +109,13 @@ func (dr *DataRequest) BuildDataSelector() *DataSelector {
 }
 
 // wont add if a filter already exists on system namespace
+// disable for now
 func (ds *DataSelector) AddIgnoreSystemNamespace() *DataSelector {
-	for _, f := range ds.Filters {
-		if f.Property == NamespaceProperty && f.By == ComparableString("kube-system") {
-			return ds
-		}
-	}
-	ds.Filters = append(ds.Filters, SystemNamespaceFilter)
+	// for _, f := range ds.Filters {
+	// 	if f.Property == NamespaceProperty && f.By == ComparableString("kube-system") {
+	// 		return ds
+	// 	}
+	// }
+	// ds.Filters = append(ds.Filters, SystemNamespaceFilter)
 	return ds
 }
