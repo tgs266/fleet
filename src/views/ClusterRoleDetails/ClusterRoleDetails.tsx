@@ -10,15 +10,15 @@ import Label from '../../components/Label';
 import Text from '../../components/Text/Text';
 import AgeText from '../../components/AgeText';
 import TagList from '../../components/TagList';
-import { Role } from '../../models/role.model';
 import RuleAccordionList from '../../components/RuleAccordionList';
+import { ClusterRole } from '../../models/clusterrole.model';
 
-interface IRoleDetailsState {
-    role: Role;
+interface IClusterRoleDetailsState {
+    role: ClusterRole;
     pollId: NodeJS.Timer;
 }
 
-class RoleDetails extends React.Component<IWithRouterProps, IRoleDetailsState> {
+class ClusterRoleDetails extends React.Component<IWithRouterProps, IClusterRoleDetailsState> {
     static contextType = NavContext;
 
     constructor(props: IWithRouterProps) {
@@ -34,7 +34,7 @@ class RoleDetails extends React.Component<IWithRouterProps, IRoleDetailsState> {
         setState({
             breadcrumbs: [
                 {
-                    text: 'roles',
+                    text: 'cluster roles',
                     link: '/roles',
                 },
                 {
@@ -46,22 +46,19 @@ class RoleDetails extends React.Component<IWithRouterProps, IRoleDetailsState> {
             ],
             menu: null,
         });
-        K8.roles
-            .getRole(this.props.params.roleName, this.props.params.namespace)
-            .then((response) => {
-                this.setState({
-                    role: response.data,
-                    pollId: K8.poll(
-                        1000,
-                        K8.roles.getRole,
-                        (r) => {
-                            this.setState({ role: r.data });
-                        },
-                        this.props.params.roleName,
-                        this.props.params.namespace
-                    ),
-                });
+        K8.clusterRoles.getClusterRole(this.props.params.roleName).then((response) => {
+            this.setState({
+                role: response.data,
+                pollId: K8.poll(
+                    1000,
+                    K8.clusterRoles.getClusterRole,
+                    (r) => {
+                        this.setState({ role: r.data });
+                    },
+                    this.props.params.roleName
+                ),
             });
+        });
     }
 
     componentWillUnmount() {
@@ -69,11 +66,9 @@ class RoleDetails extends React.Component<IWithRouterProps, IRoleDetailsState> {
     }
 
     pull = () => {
-        K8.roles
-            .getRole(this.props.params.roleName, this.props.params.namespace)
-            .then((response) => {
-                this.setState({ role: response.data });
-            });
+        K8.clusterRoles.getClusterRole(this.props.params.roleName).then((response) => {
+            this.setState({ role: response.data });
+        });
     };
 
     render() {
@@ -87,8 +82,7 @@ class RoleDetails extends React.Component<IWithRouterProps, IRoleDetailsState> {
                     <div style={{ marginBottom: '1em' }}>
                         <InfoCard title={role.name}>
                             <div style={{ marginTop: '0.25em', display: 'flex' }}>
-                                <LabeledText label="NAMESPACE">{role.namespace}</LabeledText>
-                                <LabeledText style={{ marginLeft: '2em' }} label="AGE">
+                                <LabeledText label="AGE">
                                     <AgeText value={role.createdAt} hr />
                                 </LabeledText>
                                 <LabeledText style={{ marginLeft: '2em' }} label="CREATED AT">
@@ -138,4 +132,4 @@ class RoleDetails extends React.Component<IWithRouterProps, IRoleDetailsState> {
     }
 }
 
-export default withRouter(RoleDetails);
+export default withRouter(ClusterRoleDetails);

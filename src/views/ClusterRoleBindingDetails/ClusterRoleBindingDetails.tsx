@@ -9,7 +9,6 @@ import { IBreadcrumb, NavContext } from '../../layouts/Navigation';
 import InfoCard from '../../components/InfoCard';
 import LabeledText from '../../components/LabeledText';
 import AgeText from '../../components/AgeText';
-import { RoleBinding } from '../../models/role.model';
 import LabeledAnnotationsTagList from '../../components/AnnotationsTagList';
 import LabeledLabelsTagList from '../../components/LabelsTagList';
 import TitledCard from '../../components/TitledCard';
@@ -19,13 +18,17 @@ import TableCell from '../../components/TableCell';
 import TableBody from '../../components/TableBody';
 import TableRow from '../../components/TableRow';
 import Text from '../../components/Text/Text';
+import { ClusterRoleBinding } from '../../models/clusterrole.model';
 
-interface IRoleBindingState {
-    binding: RoleBinding;
+interface IClusterRoleBindingState {
+    binding: ClusterRoleBinding;
     pollId: NodeJS.Timer;
 }
 
-class RoleBindingDetails extends React.Component<IWithRouterProps, IRoleBindingState> {
+class ClusterRoleBindingDetails extends React.Component<
+    IWithRouterProps,
+    IClusterRoleBindingState
+> {
     static contextType = NavContext;
 
     constructor(props: IWithRouterProps) {
@@ -41,11 +44,11 @@ class RoleBindingDetails extends React.Component<IWithRouterProps, IRoleBindingS
         setState({
             breadcrumbs: [
                 {
-                    text: 'role bindings',
-                    link: '/rolebindings',
+                    text: 'cluster role bindings',
+                    link: '/clusterrolebindings',
                 },
                 {
-                    text: this.props.params.roleBindingName,
+                    text: this.props.params.clusterRoleBindingName,
                 },
             ] as IBreadcrumb[],
             buttons: [
@@ -53,19 +56,18 @@ class RoleBindingDetails extends React.Component<IWithRouterProps, IRoleBindingS
             ],
             menu: null,
         });
-        K8.roleBindings
-            .getRoleBinding(this.props.params.roleBindingName, this.props.params.namespace)
+        K8.clusterRoleBindings
+            .getClusterRoleBinding(this.props.params.clusterRoleBindingName)
             .then((response) => {
                 this.setState({
                     binding: response.data,
                     pollId: K8.poll(
                         1000,
-                        K8.roleBindings.getRoleBinding,
+                        K8.clusterRoleBindings.getClusterRoleBinding,
                         (r) => {
                             this.setState({ binding: r.data });
                         },
-                        this.props.params.roleBindingName,
-                        this.props.params.namespace
+                        this.props.params.clusterRoleBindingName
                     ),
                 });
             });
@@ -76,8 +78,8 @@ class RoleBindingDetails extends React.Component<IWithRouterProps, IRoleBindingS
     }
 
     pull = () => {
-        K8.roleBindings
-            .getRoleBinding(this.props.params.roleBindingName, this.props.params.namespace)
+        K8.clusterRoleBindings
+            .getClusterRoleBinding(this.props.params.clusterRoleBindingName)
             .then((response) => {
                 this.setState({ binding: response.data });
             });
@@ -94,8 +96,7 @@ class RoleBindingDetails extends React.Component<IWithRouterProps, IRoleBindingS
                     <div style={{ marginBottom: '1em' }}>
                         <InfoCard title={binding.name}>
                             <div style={{ marginTop: '0.25em', display: 'flex' }}>
-                                <LabeledText label="NAMESPACE">{binding.namespace}</LabeledText>
-                                <LabeledText style={{ marginLeft: '2em' }} label="AGE">
+                                <LabeledText label="AGE">
                                     <AgeText value={binding.createdAt} hr />
                                 </LabeledText>
                                 <LabeledText style={{ marginLeft: '2em' }} label="CREATED AT">
@@ -125,8 +126,8 @@ class RoleBindingDetails extends React.Component<IWithRouterProps, IRoleBindingS
                                                 popoverClassName="small-help"
                                                 content={
                                                     <div>
-                                                        hese subjects may not be actual resources in
-                                                        Kubernetes. For example,{' '}
+                                                        These subjects may not be actual resources
+                                                        in Kubernetes. For example,{' '}
                                                         <Text code>Kind: Group</Text> and{' '}
                                                         <Text code>Kind: User</Text> are properties
                                                         that could be used by authentication systems
@@ -160,4 +161,4 @@ class RoleBindingDetails extends React.Component<IWithRouterProps, IRoleBindingS
     }
 }
 
-export default withRouter(RoleBindingDetails);
+export default withRouter(ClusterRoleBindingDetails);

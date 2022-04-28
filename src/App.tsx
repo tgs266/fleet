@@ -23,6 +23,9 @@ import RoleDetails from './views/RoleDetails/RoleDetails';
 import ServiceAccountDetails from './views/ServiceAccountDetails/ServiceAccountDetails';
 import RoleBindingList from './views/RoleBindingList/RoleBindingList';
 import RoleBindingDetails from './views/RoleBindingDetails/RoleBindingDetails';
+import ClusterRoleDetails from './views/ClusterRoleDetails/ClusterRoleDetails';
+import ClusterRoleBindingList from './views/ClusterRoleBindingList/ClusterRoleBindingList';
+import ClusterRoleBindingDetails from './views/ClusterRoleBindingDetails/ClusterRoleBindingDetails';
 
 function getCookie(name: string) {
     const value = `; ${document.cookie}`;
@@ -84,6 +87,13 @@ function App() {
                 <Route
                     path="rolebindings/:namespace/:roleBindingName"
                     element={<RoleBindingDetails />}
+                />
+
+                <Route path="clusterroles/:roleName" element={<ClusterRoleDetails />} />
+                <Route path="clusterrolebindings/" element={<ClusterRoleBindingList />} />
+                <Route
+                    path="clusterrolebindings/:clusterRoleBindingName"
+                    element={<ClusterRoleBindingDetails />}
                 />
             </Route>
         </Routes>

@@ -2,6 +2,7 @@ package serviceaccount
 
 import (
 	"github.com/tgs266/fleet/lib/kubernetes/common"
+	"github.com/tgs266/fleet/lib/kubernetes/resources/clusterrolebinding"
 	"github.com/tgs266/fleet/lib/kubernetes/resources/rolebinding"
 	v1 "k8s.io/api/core/v1"
 	rbac "k8s.io/api/rbac/v1"
@@ -17,8 +18,9 @@ type ServiceAccountMeta struct {
 }
 
 type ServiceAccount struct {
-	ServiceAccountMeta `json:",inline"`
-	RoleBindings       []rolebinding.RoleBindingMeta `json:"roleBindings"`
+	ServiceAccountMeta  `json:",inline"`
+	RoleBindings        []rolebinding.RoleBindingMeta               `json:"roleBindings"`
+	ClusterRoleBindings []clusterrolebinding.ClusterRoleBindingMeta `json:"clusterRoleBindings"`
 }
 
 func BuildServiceAccountMeta(sa *v1.ServiceAccount) ServiceAccountMeta {
@@ -32,16 +34,21 @@ func BuildServiceAccountMeta(sa *v1.ServiceAccount) ServiceAccountMeta {
 	}
 }
 
-func BuildServiceAccount(sa *v1.ServiceAccount, roleBindings *rbac.RoleBindingList) *ServiceAccount {
+func BuildServiceAccount(sa *v1.ServiceAccount, roleBindings *rbac.RoleBindingList, clusterRoleBindings *rbac.ClusterRoleBindingList) *ServiceAccount {
 	meta := BuildServiceAccountMeta(sa)
 
 	roleBindingMetas := []rolebinding.RoleBindingMeta{}
 	for _, item := range roleBindings.Items {
 		roleBindingMetas = append(roleBindingMetas, rolebinding.BuildRoleBindingMeta(&item))
 	}
+	clusterRoleBindingMetas := []clusterrolebinding.ClusterRoleBindingMeta{}
+	for _, item := range clusterRoleBindings.Items {
+		clusterRoleBindingMetas = append(clusterRoleBindingMetas, clusterrolebinding.BuildClusterRoleBindingMeta(&item))
+	}
 
 	return &ServiceAccount{
-		ServiceAccountMeta: meta,
-		RoleBindings:       roleBindingMetas,
+		ServiceAccountMeta:  meta,
+		RoleBindings:        roleBindingMetas,
+		ClusterRoleBindings: clusterRoleBindingMetas,
 	}
 }

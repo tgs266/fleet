@@ -18,6 +18,8 @@ func Get(K8 *kubernetes.K8Client, namespace string, name string) (*ServiceAccoun
 
 	// allow compare on channel eventually (for sorting in a table)
 	roleBindingChannel := channels.GetRoleBindingListChannelForServiceAccount(K8.K8, namespace, sa, metaV1.ListOptions{}, 1)
+	clusterRoleBindingChannel := channels.GetClusterRoleBindingListChannelForServiceAccount(K8.K8, sa, metaV1.ListOptions{}, 1)
+
 	bindings := <-roleBindingChannel.List
 	err = <-roleBindingChannel.Error
 
@@ -27,5 +29,14 @@ func Get(K8 *kubernetes.K8Client, namespace string, name string) (*ServiceAccoun
 		}
 	}
 
-	return BuildServiceAccount(sa, bindings), nil
+	cBindings := <-clusterRoleBindingChannel.List
+	err = <-clusterRoleBindingChannel.Error
+
+	if err != nil {
+		cBindings = &v1.ClusterRoleBindingList{
+			Items: []v1.ClusterRoleBinding{},
+		}
+	}
+
+	return BuildServiceAccount(sa, bindings, cBindings), nil
 }

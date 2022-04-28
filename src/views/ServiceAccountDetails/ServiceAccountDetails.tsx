@@ -17,7 +17,7 @@ import TableHeader from '../../components/TableHeader';
 import TableBody from '../../components/TableBody';
 import TableRow from '../../components/TableRow';
 import { createdAtToOrigination } from '../../utils/time';
-import { buildLinkToRole } from '../../utils/routing';
+import { buildLinkToClusterRole, buildLinkToRole } from '../../utils/routing';
 import LabeledAnnotationsTagList from '../../components/AnnotationsTagList';
 import LabeledLabelsTagList from '../../components/LabelsTagList';
 
@@ -134,6 +134,42 @@ class ServiceAccountDetails extends React.Component<IWithRouterProps, IServiceAc
                                                             serviceAccount.namespace,
                                                             role.roleName
                                                         )}
+                                                    >
+                                                        {role.roleName}
+                                                    </Link>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <Tooltip2
+                                                        className={Classes.TOOLTIP2_INDICATOR}
+                                                        content={createdAtToOrigination(
+                                                            role.createdAt
+                                                        )}
+                                                    >
+                                                        <AgeText hr value={role.createdAt} />
+                                                    </Tooltip2>
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </Card>
+                        </TitledCard>
+
+                        <TitledCard style={{ marginTop: '1em' }} title="Cluster Role Bindings">
+                            <Card style={{ padding: 0 }}>
+                                <Table>
+                                    <TableHeader>
+                                        <TableCell>Binding Name</TableCell>
+                                        <TableCell>Role Name</TableCell>
+                                        <TableCell>Age</TableCell>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {serviceAccount.clusterRoleBindings.map((role) => (
+                                            <TableRow key={role.uid}>
+                                                <TableCell>{role.name}</TableCell>
+                                                <TableCell>
+                                                    <Link
+                                                        to={buildLinkToClusterRole(role.roleName)}
                                                     >
                                                         {role.roleName}
                                                     </Link>
