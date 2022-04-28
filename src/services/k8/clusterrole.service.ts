@@ -6,7 +6,7 @@ import getSortBy from '../../utils/sort';
 import api from '../axios.service';
 
 export default class ClusterRoles {
-    static base = '/api/v1/clusterrole';
+    static base = '/api/v1/clusterroles';
 
     static getClusterRole(name: string): Promise<AxiosResponse<ClusterRole>> {
         return api.get(`${ClusterRoles.base}/${name}`);
