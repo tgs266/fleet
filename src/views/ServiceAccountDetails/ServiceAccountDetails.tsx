@@ -1,6 +1,7 @@
 /* eslint-disable react/static-property-placement */
 import * as React from 'react';
-import { Button, Card } from '@blueprintjs/core';
+import { Button, Card, Intent } from '@blueprintjs/core';
+import { AxiosError } from 'axios';
 import { Tooltip2, Classes } from '@blueprintjs/popover2';
 import { Link } from 'react-router-dom';
 import { IWithRouterProps, withRouter } from '../../utils/withRouter';
@@ -9,7 +10,9 @@ import { IBreadcrumb, NavContext } from '../../layouts/Navigation';
 import InfoCard from '../../components/InfoCard';
 import LabeledText from '../../components/LabeledText';
 import AgeText from '../../components/AgeText';
-import { ServiceAccount } from '../../models/serviceaccount.model';
+import { BindRequest, ServiceAccount } from '../../models/serviceaccount.model';
+import { FleetError } from '../../models/base';
+import Toaster from '../../services/toast.service';
 import Table from '../../components/Table';
 import TitledCard from '../../components/TitledCard';
 import TableCell from '../../components/TableCell';
@@ -20,10 +23,13 @@ import { createdAtToOrigination } from '../../utils/time';
 import { buildLinkToClusterRole, buildLinkToRole } from '../../utils/routing';
 import LabeledAnnotationsTagList from '../../components/AnnotationsTagList';
 import LabeledLabelsTagList from '../../components/LabelsTagList';
+import BindDialog from './BindDialog';
+import ServiceAccounts from '../../services/k8/serviceaccount.service';
 
 interface IServiceAccountDetailsState {
     serviceAccount: ServiceAccount;
     pollId: NodeJS.Timer;
+    isBindOpen: boolean;
 }
 
 class ServiceAccountDetails extends React.Component<IWithRouterProps, IServiceAccountDetailsState> {
@@ -34,6 +40,7 @@ class ServiceAccountDetails extends React.Component<IWithRouterProps, IServiceAc
         this.state = {
             serviceAccount: null,
             pollId: null,
+            isBindOpen: false,
         };
     }
 
@@ -76,11 +83,34 @@ class ServiceAccountDetails extends React.Component<IWithRouterProps, IServiceAc
         clearInterval(this.state.pollId);
     }
 
+    toggleBindDialog = () => {
+        this.setState({ isBindOpen: !this.state.isBindOpen });
+    };
+
     pull = () => {
         K8.serviceAccounts
             .getServiceAccount(this.props.params.serviceAccountName, this.props.params.namespace)
             .then((response) => {
                 this.setState({ serviceAccount: response.data });
+            });
+    };
+
+    bindTo = (br: BindRequest) => {
+        ServiceAccounts.bindTo(
+            this.props.params.serviceAccountName,
+            this.props.params.namespace,
+            br
+        )
+            .then(() => {
+                this.toggleBindDialog();
+                Toaster.show({
+                    message: 'Successfully added role binding',
+                    intent: Intent.SUCCESS,
+                });
+            })
+            .catch((err: AxiosError<FleetError>) => {
+                this.toggleBindDialog();
+                Toaster.show({ message: err.response.data.message, intent: Intent.DANGER });
             });
     };
 
@@ -91,6 +121,11 @@ class ServiceAccountDetails extends React.Component<IWithRouterProps, IServiceAc
         const { serviceAccount } = this.state;
         return (
             <div>
+                <BindDialog
+                    isOpen={this.state.isBindOpen}
+                    onFailure={this.toggleBindDialog}
+                    onSuccess={this.bindTo}
+                />
                 <div style={{ margin: '1em', marginBottom: 0 }}>
                     <div style={{ marginBottom: '1em' }}>
                         <InfoCard title={serviceAccount.name}>
@@ -116,7 +151,11 @@ class ServiceAccountDetails extends React.Component<IWithRouterProps, IServiceAc
                             </div>
                         </InfoCard>
 
-                        <TitledCard style={{ marginTop: '1em' }} title="Role Bindings">
+                        <TitledCard
+                            style={{ marginTop: '1em' }}
+                            title="Role Bindings"
+                            rightElement={<Button icon="add" onClick={this.toggleBindDialog} />}
+                        >
                             <Card style={{ padding: 0 }}>
                                 <Table>
                                     <TableHeader>
