@@ -23,6 +23,7 @@ func (self *AuthManager) ExtractAuthInfo(c *fiber.Ctx) (*api.AuthInfo, error) {
 	authHeader := string(c.Request().Header.Peek("Authorization"))
 	jweToken := string(c.Request().Header.Peek("jweToken"))
 	impersonate := string(c.Request().Header.Peek("Impersonate-User"))
+	impersonateGroups := string(c.Request().Header.Peek("Impersonate-Groups"))
 
 	// check authheader first, fail if it is invalid
 	if strings.HasPrefix(authHeader, "Bearer ") {
@@ -31,6 +32,9 @@ func (self *AuthManager) ExtractAuthInfo(c *fiber.Ctx) (*api.AuthInfo, error) {
 			authInfo := &api.AuthInfo{Token: authHeader}
 			if len(impersonate) > 0 {
 				authInfo.Impersonate = impersonate
+				if len(impersonateGroups) > 0 {
+					authInfo.ImpersonateGroups = strings.Split(impersonateGroups, ",")
+				}
 			}
 			return authInfo, nil
 		} else {
@@ -45,6 +49,9 @@ func (self *AuthManager) ExtractAuthInfo(c *fiber.Ctx) (*api.AuthInfo, error) {
 		}
 		if len(impersonate) > 0 {
 			authInfo.Impersonate = impersonate
+			if len(impersonateGroups) > 0 {
+				authInfo.ImpersonateGroups = strings.Split(impersonateGroups, ",")
+			}
 		}
 		return authInfo, nil
 	}
