@@ -14,6 +14,7 @@ import PodContainer from '../../components/PodContainer';
 import TitledCard from '../../components/TitledCard';
 import EndpointTable from './EndpointTable';
 import TagList from '../../components/TagList';
+import EditableResource from '../../components/EditableResource';
 
 interface IPodDetailsState {
     service: Service;
@@ -48,11 +49,27 @@ class ServiceDetails extends React.Component<IWithRouterProps, IPodDetailsState>
             .then((response) => {
                 this.setState({ service: response.data });
             });
+        K8.services
+            .getService(this.props.params.serviceName, this.props.params.namespace)
+            .then((response) => {
+                this.setState({
+                    service: response.data,
+                    pollId: K8.pollFunction(1000, this.pull),
+                });
+            });
     }
 
     componentWillUnmount() {
         clearInterval(this.state.pollId);
     }
+
+    pull = () => {
+        K8.services
+            .getService(this.props.params.serviceName, this.props.params.namespace)
+            .then((response) => {
+                this.setState({ service: response.data });
+            });
+    };
 
     render() {
         if (!this.state.service) {
@@ -61,7 +78,12 @@ class ServiceDetails extends React.Component<IWithRouterProps, IPodDetailsState>
         const { service } = this.state;
         return (
             <div>
-                {/* show resource usage ici */}
+                <EditableResource
+                    refresh={this.pull}
+                    type="services"
+                    namespace={service.namespace}
+                    name={service.name}
+                />
                 <div style={{ margin: '1em', marginBottom: '1em' }}>
                     <div style={{ marginBottom: '1em' }}>
                         <InfoCard title={service.name}>

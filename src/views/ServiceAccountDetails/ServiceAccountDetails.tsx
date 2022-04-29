@@ -31,6 +31,7 @@ import LabeledLabelsTagList from '../../components/LabelsTagList';
 import ServiceAccounts from '../../services/k8/serviceaccount.service';
 import RoleBindDialog from './RoleBindDialog';
 import ClusterRoleBindDialog from './ClusterRoleBindDialog';
+import EditableResource from '../../components/EditableResource';
 
 interface IServiceAccountDetailsState {
     serviceAccount: ServiceAccount;
@@ -137,6 +138,12 @@ class ServiceAccountDetails extends React.Component<IWithRouterProps, IServiceAc
         const { serviceAccount } = this.state;
         return (
             <div>
+                <EditableResource
+                    refresh={this.pull}
+                    type="serviceaccounts"
+                    namespace={serviceAccount.namespace}
+                    name={serviceAccount.name}
+                />
                 <RoleBindDialog
                     isOpen={this.state.isRoleBindOpen}
                     onFailure={this.toggleRoleBindDialog}

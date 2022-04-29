@@ -9,3 +9,14 @@ export default function setOnce(
         setState(bc);
     }, []);
 }
+
+export function appendToButtons(
+    state: INavContext,
+    setState: (value: React.SetStateAction<INavContext>) => void,
+    button: React.ReactNode
+) {
+    setState({
+        ...state,
+        buttons: [...state.buttons, button],
+    });
+}
