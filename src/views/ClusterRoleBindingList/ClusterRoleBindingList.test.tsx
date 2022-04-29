@@ -19,6 +19,7 @@ const generateClusterRoleBinding = (name: string): ClusterRoleBinding => ({
     annotations: { asdf: 'asdf' },
     subjects: [
         {
+            apiGroup: 'asdf',
             kind: 'asdf',
             name: 'asdf',
             namespace: 'asdf',

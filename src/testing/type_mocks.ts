@@ -22,6 +22,7 @@ export const generateRoleBinding = (name: string): RoleBinding => ({
             name: 'asdf',
             namespace: 'asdf',
             kind: 'group',
+            apiGroup: 'asdf',
         },
     ],
 });
@@ -38,6 +39,7 @@ export const generateClusterRoleBinding = (name: string): ClusterRoleBinding => 
             name: 'asdf',
             namespace: 'asdf',
             kind: 'group',
+            apiGroup: 'asdf',
         },
     ],
 });
