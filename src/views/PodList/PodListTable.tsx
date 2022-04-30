@@ -28,7 +28,7 @@ class PodListTable extends React.Component<IPodTableProps, IPodListState> {
             pods: [],
             sort: {
                 sortableId: 'name',
-                ascending: false,
+                ascending: true,
             },
             page: 0,
             pageSize: 10,

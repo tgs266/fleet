@@ -30,7 +30,7 @@ class RoleBindingTable extends React.Component<IRoleBindingTableProps, IRoleBind
             bindings: [],
             sort: {
                 sortableId: 'name',
-                ascending: false,
+                ascending: true,
             },
             page: 0,
             pageSize: 10,

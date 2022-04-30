@@ -30,6 +30,7 @@ var PluralKindToRawMapping = map[string]RawMapping{
 	"services":        {"services", CoreClientType, true},
 	"namespaces":      {"namespaces", CoreClientType, true},
 	"serviceaccounts": {"serviceaccounts", CoreClientType, true},
+	"secrets":         {"secrets", CoreClientType, true},
 }
 
 type Client struct {

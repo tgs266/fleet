@@ -26,6 +26,8 @@ import RoleBindingDetails from './views/RoleBindingDetails/RoleBindingDetails';
 import ClusterRoleDetails from './views/ClusterRoleDetails/ClusterRoleDetails';
 import ClusterRoleBindingList from './views/ClusterRoleBindingList/ClusterRoleBindingList';
 import ClusterRoleBindingDetails from './views/ClusterRoleBindingDetails/ClusterRoleBindingDetails';
+import SecretList from './views/SecretList/SecretList';
+import SecretDetails from './views/SecretDetails/SecretDetails';
 
 function getCookie(name: string) {
     const value = `; ${document.cookie}`;
@@ -95,6 +97,9 @@ function App() {
                     path="clusterrolebindings/:clusterRoleBindingName"
                     element={<ClusterRoleBindingDetails />}
                 />
+
+                <Route path="secrets/" element={<SecretList />} />
+                <Route path="secrets/:namespace/:secretName" element={<SecretDetails />} />
             </Route>
         </Routes>
     );

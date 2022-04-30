@@ -5,6 +5,7 @@ import { Deployment } from '../models/deployment.model';
 import { Node } from '../models/node.model';
 import { Pod } from '../models/pod.model';
 import { Role, RoleBinding } from '../models/role.model';
+import { Secret } from '../models/secret.model';
 import { ServiceMeta } from '../models/service.model';
 import { ServiceAccount } from '../models/serviceaccount.model';
 import { SystemResources } from '../models/system.model';
@@ -399,6 +400,19 @@ export const generateNode = (name: string = 'test'): Node => ({
         kubeProxyVersion: 'string',
         operatingSystem: 'string',
         architecture: 'string',
+    },
+});
+
+export const generateSecret = (name: string): Secret => ({
+    name,
+    namespace: 'asdf',
+    createdAt: 0,
+    uid: name,
+    annotations: { asdf: 'asdf' },
+    labels: { asdf: 'asdf' },
+    immutable: false,
+    data: {
+        first: 'xyzh6',
     },
 });
 
