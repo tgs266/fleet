@@ -74,14 +74,16 @@ func initializeOtherRoutes(app *api.API) {
 	app.Get("/api/v1/namespaces/", GetNamespaces)
 	app.Get("/api/v1/namespaces/:name", GetNamespace)
 
-	app.Get("/api/v1/raw/:kind/:namespace/:name", RawGet)
-	app.Get("/api/v1/raw/:kind/:name", RawGet)
+	rawBase := "/api/v1/raw/:kind"
 
-	app.Put("/api/v1/raw/:kind/:namespace/:name", RawPut)
-	app.Put("/api/v1/raw/:kind/:name", RawPut)
+	app.Get(rawBase+"/:namespace/:name", RawGet)
+	app.Get(rawBase+"/:name", RawGet)
 
-	app.Delete("/api/v1/raw/:kind/:namespace/:name", RawDelete)
-	app.Delete("/api/v1/raw/:kind/:name", RawDelete)
+	app.Put(rawBase+"/:namespace/:name", RawPut)
+	app.Put(rawBase+"/:name", RawPut)
+
+	app.Delete(rawBase+"/:namespace/:name", RawDelete)
+	app.Delete(rawBase+"/:name", RawDelete)
 
 	app.Get("/api/v1/filters/properties", GetFilters)
 }

@@ -12,6 +12,8 @@ type Raw map[string]interface{}
 
 type ClientType string
 
+var INTERNAL_ERROR_TXT = "unknown error occured"
+
 // List of client types supported by the UI.
 const (
 	CoreClientType = "coreclient"
@@ -80,7 +82,7 @@ func (c *Client) Get(kind string, name string, namespace string) (runtime.Object
 
 	client, ok := c.getClient(clientType)
 	if !ok {
-		return nil, errors.CreateError(500, "unknown error occured")
+		return nil, errors.CreateError(500, INTERNAL_ERROR_TXT)
 	}
 	req := client.Get().Resource(resource).Name(name).SetHeader("Accept", "application/json")
 	result := &runtime.Unknown{}
@@ -108,7 +110,7 @@ func (c *Client) Put(kind string, name string, namespace string, object *runtime
 
 	client, ok := c.getClient(clientType)
 	if !ok {
-		return errors.CreateError(500, "unknown error occured")
+		return errors.CreateError(500, INTERNAL_ERROR_TXT)
 	}
 	req := client.Put().Resource(resource).Name(name).SetHeader("Content-Type", "application/json").Body([]byte(object.Raw))
 
@@ -134,7 +136,7 @@ func (c *Client) Delete(kind string, name string, namespace string) error {
 
 	client, ok := c.getClient(clientType)
 	if !ok {
-		return errors.CreateError(500, "unknown error occured")
+		return errors.CreateError(500, INTERNAL_ERROR_TXT)
 	}
 	req := client.Delete().Resource(resource).Name(name).SetHeader("Content-Type", "application/json")
 
