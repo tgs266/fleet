@@ -412,7 +412,7 @@ export const generateSecret = (name: string): Secret => ({
     labels: { asdf: 'asdf' },
     immutable: false,
     data: {
-        first: 'xyzh6',
+        first: window.btoa(String.fromCharCode.apply(null, new Uint8Array([0, 10, 54]))),
     },
 });
 

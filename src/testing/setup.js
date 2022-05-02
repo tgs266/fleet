@@ -1,3 +1,5 @@
+import { TextEncoder, TextDecoder } from 'util';
+
 const nodeCrypto = require('crypto');
 const msw = require('msw');
 const { setupServer } = require('msw/node');
@@ -10,6 +12,9 @@ window.crypto = {
         return nodeCrypto.randomFillSync(buffer);
     },
 };
+
+global.TextEncoder = TextEncoder;
+global.TextDecoder = TextDecoder;
 
 const server = setupServer(
     msw.rest.get(`${Auth.base}/cani`, (req, res, ctx) => res(ctx.json({ allowed: true })))

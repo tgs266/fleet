@@ -7,7 +7,7 @@ import '@testing-library/jest-dom';
 import SecretDetails from './SecretDetails';
 import Layout from '../../layouts/Layout';
 import { delay } from '../../testing/utils';
-import { generateRole, generateSecret } from '../../testing/type_mocks';
+import { generateSecret } from '../../testing/type_mocks';
 import Roles from '../../services/k8/role.service';
 import Secrets from '../../services/k8/secret.service';
 
@@ -72,7 +72,9 @@ test('can refresh', async () => {
     await waitFor(() => expect(wrapper.queryByTestId('infocard-title').innerHTML).toBe('test'));
 
     await server.use(
-        rest.get(`${Roles.base}/test/test`, (req, res, ctx) => res(ctx.json(generateRole('test1'))))
+        rest.get(`${Secrets.base}/test/test`, (req, res, ctx) =>
+            res(ctx.json(generateSecret('test1')))
+        )
     );
 
     fireEvent.click(wrapper.getByTestId('refresh'));
