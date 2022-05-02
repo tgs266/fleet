@@ -134,9 +134,10 @@ export default function SideNavigation() {
                     type="menu"
                     children={[
                         {
-                            target: '/',
-                            icon: 'add',
-                            id: 'storage1',
+                            target: '/secrets',
+                            icon: 'key',
+                            name: 'Secrets',
+                            id: 'secrets',
                         },
                     ]}
                 />

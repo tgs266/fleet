@@ -55,6 +55,11 @@ func initializeRoleBindingRoutes(app *api.API) {
 	app.Get("/api/v1/clusterrolebindings/:name", GetClusterRoleBinding)
 }
 
+func initializeSecretRoutes(app *api.API) {
+	app.Get("/api/v1/secrets/:namespace/", GetSecrets)
+	app.Get("/api/v1/secrets/:namespace/:name", GetSecret)
+}
+
 func initializeOtherRoutes(app *api.API) {
 	app.Get("/api/v1/auth/", UsingAuth)
 	app.Get("/api/v1/auth/cani", CanI)
@@ -84,5 +89,6 @@ func InitializeRoutes(app *api.API) {
 	initializeServiceAccountRoutes(app)
 	initializeRoleRoutes(app)
 	initializeRoleBindingRoutes(app)
+	initializeSecretRoutes(app)
 	initializeOtherRoutes(app)
 }

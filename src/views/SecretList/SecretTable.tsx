@@ -5,31 +5,33 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 import ResourceTable from '../../components/ResourceTable';
 import { TableSort } from '../../components/SortableTableHeaderCell';
+import { IBreadcrumb, NavContext } from '../../layouts/Navigation';
 import { Pagination } from '../../models/component.model';
-import { ServiceAccountMeta } from '../../models/serviceaccount.model';
+import { SecretMeta } from '../../models/secret.model';
 import K8 from '../../services/k8.service';
-import { buildLinkToNamespace, buildLinkToServiceAccount } from '../../utils/routing';
+import { buildLinkToNamespace, buildLinkToSecret } from '../../utils/routing';
 import getOffset from '../../utils/table';
 import { createdAtToHumanReadable, createdAtToOrigination } from '../../utils/time';
+import { IWithRouterProps, withRouter } from '../../utils/withRouter';
 
-interface IServiceAccountTableTableState extends Pagination {
-    serviceAccounts: ServiceAccountMeta[];
+interface ISecretTableProps extends IWithRouterProps {
+    namespace?: string;
+}
+
+interface ISecretTableState extends Pagination {
+    secrets: SecretMeta[];
     sort: TableSort;
     pollId: NodeJS.Timer;
 }
 
-interface IServiceAccountTableProps {
-    namespace?: string;
-}
+class SecretTable extends React.Component<ISecretTableProps, ISecretTableState> {
+    // eslint-disable-next-line react/static-property-placement
+    static contextType = NavContext;
 
-class ServiceAccountTable extends React.Component<
-    IServiceAccountTableProps,
-    IServiceAccountTableTableState
-> {
-    constructor(props: IServiceAccountTableProps) {
+    constructor(props: ISecretTableProps) {
         super(props);
         this.state = {
-            serviceAccounts: [],
+            secrets: [],
             sort: {
                 sortableId: 'name',
                 ascending: true,
@@ -42,11 +44,22 @@ class ServiceAccountTable extends React.Component<
     }
 
     componentDidMount() {
-        K8.serviceAccounts
-            .getServiceAccounts(this.props.namespace, this.state.sort, 0, this.state.pageSize)
+        const [, setState] = this.context;
+        setState({
+            breadcrumbs: [
+                {
+                    text: 'secrets',
+                    link: '/secrets',
+                },
+            ] as IBreadcrumb[],
+            buttons: [],
+            menu: null,
+        });
+        K8.secrets
+            .getSecrets(this.props.namespace, this.state.sort, 0, this.state.pageSize)
             .then((response) => {
                 this.setState({
-                    serviceAccounts: response.data.items,
+                    secrets: response.data.items,
                     total: response.data.total,
                     pollId: K8.pollFunction(5000, () => this.pull(null, null)),
                 });
@@ -60,8 +73,8 @@ class ServiceAccountTable extends React.Component<
     pull = (sort?: TableSort, page?: number) => {
         const usingSort = sort || this.state.sort;
         const usingPage = page !== null ? page : this.state.page;
-        K8.serviceAccounts
-            .getServiceAccounts(
+        K8.secrets
+            .getSecrets(
                 this.props.namespace,
                 usingSort,
                 getOffset(usingPage, this.state.pageSize, this.state.total),
@@ -69,7 +82,7 @@ class ServiceAccountTable extends React.Component<
             )
             .then((response) => {
                 this.setState({
-                    serviceAccounts: response.data.items,
+                    secrets: response.data.items,
                     sort: usingSort,
                     page: usingPage,
                     total: response.data.total,
@@ -88,7 +101,7 @@ class ServiceAccountTable extends React.Component<
     render() {
         return (
             <Card style={{ padding: 0, minWidth: '40em' }}>
-                <ResourceTable<ServiceAccountMeta>
+                <ResourceTable<SecretMeta>
                     paginationProps={{
                         page: this.state.page,
                         pageSize: this.state.pageSize,
@@ -97,24 +110,24 @@ class ServiceAccountTable extends React.Component<
                     }}
                     onSortChange={this.sortChange}
                     sort={this.state.sort}
-                    data={this.state.serviceAccounts}
+                    data={this.state.secrets}
                     keyPath="uid"
                     columns={[
                         {
                             key: 'name',
-                            columnName: 'Name',
                             sortableId: 'name',
-                            columnFunction: (row: ServiceAccountMeta) => (
-                                <Link to={buildLinkToServiceAccount(row.namespace, row.name)}>
+                            columnName: 'Name',
+                            columnFunction: (row: SecretMeta) => (
+                                <Link to={buildLinkToSecret(row.namespace, row.name)}>
                                     {row.name}
                                 </Link>
                             ),
                         },
                         {
                             key: 'namespace',
-                            columnName: 'Namespace',
                             sortableId: 'namespace',
-                            columnFunction: (row: ServiceAccountMeta) => (
+                            columnName: 'Namespace',
+                            columnFunction: (row: SecretMeta) => (
                                 <Link to={buildLinkToNamespace(row.namespace)}>
                                     {row.namespace}
                                 </Link>
@@ -122,9 +135,9 @@ class ServiceAccountTable extends React.Component<
                         },
                         {
                             key: 'age',
-                            columnName: 'Age',
                             sortableId: 'created_at',
-                            columnFunction: (row: ServiceAccountMeta) => (
+                            columnName: 'Age',
+                            columnFunction: (row: SecretMeta) => (
                                 <Tooltip2
                                     className={Classes.TOOLTIP2_INDICATOR}
                                     content={createdAtToOrigination(row.createdAt)}
@@ -133,6 +146,11 @@ class ServiceAccountTable extends React.Component<
                                 </Tooltip2>
                             ),
                         },
+                        {
+                            key: 'immutable',
+                            columnName: 'Immutable?',
+                            columnFunction: (row: SecretMeta) => (row.immutable ? 'Yes' : 'No'),
+                        },
                     ]}
                 />
             </Card>
@@ -140,4 +158,4 @@ class ServiceAccountTable extends React.Component<
     }
 }
 
-export default ServiceAccountTable;
+export default withRouter(SecretTable);

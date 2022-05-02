@@ -29,6 +29,13 @@ func TestComparable1(t *testing.T) {
 			expected: false,
 		},
 		{
+			name:     "test22",
+			v1:       getComparable("a"),
+			v2:       getComparable("b"),
+			operator: GreaterThanOrEqualOperator,
+			expected: false,
+		},
+		{
 			name:     "test3",
 			v1:       getComparable("b"),
 			v2:       getComparable("b"),
@@ -44,10 +51,10 @@ func TestComparable1(t *testing.T) {
 		},
 		{
 			name:     "test4",
-			v1:       getComparable("c"),
-			v2:       getComparable("b"),
+			v1:       getComparable("b"),
+			v2:       getComparable("c"),
 			operator: LessThanOrEqualOperator,
-			expected: false,
+			expected: true,
 		},
 		{
 			name:     "test4",

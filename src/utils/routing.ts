@@ -15,6 +15,8 @@ export const buildLinkToContainer = (namespace: string, podName: string, contain
 
 export const buildLinkToService = (namespace: string, serviceName: string) =>
     `/services/${namespace}/${serviceName}`;
+export const buildLinkToSecret = (namespace: string, serviceName: string) =>
+    `/secrets/${namespace}/${serviceName}`;
 
 export const buildLinkToNode = (nodeName: string) => `/nodes/${nodeName}`;
 

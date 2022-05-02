@@ -8,6 +8,7 @@ export interface ITextProps {
     size?: number;
     style?: React.CSSProperties;
     code?: boolean;
+    textBlockStyle?: React.CSSProperties;
     codePrefix?: React.ReactNode;
     fontSize?: string;
 }
@@ -37,6 +38,7 @@ export default function Text(props: ITextProps) {
                         fontSize: props.fontSize || '16px',
                         display: 'flex',
                         alignItems: 'center',
+                        ...props.textBlockStyle,
                     }}
                 >
                     {props.codePrefix}
