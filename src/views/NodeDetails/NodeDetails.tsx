@@ -17,8 +17,8 @@ import NodeResourceInformation from './NodeResourceInformation';
 import PodTable from '../../components/PodTable';
 import { TableSort } from '../../components/SortableTableHeaderCell';
 import { Pagination } from '../../models/component.model';
-import LabeledAnnotationsTagList from '../../components/AnnotationsTagList';
-import LabeledLabelsTagList from '../../components/LabelsTagList';
+import AnnotationsTagList from '../../components/AnnotationsTagList';
+import LabelsTagList from '../../components/LabelsTagList';
 
 interface INodeDetailsState {
     node: Node;
@@ -143,10 +143,10 @@ class NodeDetails extends React.Component<IWithRouterProps, INodeDetailsState> {
                                 </LabeledText>
                             </div>
                             <div style={{ marginTop: '0.25em', display: 'flex' }}>
-                                <LabeledLabelsTagList obj={node} />
+                                <LabelsTagList obj={node} />
                             </div>
                             <div style={{ marginTop: '0.25em', display: 'flex' }}>
-                                <LabeledAnnotationsTagList obj={node} />
+                                <AnnotationsTagList obj={node} />
                             </div>
                         </InfoCard>
                     </div>

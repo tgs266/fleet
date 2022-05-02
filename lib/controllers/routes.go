@@ -37,6 +37,8 @@ func initializeServiceAccountRoutes(app *api.API) {
 	app.Get("/api/v1/serviceaccounts/:namespace/:name", GetServiceAccount)
 	app.Put("/api/v1/serviceaccounts/:namespace/:name/bind/role", ConnectToRoleBinding)
 	app.Put("/api/v1/serviceaccounts/:namespace/:name/bind/clusterrole", ConnectToClusterRoleBinding)
+	app.Put("/api/v1/serviceaccounts/:namespace/:name/remove/role", DisconnectRoleBinding)
+	app.Put("/api/v1/serviceaccounts/:namespace/:name/remove/clusterrole", DisconnectClusterRoleBinding)
 }
 
 func initializeRoleRoutes(app *api.API) {
@@ -72,11 +74,16 @@ func initializeOtherRoutes(app *api.API) {
 	app.Get("/api/v1/namespaces/", GetNamespaces)
 	app.Get("/api/v1/namespaces/:name", GetNamespace)
 
-	app.Get("/api/v1/raw/:kind/:namespace/:name", RawGet)
-	app.Get("/api/v1/raw/:kind/:name", RawGet)
+	rawBase := "/api/v1/raw/:kind"
 
-	app.Put("/api/v1/raw/:kind/:namespace/:name", RawPut)
-	app.Put("/api/v1/raw/:kind/:name", RawPut)
+	app.Get(rawBase+"/:namespace/:name", RawGet)
+	app.Get(rawBase+"/:name", RawGet)
+
+	app.Put(rawBase+"/:namespace/:name", RawPut)
+	app.Put(rawBase+"/:name", RawPut)
+
+	app.Delete(rawBase+"/:namespace/:name", RawDelete)
+	app.Delete(rawBase+"/:name", RawDelete)
 
 	app.Get("/api/v1/filters/properties", GetFilters)
 }

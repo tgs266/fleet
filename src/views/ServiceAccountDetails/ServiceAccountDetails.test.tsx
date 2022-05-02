@@ -14,6 +14,7 @@ import { ClusterRoleBinding } from '../../models/clusterrole.model';
 import { RoleBinding } from '../../models/role.model';
 import ClusterRoleBindings from '../../services/k8/clusterrolebinding.service';
 import RoleBindings from '../../services/k8/rolebinding.service';
+import { getText } from './BindDialogShared';
 
 const generateServiceAccountWithoutLabelsAndAnnotations = (name: string) => {
     const role = generateServiceAccount(name);
@@ -86,7 +87,10 @@ const server = setupServer(
                 total: items.length,
             })
         );
-    })
+    }),
+    rest.put(`${ServiceAccounts.base}/test/test/remove/role`, (req, res, ctx) =>
+        res(ctx.status(200))
+    )
 );
 
 beforeAll(() => server.listen());
@@ -200,4 +204,33 @@ test('open cluster role bind dialog', async () => {
     });
 
     expect(document.getElementById('Bind To Cluster Role')).toBeInTheDocument();
+});
+
+test('remove role binding', async () => {
+    await act(async () => {
+        const wrapper = render(
+            <MemoryRouter initialEntries={['/serviceAccounts/test/test']}>
+                <Routes>
+                    <Route path="/" element={<Layout />}>
+                        <Route
+                            path="serviceAccounts/:namespace/:serviceAccountName"
+                            element={<ServiceAccountDetails />}
+                        />
+                    </Route>
+                </Routes>
+            </MemoryRouter>
+        );
+
+        await waitFor(() => expect(wrapper.queryByTestId('infocard-title').innerHTML).toBe('test'));
+        fireEvent.click(wrapper.queryByTestId('remove-role-binding'));
+        await delay(1000);
+    });
+});
+
+test('get text', () => {
+    const data: RoleBinding = generateRoleBinding('asdf');
+    data.namespace = 'asdf';
+    expect(getText(data)).toBe('asdf/asdf');
+    data.namespace = null;
+    expect(getText(data)).toBe('asdf');
 });

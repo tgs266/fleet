@@ -87,3 +87,47 @@ func ConnectToClusterRoleBinding(c *fiber.Ctx, client *client.ClientManager) err
 	}
 	return c.SendStatus(fiber.StatusCreated)
 }
+
+func DisconnectRoleBinding(c *fiber.Ctx, client *client.ClientManager) error {
+	K8, err := client.Client(c)
+	if err != nil {
+		return err
+	}
+
+	namespace := shared.GetNamespace(c.Params("namespace"))
+	name := c.Params("name")
+
+	body := new(serviceaccount.BindRequest)
+
+	if err := json.Unmarshal(c.Body(), &body); err != nil {
+		return err
+	}
+
+	err = serviceaccount.DisconnectRoleBinding(K8, namespace, name, *body)
+	if err != nil {
+		return errors.ParseInternalError(err)
+	}
+	return c.SendStatus(fiber.StatusCreated)
+}
+
+func DisconnectClusterRoleBinding(c *fiber.Ctx, client *client.ClientManager) error {
+	K8, err := client.Client(c)
+	if err != nil {
+		return err
+	}
+
+	namespace := shared.GetNamespace(c.Params("namespace"))
+	name := c.Params("name")
+
+	body := new(serviceaccount.BindRequest)
+
+	if err := json.Unmarshal(c.Body(), &body); err != nil {
+		return err
+	}
+
+	err = serviceaccount.DisconnectClusterRoleBinding(K8, namespace, name, *body)
+	if err != nil {
+		return errors.ParseInternalError(err)
+	}
+	return c.SendStatus(fiber.StatusCreated)
+}

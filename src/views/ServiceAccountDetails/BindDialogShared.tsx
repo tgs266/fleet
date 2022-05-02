@@ -8,6 +8,11 @@ import { ClusterRoleBinding } from '../../models/clusterrole.model';
 import { RoleBinding } from '../../models/role.model';
 import highlightText from '../../utils/select';
 
+export function getText(item: RoleBinding) {
+    const ns = item.namespace ? `/${item.namespace}` : '';
+    return `${item.name}${ns}`;
+}
+
 export default function BindDialogShared(props: {
     title: string;
     isOpen: boolean;
@@ -44,8 +49,7 @@ export default function BindDialogShared(props: {
                         if (!itemPrps.modifiers.matchesPredicate) {
                             return null;
                         }
-                        const ns = item.namespace ? `/${item.namespace}` : '';
-                        const text = `${item.name}${ns}`;
+                        const text = getText(item);
                         return (
                             <MenuItem
                                 active={itemPrps.modifiers.active}
@@ -58,8 +62,7 @@ export default function BindDialogShared(props: {
                         );
                     }}
                     itemPredicate={(query, item: RoleBinding, _index, exactMatch) => {
-                        const ns = item.namespace ? `/${item.namespace}` : '';
-                        const text = `${item.name}${ns}`;
+                        const text = getText(item);
                         const normalizedTitle = text.toLowerCase();
                         const normalizedQuery = query.toLowerCase();
 

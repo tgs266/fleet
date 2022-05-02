@@ -9,8 +9,8 @@ import { IBreadcrumb, NavContext } from '../../layouts/Navigation';
 import InfoCard from '../../components/InfoCard';
 import LabeledText from '../../components/LabeledText';
 import AgeText from '../../components/AgeText';
-import LabeledAnnotationsTagList from '../../components/AnnotationsTagList';
-import LabeledLabelsTagList from '../../components/LabelsTagList';
+import AnnotationsTagList from '../../components/AnnotationsTagList';
+import LabelsTagList from '../../components/LabelsTagList';
 import TitledCard from '../../components/TitledCard';
 import Table from '../../components/Table';
 import TableHeader from '../../components/TableHeader';
@@ -19,6 +19,7 @@ import TableBody from '../../components/TableBody';
 import TableRow from '../../components/TableRow';
 import Text from '../../components/Text/Text';
 import { ClusterRoleBinding } from '../../models/clusterrole.model';
+import EditableResource from '../../components/EditableResource';
 
 interface IClusterRoleBindingState {
     binding: ClusterRoleBinding;
@@ -92,6 +93,11 @@ class ClusterRoleBindingDetails extends React.Component<
         const { binding } = this.state;
         return (
             <div>
+                <EditableResource
+                    delete
+                    type="clusterrolebindings"
+                    name={this.props.params.clusterRoleBindingName}
+                />
                 <div style={{ margin: '1em', marginBottom: 0 }}>
                     <div style={{ marginBottom: '1em' }}>
                         <InfoCard title={binding.name}>
@@ -107,10 +113,10 @@ class ClusterRoleBindingDetails extends React.Component<
                                 </LabeledText>
                             </div>
                             <div style={{ marginTop: '0.25em', display: 'flex' }}>
-                                <LabeledLabelsTagList obj={binding} />
+                                <LabelsTagList obj={binding} />
                             </div>
                             <div style={{ marginTop: '0.25em', display: 'flex' }}>
-                                <LabeledAnnotationsTagList obj={binding} />
+                                <AnnotationsTagList obj={binding} />
                             </div>
                         </InfoCard>
 

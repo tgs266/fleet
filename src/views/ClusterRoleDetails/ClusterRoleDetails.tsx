@@ -1,6 +1,6 @@
 /* eslint-disable react/static-property-placement */
 import * as React from 'react';
-import { Button, Intent, Tag } from '@blueprintjs/core';
+import { Button, Card, Intent, Tag } from '@blueprintjs/core';
 import { IWithRouterProps, withRouter } from '../../utils/withRouter';
 import K8 from '../../services/k8.service';
 import { IBreadcrumb, NavContext } from '../../layouts/Navigation';
@@ -10,8 +10,10 @@ import Label from '../../components/Label';
 import Text from '../../components/Text/Text';
 import AgeText from '../../components/AgeText';
 import TagList from '../../components/TagList';
-import RuleAccordionList from '../../components/RuleAccordionList';
 import { ClusterRole } from '../../models/clusterrole.model';
+import RuleTable from '../../components/RuleTable';
+import TitledCard from '../../components/TitledCard';
+import EditableResource from '../../components/EditableResource';
 
 interface IClusterRoleDetailsState {
     role: ClusterRole;
@@ -78,6 +80,7 @@ class ClusterRoleDetails extends React.Component<IWithRouterProps, IClusterRoleD
         const { role } = this.state;
         return (
             <div>
+                <EditableResource delete type="clusterroles" name={this.props.params.roleName} />
                 <div style={{ margin: '1em', marginBottom: 0 }}>
                     <div style={{ marginBottom: '1em' }}>
                         <InfoCard title={role.name}>
@@ -124,7 +127,11 @@ class ClusterRoleDetails extends React.Component<IWithRouterProps, IClusterRoleD
                             </div>
                         </InfoCard>
 
-                        <RuleAccordionList style={{ marginTop: '1em' }} rules={role.rules} />
+                        <TitledCard style={{ marginTop: '1em' }} title="Rules">
+                            <Card style={{ padding: 0 }}>
+                                <RuleTable rules={role.rules} />
+                            </Card>
+                        </TitledCard>
                     </div>
                 </div>
             </div>

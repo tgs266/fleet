@@ -57,3 +57,34 @@ func TestConnectToClusterRoleBinding(t *testing.T) {
 
 	app.Test(req)
 }
+
+func TestDisconnectToRoleBinding(t *testing.T) {
+	app := setupApp()
+	app.Put("/:namespace/:name/bind", ConnectToRoleBinding)
+
+	data := serviceaccount.BindRequest{
+		TargetRoleName:      "asdf",
+		TargetRoleNamespace: "asdf",
+	}
+
+	dataBytes, _ := json.Marshal(data)
+
+	req := httptest.NewRequest("PUT", "/asdf/asdf/bind", bytes.NewBuffer(dataBytes))
+
+	app.Test(req)
+}
+
+func TestDisconnectToClusterRoleBinding(t *testing.T) {
+	app := setupApp()
+	app.Put("/:namespace/:name/bind", ConnectToClusterRoleBinding)
+
+	data := serviceaccount.BindRequest{
+		TargetRoleName: "asdf",
+	}
+
+	dataBytes, _ := json.Marshal(data)
+
+	req := httptest.NewRequest("PUT", "/asdf/asdf/bind", bytes.NewBuffer(dataBytes))
+
+	app.Test(req)
+}

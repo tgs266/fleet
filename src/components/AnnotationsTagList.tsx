@@ -5,7 +5,7 @@ import Label from './Label';
 import TagList from './TagList';
 import Text from './Text/Text';
 
-export default function LabeledAnnotationsTagList(props: { obj: BaseMeta }) {
+export default function AnnotationsTagList(props: { obj: BaseMeta }) {
     return (
         <Label label="ANNOTATIONS">
             <TagList>

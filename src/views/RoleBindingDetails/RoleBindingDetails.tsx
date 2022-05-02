@@ -10,8 +10,8 @@ import InfoCard from '../../components/InfoCard';
 import LabeledText from '../../components/LabeledText';
 import AgeText from '../../components/AgeText';
 import { RoleBinding } from '../../models/role.model';
-import LabeledAnnotationsTagList from '../../components/AnnotationsTagList';
-import LabeledLabelsTagList from '../../components/LabelsTagList';
+import AnnotationsTagList from '../../components/AnnotationsTagList';
+import LabelsTagList from '../../components/LabelsTagList';
 import TitledCard from '../../components/TitledCard';
 import Table from '../../components/Table';
 import TableHeader from '../../components/TableHeader';
@@ -19,6 +19,7 @@ import TableCell from '../../components/TableCell';
 import TableBody from '../../components/TableBody';
 import TableRow from '../../components/TableRow';
 import Text from '../../components/Text/Text';
+import EditableResource from '../../components/EditableResource';
 
 interface IRoleBindingState {
     binding: RoleBinding;
@@ -90,6 +91,12 @@ class RoleBindingDetails extends React.Component<IWithRouterProps, IRoleBindingS
         const { binding } = this.state;
         return (
             <div>
+                <EditableResource
+                    delete
+                    type="rolebindings"
+                    namespace={this.props.params.namespace}
+                    name={this.props.params.roleBindingName}
+                />
                 <div style={{ margin: '1em', marginBottom: 0 }}>
                     <div style={{ marginBottom: '1em' }}>
                         <InfoCard title={binding.name}>
@@ -106,10 +113,10 @@ class RoleBindingDetails extends React.Component<IWithRouterProps, IRoleBindingS
                                 </LabeledText>
                             </div>
                             <div style={{ marginTop: '0.25em', display: 'flex' }}>
-                                <LabeledLabelsTagList obj={binding} />
+                                <LabelsTagList obj={binding} />
                             </div>
                             <div style={{ marginTop: '0.25em', display: 'flex' }}>
-                                <LabeledAnnotationsTagList obj={binding} />
+                                <AnnotationsTagList obj={binding} />
                             </div>
                         </InfoCard>
 
