@@ -19,6 +19,16 @@ func New() *AuthManager {
 	}
 }
 
+func HandleImpersonate(authInfo *api.AuthInfo, impersonate, impersonateGroups string) *api.AuthInfo {
+	if len(impersonate) > 0 {
+		authInfo.Impersonate = impersonate
+		if len(impersonateGroups) > 0 {
+			authInfo.ImpersonateGroups = strings.Split(impersonateGroups, ",")
+		}
+	}
+	return authInfo
+}
+
 func (self *AuthManager) ExtractAuthInfo(c *fiber.Ctx) (*api.AuthInfo, error) {
 	authHeader := string(c.Request().Header.Peek("Authorization"))
 	jweToken := string(c.Request().Header.Peek("jweToken"))
@@ -30,13 +40,7 @@ func (self *AuthManager) ExtractAuthInfo(c *fiber.Ctx) (*api.AuthInfo, error) {
 		authHeader = strings.TrimPrefix(authHeader, "Bearer ")
 		if len(authHeader) > 0 {
 			authInfo := &api.AuthInfo{Token: authHeader}
-			if len(impersonate) > 0 {
-				authInfo.Impersonate = impersonate
-				if len(impersonateGroups) > 0 {
-					authInfo.ImpersonateGroups = strings.Split(impersonateGroups, ",")
-				}
-			}
-			return authInfo, nil
+			return HandleImpersonate(authInfo, impersonate, impersonateGroups), nil
 		} else {
 			return nil, fleetErrs.NewInvalidBearerToken()
 		}
@@ -47,13 +51,7 @@ func (self *AuthManager) ExtractAuthInfo(c *fiber.Ctx) (*api.AuthInfo, error) {
 		if err != nil {
 			return nil, err
 		}
-		if len(impersonate) > 0 {
-			authInfo.Impersonate = impersonate
-			if len(impersonateGroups) > 0 {
-				authInfo.ImpersonateGroups = strings.Split(impersonateGroups, ",")
-			}
-		}
-		return authInfo, nil
+		return HandleImpersonate(authInfo, impersonate, impersonateGroups), nil
 	}
 
 	return nil, fleetErrs.NewNoAuthenticationHeaderProvided()

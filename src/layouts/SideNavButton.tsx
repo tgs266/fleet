@@ -82,7 +82,7 @@ export default function SideNavButton(props: NavButton) {
         return btn;
     }
 
-    const btn = (
+    return (
         <Tooltip2 content={props.hoverEle} position={Position.RIGHT}>
             <div
                 className={`sidebar-icon no-outline ${active ? 'sidebar-active' : ''}`}
@@ -92,5 +92,4 @@ export default function SideNavButton(props: NavButton) {
             </div>
         </Tooltip2>
     );
-    return btn;
 }

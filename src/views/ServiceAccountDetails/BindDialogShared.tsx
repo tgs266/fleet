@@ -44,7 +44,8 @@ export default function BindDialogShared(props: {
                         if (!itemPrps.modifiers.matchesPredicate) {
                             return null;
                         }
-                        const text = `${item.name}${item.namespace ? `/${item.namespace}` : ''}`;
+                        const ns = item.namespace ? `/${item.namespace}` : '';
+                        const text = `${item.name}${ns}`;
                         return (
                             <MenuItem
                                 active={itemPrps.modifiers.active}
@@ -57,7 +58,8 @@ export default function BindDialogShared(props: {
                         );
                     }}
                     itemPredicate={(query, item: RoleBinding, _index, exactMatch) => {
-                        const text = `${item.name}${item.namespace ? `/${item.namespace}` : ''}`;
+                        const ns = item.namespace ? `/${item.namespace}` : '';
+                        const text = `${item.name}${ns}`;
                         const normalizedTitle = text.toLowerCase();
                         const normalizedQuery = query.toLowerCase();
 
