@@ -1,6 +1,6 @@
 /* eslint-disable react/static-property-placement */
 import * as React from 'react';
-import { Button, Card, Intent } from '@blueprintjs/core';
+import { Alignment, Button, Card, Intent } from '@blueprintjs/core';
 import { AxiosError } from 'axios';
 import { Tooltip2, Classes } from '@blueprintjs/popover2';
 import { Link } from 'react-router-dom';
@@ -131,6 +131,24 @@ class ServiceAccountDetails extends React.Component<IWithRouterProps, IServiceAc
             });
     };
 
+    disconnect = (mode: string, br: BindRequest) => {
+        let call = ServiceAccounts.disconnectRole;
+        if (mode === 'CLUSTER') {
+            call = ServiceAccounts.disconnectClusterRole;
+        }
+        call(this.props.params.serviceAccountName, this.props.params.namespace, br)
+            .then(() => {
+                Toaster.show({
+                    message: 'Successfully removed binding',
+                    intent: Intent.SUCCESS,
+                });
+            })
+            .catch((err: AxiosError<FleetError>) => {
+                this.closeBothBindDialogs();
+                Toaster.show({ message: err.response.data.message, intent: Intent.DANGER });
+            });
+    };
+
     render() {
         if (!this.state.serviceAccount) {
             return null;
@@ -196,6 +214,7 @@ class ServiceAccountDetails extends React.Component<IWithRouterProps, IServiceAc
                                         <TableCell>Binding Name</TableCell>
                                         <TableCell>Role Name</TableCell>
                                         <TableCell>Age</TableCell>
+                                        <TableCell alignment={Alignment.RIGHT} />
                                     </TableHeader>
                                     <TableBody>
                                         {serviceAccount.roleBindings.map((role) => (
@@ -230,6 +249,17 @@ class ServiceAccountDetails extends React.Component<IWithRouterProps, IServiceAc
                                                         <AgeText hr value={role.createdAt} />
                                                     </Tooltip2>
                                                 </TableCell>
+                                                <TableCell alignment={Alignment.RIGHT}>
+                                                    <Button
+                                                        icon="trash"
+                                                        onClick={() =>
+                                                            this.disconnect('', {
+                                                                targetRoleName: role.name,
+                                                                targetRoleNamespace: role.namespace,
+                                                            })
+                                                        }
+                                                    />
+                                                </TableCell>
                                             </TableRow>
                                         ))}
                                     </TableBody>
@@ -254,6 +284,7 @@ class ServiceAccountDetails extends React.Component<IWithRouterProps, IServiceAc
                                         <TableCell>Binding Name</TableCell>
                                         <TableCell>Role Name</TableCell>
                                         <TableCell>Age</TableCell>
+                                        <TableCell alignment={Alignment.RIGHT} />
                                     </TableHeader>
                                     <TableBody>
                                         {serviceAccount.clusterRoleBindings.map((role) => (
@@ -283,6 +314,17 @@ class ServiceAccountDetails extends React.Component<IWithRouterProps, IServiceAc
                                                     >
                                                         <AgeText hr value={role.createdAt} />
                                                     </Tooltip2>
+                                                </TableCell>
+                                                <TableCell alignment={Alignment.RIGHT}>
+                                                    <Button
+                                                        icon="trash"
+                                                        onClick={() =>
+                                                            this.disconnect('CLUSTER', {
+                                                                targetRoleName: role.name,
+                                                                targetRoleNamespace: '',
+                                                            })
+                                                        }
+                                                    />
                                                 </TableCell>
                                             </TableRow>
                                         ))}

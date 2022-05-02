@@ -41,4 +41,20 @@ export default class ServiceAccounts {
     ): Promise<AxiosResponse<PaginationResponse<ServiceAccountMeta>>> {
         return api.put(`${ServiceAccounts.base}/${namespace}/${name}/bind/clusterrole`, req);
     }
+
+    static disconnectRole(
+        name: string,
+        namespace: string,
+        req: BindRequest
+    ): Promise<AxiosResponse<PaginationResponse<ServiceAccountMeta>>> {
+        return api.put(`${ServiceAccounts.base}/${namespace}/${name}/remove/role`, req);
+    }
+
+    static disconnectClusterRole(
+        name: string,
+        namespace: string,
+        req: BindRequest
+    ): Promise<AxiosResponse<PaginationResponse<ServiceAccountMeta>>> {
+        return api.put(`${ServiceAccounts.base}/${namespace}/${name}/remove/clusterrole`, req);
+    }
 }
