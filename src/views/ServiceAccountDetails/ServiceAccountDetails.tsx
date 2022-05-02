@@ -26,8 +26,8 @@ import {
     buildLinkToRole,
     buildLinkToRoleBinding,
 } from '../../utils/routing';
-import LabeledAnnotationsTagList from '../../components/AnnotationsTagList';
-import LabeledLabelsTagList from '../../components/LabelsTagList';
+import AnnotationsTagList from '../../components/AnnotationsTagList';
+import LabelsTagList from '../../components/LabelsTagList';
 import ServiceAccounts from '../../services/k8/serviceaccount.service';
 import RoleBindDialog from './RoleBindDialog';
 import ClusterRoleBindDialog from './ClusterRoleBindDialog';
@@ -191,10 +191,10 @@ class ServiceAccountDetails extends React.Component<IWithRouterProps, IServiceAc
                                 </LabeledText>
                             </div>
                             <div style={{ marginTop: '0.25em', display: 'flex' }}>
-                                <LabeledLabelsTagList obj={serviceAccount} />
+                                <LabelsTagList obj={serviceAccount} />
                             </div>
                             <div style={{ marginTop: '0.25em', display: 'flex' }}>
-                                <LabeledAnnotationsTagList obj={serviceAccount} />
+                                <AnnotationsTagList obj={serviceAccount} />
                             </div>
                         </InfoCard>
 

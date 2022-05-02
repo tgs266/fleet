@@ -8,8 +8,8 @@ import InfoCard from '../../components/InfoCard';
 import LabeledText from '../../components/LabeledText';
 import AgeText from '../../components/AgeText';
 import { Secret } from '../../models/secret.model';
-import LabeledLabelsTagList from '../../components/LabelsTagList';
-import LabeledAnnotationsTagList from '../../components/AnnotationsTagList';
+import LabelsTagList from '../../components/LabelsTagList';
+import AnnotationsTagList from '../../components/AnnotationsTagList';
 import EditableResource from '../../components/EditableResource';
 import SecretAccordionList from './SecretAccordionList';
 
@@ -106,10 +106,10 @@ class SecretDetails extends React.Component<IWithRouterProps, ISecretDetailsStat
                                 </LabeledText>
                             </div>
                             <div style={{ marginTop: '0.25em', display: 'flex' }}>
-                                <LabeledLabelsTagList obj={secret} />
+                                <LabelsTagList obj={secret} />
                             </div>
                             <div style={{ marginTop: '0.25em', display: 'flex' }}>
-                                <LabeledAnnotationsTagList obj={secret} />
+                                <AnnotationsTagList obj={secret} />
                             </div>
                         </InfoCard>
                     </div>

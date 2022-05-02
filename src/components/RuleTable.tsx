@@ -11,6 +11,17 @@ import TableCell from './TableCell';
 import TableHeader from './TableHeader';
 import TableRow from './TableRow';
 
+function createTaglist(list: string[]) {
+    if (!list) {
+        return null;
+    }
+    return list.map((item) => (
+        <Tag key={item} intent={Intent.NONE} round>
+            <Text small>{item === '' ? '""' : item}</Text>
+        </Tag>
+    ));
+}
+
 export default function RuleTable(props: { rules: Rule[] }) {
     const { rules } = props;
 
@@ -27,54 +38,19 @@ export default function RuleTable(props: { rules: Rule[] }) {
                 {rules.map((rule, idx) => (
                     <TableRow key={idx}>
                         <TableCell>
-                            <TagList>
-                                {rule.apiGroups &&
-                                    rule.apiGroups.map((apiGroup) => (
-                                        <Tag key={apiGroup} intent={Intent.NONE} round>
-                                            <Text small>{apiGroup === '' ? '""' : apiGroup}</Text>
-                                        </Tag>
-                                    ))}
-                            </TagList>
+                            <TagList>{createTaglist(rule.apiGroups)}</TagList>
                         </TableCell>
                         <TableCell>
-                            <TagList>
-                                {rule.resources &&
-                                    rule.resources.map((item) => (
-                                        <Tag key={item} intent={Intent.NONE} round>
-                                            <Text small>{item === '' ? '""' : item}</Text>
-                                        </Tag>
-                                    ))}
-                            </TagList>
+                            <TagList>{createTaglist(rule.resources)}</TagList>
                         </TableCell>
                         <TableCell>
-                            <TagList>
-                                {rule.resourceNames &&
-                                    rule.resourceNames.map((item) => (
-                                        <Tag key={item} intent={Intent.NONE} round>
-                                            <Text small>{item === '' ? '""' : item}</Text>
-                                        </Tag>
-                                    ))}
-                            </TagList>
+                            <TagList>{createTaglist(rule.resourceNames)}</TagList>
                         </TableCell>
                         <TableCell>
-                            <TagList>
-                                {rule.nonResourceURLs &&
-                                    rule.nonResourceURLs.map((item) => (
-                                        <Tag key={item} intent={Intent.NONE} round>
-                                            <Text small>{item === '' ? '""' : item}</Text>
-                                        </Tag>
-                                    ))}
-                            </TagList>
+                            <TagList>{createTaglist(rule.nonResourceURLs)}</TagList>
                         </TableCell>
                         <TableCell>
-                            <TagList>
-                                {rule.verbs &&
-                                    rule.verbs.map((item) => (
-                                        <Tag key={item} intent={Intent.NONE} round>
-                                            <Text small>{item === '' ? '""' : item}</Text>
-                                        </Tag>
-                                    ))}
-                            </TagList>
+                            <TagList>{createTaglist(rule.verbs)}</TagList>
                         </TableCell>
                     </TableRow>
                 ))}

@@ -16,8 +16,8 @@ import PodEvents from './PodEvents';
 import PodResourceInformation from './PodResourceInformation';
 import ConditionTable from '../../components/ConditionTable';
 import { buildLinkToNode } from '../../utils/routing';
-import LabeledAnnotationsTagList from '../../components/AnnotationsTagList';
-import LabeledLabelsTagList from '../../components/LabelsTagList';
+import AnnotationsTagList from '../../components/AnnotationsTagList';
+import LabelsTagList from '../../components/LabelsTagList';
 import EditableResource from '../../components/EditableResource';
 
 interface IPodDetailsState {
@@ -119,10 +119,10 @@ class PodDetails extends React.Component<IWithRouterProps, IPodDetailsState> {
                                 </LabeledText>
                             </div>
                             <div style={{ marginTop: '0.25em', display: 'flex' }}>
-                                <LabeledLabelsTagList obj={pod} />
+                                <LabelsTagList obj={pod} />
                             </div>
                             <div style={{ marginTop: '0.25em', display: 'flex' }}>
-                                <LabeledAnnotationsTagList obj={pod} />
+                                <AnnotationsTagList obj={pod} />
                             </div>
                         </InfoCard>
                     </div>

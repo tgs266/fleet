@@ -26,8 +26,22 @@ export default function EditableResource(props: {
     const toggle = () => {
         setIsOpen(!isOpen);
     };
-
     const navigate = useNavigate();
+
+    const handleSuccessNavToast = () => {
+        showToastWithActionInterval(
+            {
+                message: 'Resource Deleted. Redirecting in 5s',
+                intent: Intent.SUCCESS,
+                action: {
+                    onClick: () => navigate(`/${props.type}`),
+                    text: 'Go Now',
+                },
+            },
+            5000,
+            () => navigate(`/${props.type}`)
+        );
+    };
 
     const get = () => {
         if (props.namespace) {
@@ -71,18 +85,7 @@ export default function EditableResource(props: {
             api.delete(`/api/v1/raw/${props.type}/${props.namespace}/${props.name}`)
                 .then(() => {
                     setIsDeleteOpen(false);
-                    showToastWithActionInterval(
-                        {
-                            message: 'Resource Deleted. Redirecting in 5s',
-                            intent: Intent.SUCCESS,
-                            action: {
-                                onClick: () => navigate(`/${props.type}`),
-                                text: 'Go Now',
-                            },
-                        },
-                        5000,
-                        () => navigate(`/${props.type}`)
-                    );
+                    handleSuccessNavToast();
                 })
                 .catch((err: Error | AxiosError) => {
                     setIsDeleteOpen(false);
@@ -92,18 +95,7 @@ export default function EditableResource(props: {
             api.delete(`/api/v1/raw/${props.type}/${props.name}`)
                 .then(() => {
                     setIsDeleteOpen(false);
-                    showToastWithActionInterval(
-                        {
-                            message: 'Resource Deleted. Redirecting in 5s',
-                            intent: Intent.SUCCESS,
-                            action: {
-                                onClick: () => navigate(`/${props.type}`),
-                                text: 'Go Now',
-                            },
-                        },
-                        5000,
-                        () => navigate(`/${props.type}`)
-                    );
+                    handleSuccessNavToast();
                 })
                 .catch((err: Error | AxiosError) => {
                     setIsDeleteOpen(false);

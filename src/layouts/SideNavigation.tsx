@@ -51,6 +51,12 @@ const navBtns: NavButton[] = [
     },
 ];
 
+function handleAdd(allowed: boolean, newItem: NavMenuItem, menuItems: NavMenuItem[]) {
+    if (allowed) {
+        menuItems.push(newItem);
+    }
+}
+
 export default function SideNavigation() {
     const [buttons, setButtons] = React.useState(navBtns);
     const [usingAuth, setUsingAuth] = React.useState(false);
@@ -78,36 +84,42 @@ export default function SideNavigation() {
 
         Promise.allSettled(promiseArray).then((response) => {
             if (response[0].status === 'fulfilled') {
-                if (response[0].value.data.allowed) {
-                    menuItems.push({
+                handleAdd(
+                    response[0].value.data.allowed,
+                    {
                         target: '/serviceaccounts',
                         icon: 'cog',
                         name: 'Service Accounts',
                         id: 'ServiceAccounts',
-                    });
-                }
+                    },
+                    menuItems
+                );
             }
             if (response[1].status === 'fulfilled') {
                 // roles
-                if (response[1].value.data.allowed) {
-                    menuItems.push({
+                handleAdd(
+                    response[1].value.data.allowed,
+                    {
                         target: '/roles',
                         icon: 'inherited-group',
                         name: 'Roles',
                         id: 'Roles',
-                    });
-                }
+                    },
+                    menuItems
+                );
             }
             if (response[2].status === 'fulfilled') {
                 // role bindings
-                if (response[2].value.data.allowed) {
-                    menuItems.push({
+                handleAdd(
+                    response[2].value.data.allowed,
+                    {
                         target: '/rolebindings',
                         icon: 'inner-join',
                         name: 'Role Bindings',
                         id: 'RoleBindings',
-                    });
-                }
+                    },
+                    menuItems
+                );
             }
             if (menuItems.length !== 0) {
                 setButtons([

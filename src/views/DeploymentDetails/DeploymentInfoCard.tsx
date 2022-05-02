@@ -2,10 +2,10 @@
 import { Colors } from '@blueprintjs/core';
 import * as React from 'react';
 import AgeText from '../../components/AgeText';
-import LabeledAnnotationsTagList from '../../components/AnnotationsTagList';
+import AnnotationsTagList from '../../components/AnnotationsTagList';
 import InfoCard from '../../components/InfoCard';
 import LabeledText from '../../components/LabeledText';
-import LabeledLabelsTagList from '../../components/LabelsTagList';
+import LabelsTagList from '../../components/LabelsTagList';
 import { Deployment } from '../../models/deployment.model';
 
 export default function DeploymentInfoCard(props: { deployment: Deployment }) {
@@ -39,10 +39,10 @@ export default function DeploymentInfoCard(props: { deployment: Deployment }) {
                     </LabeledText>
                 </div>
                 <div style={{ marginTop: '0.25em', display: 'flex' }}>
-                    <LabeledLabelsTagList obj={deployment} />
+                    <LabelsTagList obj={deployment} />
                 </div>
                 <div style={{ marginTop: '0.25em', display: 'flex' }}>
-                    <LabeledAnnotationsTagList obj={deployment} />
+                    <AnnotationsTagList obj={deployment} />
                 </div>
             </InfoCard>
         </div>

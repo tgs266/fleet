@@ -10,8 +10,8 @@ import InfoCard from '../../components/InfoCard';
 import LabeledText from '../../components/LabeledText';
 import AgeText from '../../components/AgeText';
 import { RoleBinding } from '../../models/role.model';
-import LabeledAnnotationsTagList from '../../components/AnnotationsTagList';
-import LabeledLabelsTagList from '../../components/LabelsTagList';
+import AnnotationsTagList from '../../components/AnnotationsTagList';
+import LabelsTagList from '../../components/LabelsTagList';
 import TitledCard from '../../components/TitledCard';
 import Table from '../../components/Table';
 import TableHeader from '../../components/TableHeader';
@@ -113,10 +113,10 @@ class RoleBindingDetails extends React.Component<IWithRouterProps, IRoleBindingS
                                 </LabeledText>
                             </div>
                             <div style={{ marginTop: '0.25em', display: 'flex' }}>
-                                <LabeledLabelsTagList obj={binding} />
+                                <LabelsTagList obj={binding} />
                             </div>
                             <div style={{ marginTop: '0.25em', display: 'flex' }}>
-                                <LabeledAnnotationsTagList obj={binding} />
+                                <AnnotationsTagList obj={binding} />
                             </div>
                         </InfoCard>
 
