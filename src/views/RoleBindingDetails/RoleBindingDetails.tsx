@@ -92,6 +92,7 @@ class RoleBindingDetails extends React.Component<IWithRouterProps, IRoleBindingS
         return (
             <div>
                 <EditableResource
+                    delete
                     type="rolebindings"
                     namespace={this.props.params.namespace}
                     name={this.props.params.roleBindingName}

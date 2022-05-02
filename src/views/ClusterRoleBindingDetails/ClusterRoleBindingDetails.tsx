@@ -94,6 +94,7 @@ class ClusterRoleBindingDetails extends React.Component<
         return (
             <div>
                 <EditableResource
+                    delete
                     type="clusterrolebindings"
                     name={this.props.params.clusterRoleBindingName}
                 />

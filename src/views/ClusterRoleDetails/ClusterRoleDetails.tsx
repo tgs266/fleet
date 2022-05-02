@@ -80,7 +80,7 @@ class ClusterRoleDetails extends React.Component<IWithRouterProps, IClusterRoleD
         const { role } = this.state;
         return (
             <div>
-                <EditableResource type="clusterroles" name={this.props.params.roleName} />
+                <EditableResource delete type="clusterroles" name={this.props.params.roleName} />
                 <div style={{ margin: '1em', marginBottom: 0 }}>
                     <div style={{ marginBottom: '1em' }}>
                         <InfoCard title={role.name}>

@@ -80,6 +80,9 @@ func initializeOtherRoutes(app *api.API) {
 	app.Put("/api/v1/raw/:kind/:namespace/:name", RawPut)
 	app.Put("/api/v1/raw/:kind/:name", RawPut)
 
+	app.Delete("/api/v1/raw/:kind/:namespace/:name", RawDelete)
+	app.Delete("/api/v1/raw/:kind/:name", RawDelete)
+
 	app.Get("/api/v1/filters/properties", GetFilters)
 }
 

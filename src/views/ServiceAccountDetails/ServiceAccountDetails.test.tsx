@@ -14,6 +14,7 @@ import { ClusterRoleBinding } from '../../models/clusterrole.model';
 import { RoleBinding } from '../../models/role.model';
 import ClusterRoleBindings from '../../services/k8/clusterrolebinding.service';
 import RoleBindings from '../../services/k8/rolebinding.service';
+import { getText } from './BindDialogShared';
 
 const generateServiceAccountWithoutLabelsAndAnnotations = (name: string) => {
     const role = generateServiceAccount(name);
@@ -224,4 +225,12 @@ test('remove role binding', async () => {
         fireEvent.click(wrapper.queryByTestId('remove-role-binding'));
         await delay(1000);
     });
+});
+
+test('get text', () => {
+    const data: RoleBinding = generateRoleBinding('asdf');
+    data.namespace = 'asdf';
+    expect(getText(data)).toBe('asdf/asdf');
+    data.namespace = null;
+    expect(getText(data)).toBe('asdf');
 });

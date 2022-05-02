@@ -117,3 +117,29 @@ func (c *Client) Put(kind string, name string, namespace string, object *runtime
 	}
 	return req.Do(context.TODO()).Error()
 }
+
+func (c *Client) Delete(kind string, name string, namespace string) error {
+	mapping, ok := PluralKindToRawMapping[kind]
+	if !ok {
+		return errors.NewBadRequestInvalidResourceType(kind)
+	}
+
+	clientType := mapping.ClientType
+	resource := mapping.Resource
+	useNamespace := mapping.UseNamespace
+
+	if useNamespace && namespace == "" {
+		return errors.NewBadRequestMustProvideNamespace()
+	}
+
+	client, ok := c.getClient(clientType)
+	if !ok {
+		return errors.CreateError(500, "unknown error occured")
+	}
+	req := client.Delete().Resource(resource).Name(name).SetHeader("Content-Type", "application/json")
+
+	if useNamespace {
+		req.Namespace(namespace)
+	}
+	return req.Do(context.TODO()).Error()
+}

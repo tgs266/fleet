@@ -84,6 +84,7 @@ class SecretDetails extends React.Component<IWithRouterProps, ISecretDetailsStat
         return (
             <div>
                 <EditableResource
+                    delete
                     type="secrets"
                     name={secret.name}
                     namespace={secret.namespace}

@@ -46,3 +46,20 @@ func RawPut(c *fiber.Ctx, client *client.ClientManager) error {
 	}
 	return c.SendStatus(fiber.StatusNoContent)
 }
+
+func RawDelete(c *fiber.Ctx, client *client.ClientManager) error {
+	rawClient, err := client.RawClient(c)
+	if err != nil {
+		return errors.ParseInternalError(err)
+	}
+
+	kind := c.Params("kind")
+	name := c.Params("name")
+	namespace := c.Params("namespace")
+
+	err = rawClient.Delete(kind, name, namespace)
+	if err != nil {
+		return errors.ParseInternalError(err)
+	}
+	return c.SendStatus(fiber.StatusOK)
+}

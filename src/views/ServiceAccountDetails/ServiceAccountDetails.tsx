@@ -157,6 +157,7 @@ class ServiceAccountDetails extends React.Component<IWithRouterProps, IServiceAc
         return (
             <div>
                 <EditableResource
+                    delete
                     refresh={this.pull}
                     type="serviceaccounts"
                     namespace={serviceAccount.namespace}

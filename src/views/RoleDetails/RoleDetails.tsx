@@ -87,6 +87,7 @@ class RoleDetails extends React.Component<IWithRouterProps, IRoleDetailsState> {
         return (
             <div>
                 <EditableResource
+                    delete
                     type="roles"
                     namespace={this.props.params.namespace}
                     name={this.props.params.roleName}

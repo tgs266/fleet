@@ -79,6 +79,7 @@ class ServiceDetails extends React.Component<IWithRouterProps, IPodDetailsState>
         return (
             <div>
                 <EditableResource
+                    delete
                     refresh={this.pull}
                     type="services"
                     namespace={service.namespace}
