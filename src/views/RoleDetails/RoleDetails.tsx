@@ -1,6 +1,7 @@
+/* eslint-disable react/no-array-index-key */
 /* eslint-disable react/static-property-placement */
 import * as React from 'react';
-import { Button, Intent, Tag } from '@blueprintjs/core';
+import { Button, Card, Intent, Tag } from '@blueprintjs/core';
 import { IWithRouterProps, withRouter } from '../../utils/withRouter';
 import K8 from '../../services/k8.service';
 import { IBreadcrumb, NavContext } from '../../layouts/Navigation';
@@ -11,7 +12,9 @@ import Text from '../../components/Text/Text';
 import AgeText from '../../components/AgeText';
 import TagList from '../../components/TagList';
 import { Role } from '../../models/role.model';
-import RuleAccordionList from '../../components/RuleAccordionList';
+import TitledCard from '../../components/TitledCard';
+import RuleTable from '../../components/RuleTable';
+import EditableResource from '../../components/EditableResource';
 
 interface IRoleDetailsState {
     role: Role;
@@ -83,6 +86,11 @@ class RoleDetails extends React.Component<IWithRouterProps, IRoleDetailsState> {
         const { role } = this.state;
         return (
             <div>
+                <EditableResource
+                    type="roles"
+                    namespace={this.props.params.namespace}
+                    name={this.props.params.roleName}
+                />
                 <div style={{ margin: '1em', marginBottom: 0 }}>
                     <div style={{ marginBottom: '1em' }}>
                         <InfoCard title={role.name}>
@@ -130,7 +138,11 @@ class RoleDetails extends React.Component<IWithRouterProps, IRoleDetailsState> {
                             </div>
                         </InfoCard>
 
-                        <RuleAccordionList style={{ marginTop: '1em' }} rules={role.rules} />
+                        <TitledCard style={{ marginTop: '1em' }} title="Rules">
+                            <Card style={{ padding: 0 }}>
+                                <RuleTable rules={role.rules} />
+                            </Card>
+                        </TitledCard>
                     </div>
                 </div>
             </div>

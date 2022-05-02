@@ -19,6 +19,7 @@ import TableBody from '../../components/TableBody';
 import TableRow from '../../components/TableRow';
 import Text from '../../components/Text/Text';
 import { ClusterRoleBinding } from '../../models/clusterrole.model';
+import EditableResource from '../../components/EditableResource';
 
 interface IClusterRoleBindingState {
     binding: ClusterRoleBinding;
@@ -92,6 +93,10 @@ class ClusterRoleBindingDetails extends React.Component<
         const { binding } = this.state;
         return (
             <div>
+                <EditableResource
+                    type="clusterrolebindings"
+                    name={this.props.params.clusterRoleBindingName}
+                />
                 <div style={{ margin: '1em', marginBottom: 0 }}>
                     <div style={{ marginBottom: '1em' }}>
                         <InfoCard title={binding.name}>

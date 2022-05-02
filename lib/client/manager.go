@@ -213,11 +213,13 @@ func (client *ClientManager) RawClient(c *fiber.Ctx) (*raw.Client, error) {
 		return raw.BuildClient(
 			nil,
 			nil,
+			nil,
 		), nil
 	}
 	return raw.BuildClient(
 		k8client.K8.CoreV1().RESTClient(),
 		k8client.K8.AppsV1().RESTClient(),
+		k8client.K8.RbacV1().RESTClient(),
 	), nil
 }
 

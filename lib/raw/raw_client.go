@@ -15,6 +15,7 @@ type ClientType string
 // List of client types supported by the UI.
 const (
 	CoreClientType = "coreclient"
+	RbacClientType = "rbacclient"
 	AppsClientType = "appsclient"
 )
 
@@ -31,17 +32,24 @@ var PluralKindToRawMapping = map[string]RawMapping{
 	"namespaces":      {"namespaces", CoreClientType, true},
 	"serviceaccounts": {"serviceaccounts", CoreClientType, true},
 	"secrets":         {"secrets", CoreClientType, true},
+
+	"clusterroles":        {"clusterroles", RbacClientType, false},
+	"roles":               {"roles", RbacClientType, true},
+	"clusterrolebindings": {"clusterrolebindings", RbacClientType, false},
+	"rolebindings":        {"rolebindings", RbacClientType, true},
 }
 
 type Client struct {
 	coreClient rest.Interface
 	appsClient rest.Interface
+	rbacClient rest.Interface
 }
 
-func BuildClient(coreClient, appsClient rest.Interface) *Client {
+func BuildClient(coreClient, appsClient, rbacClient rest.Interface) *Client {
 	return &Client{
 		coreClient: coreClient,
 		appsClient: appsClient,
+		rbacClient: rbacClient,
 	}
 }
 
@@ -49,6 +57,8 @@ func (c *Client) getClient(clientType ClientType) (rest.Interface, bool) {
 	switch clientType {
 	case AppsClientType:
 		return c.appsClient, c.appsClient != nil
+	case RbacClientType:
+		return c.rbacClient, c.rbacClient != nil
 	default:
 		return c.coreClient, c.coreClient != nil
 	}

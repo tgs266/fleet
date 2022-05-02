@@ -19,6 +19,7 @@ import TableCell from '../../components/TableCell';
 import TableBody from '../../components/TableBody';
 import TableRow from '../../components/TableRow';
 import Text from '../../components/Text/Text';
+import EditableResource from '../../components/EditableResource';
 
 interface IRoleBindingState {
     binding: RoleBinding;
@@ -90,6 +91,11 @@ class RoleBindingDetails extends React.Component<IWithRouterProps, IRoleBindingS
         const { binding } = this.state;
         return (
             <div>
+                <EditableResource
+                    type="rolebindings"
+                    namespace={this.props.params.namespace}
+                    name={this.props.params.roleBindingName}
+                />
                 <div style={{ margin: '1em', marginBottom: 0 }}>
                     <div style={{ marginBottom: '1em' }}>
                         <InfoCard title={binding.name}>
