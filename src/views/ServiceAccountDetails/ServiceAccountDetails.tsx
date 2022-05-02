@@ -251,6 +251,7 @@ class ServiceAccountDetails extends React.Component<IWithRouterProps, IServiceAc
                                                 </TableCell>
                                                 <TableCell alignment={Alignment.RIGHT}>
                                                     <Button
+                                                        data-testid="remove-role-binding"
                                                         icon="trash"
                                                         onClick={() =>
                                                             this.disconnect('', {
