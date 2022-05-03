@@ -171,7 +171,9 @@ export default function SideNavigation() {
                                     {usingAuth ? 'ENABLED' : 'DISABLED'}
                                 </Tag>
                             </div>
-                            <div>Username: {localStorage.getItem('username')}</div>
+                            <div style={{ marginTop: '0.25em' }}>
+                                Username: {localStorage.getItem('username')}
+                            </div>
                         </div>
                     }
                 />
