@@ -37,5 +37,5 @@ func TestGetHist(t *testing.T) {
 	})
 	assert.Nil(t, err)
 	assert.Len(t, hist, 1)
-	os.RemoveAll(".fleet-test/git")
+	os.RemoveAll(".fleet-test")
 }
