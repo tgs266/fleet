@@ -17,7 +17,12 @@ func CreateRepository(c *fiber.Ctx, client *client.ClientManager) error {
 	resourceType := c.Params("kind")
 	resourceName := c.Params("name")
 
-	_, err = K8.GitManager.CreateRepository(resourceType, resourceName)
+	gm, ok := K8.GetGitManager()
+	if !ok {
+		return errors.NewGitNotInitialized()
+	}
+
+	_, err = gm.CreateRepository(resourceType, resourceName)
 	if err != nil {
 		return errors.ParseInternalError(err)
 	}
@@ -35,7 +40,12 @@ func GetHistory(c *fiber.Ctx, client *client.ClientManager) error {
 
 	dataSelector := types.BuildDataRequest(c).BuildDataSelector()
 
-	repo, err := K8.GitManager.GetRepository(resourceType, resourceName)
+	gm, ok := K8.GetGitManager()
+	if !ok {
+		return errors.NewGitNotInitialized()
+	}
+
+	repo, err := gm.GetRepository(resourceType, resourceName)
 	if err != nil {
 		return errors.ParseInternalError(err)
 	}

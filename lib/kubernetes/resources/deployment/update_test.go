@@ -29,6 +29,7 @@ func TestRestart(t *testing.T) {
 			name: "get",
 			deps: []runtime.Object{
 				&appsv1.Deployment{
+
 					ObjectMeta: metav1.ObjectMeta{
 						Name:      "dep1",
 						Namespace: "namespace1",

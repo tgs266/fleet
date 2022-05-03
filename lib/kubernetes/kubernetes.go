@@ -35,3 +35,7 @@ func (K8 *K8Client) connectMetrics(cfg *rest.Config) {
 	clientset, _ := metrics.NewForConfig(cfg)
 	K8.Metrics = clientset
 }
+
+func (K8 *K8Client) GetGitManager() (*git.GitManager, bool) {
+	return K8.GitManager, K8.GitManager != nil
+}

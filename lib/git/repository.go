@@ -2,7 +2,6 @@ package git
 
 import (
 	"encoding/json"
-	"fmt"
 	"os"
 	"path/filepath"
 	"time"
@@ -25,7 +24,7 @@ type HistoryRequest struct {
 	PageSize int
 }
 
-type Commit struct {
+type CommitLog struct {
 	Author    string    `json:"author"`
 	Hash      string    `json:"hash"`
 	Message   string    `json:"message"`
@@ -61,11 +60,10 @@ func (self *Repository) Commit(username string, spec runtime.Object, message str
 	if err != nil {
 		return err
 	}
-	fmt.Println("yert")
 	return nil
 }
 
-func (self *Repository) History(req HistoryRequest) ([]Commit, error) {
+func (self *Repository) History(req HistoryRequest) ([]CommitLog, error) {
 
 	history, err := self.repository.Log(&git.LogOptions{
 		All: true,
@@ -75,7 +73,7 @@ func (self *Repository) History(req HistoryRequest) ([]Commit, error) {
 		return nil, err
 	}
 
-	hist := []Commit{}
+	hist := []CommitLog{}
 	count := 0
 	offset := req.Offset
 	err = history.ForEach(func(c *object.Commit) error {
@@ -86,7 +84,7 @@ func (self *Repository) History(req HistoryRequest) ([]Commit, error) {
 		if count >= req.PageSize && req.PageSize != -1 {
 			return nil
 		}
-		hist = append(hist, Commit{
+		hist = append(hist, CommitLog{
 			Author:    c.Author.Name,
 			Hash:      c.Hash.String(),
 			Message:   c.Message,

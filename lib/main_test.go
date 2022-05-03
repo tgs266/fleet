@@ -18,12 +18,14 @@ func TestSetupBackend(t *testing.T) {
 	useAuth := true
 	str := "asdf"
 
+	emptyStr := ""
 	flags := Flags{
 		useAuth:          &useAuth,
 		oidcIssuerUrl:    &str,
 		oidcClientId:     &str,
 		oidcClientSecret: &str,
 		host:             &str,
+		gitPath:          &emptyStr,
 	}
 
 	setupBackend(flags)
@@ -39,12 +41,14 @@ func TestSetupBackend2(t *testing.T) {
 
 	useAuth := true
 	str := "asdf"
+	emptyStr := ""
 	flags := Flags{
 		useAuth:          &useAuth,
 		oidcIssuerUrl:    &str,
 		oidcClientId:     &str,
 		oidcClientSecret: &str,
 		host:             &str,
+		gitPath:          &emptyStr,
 	}
 
 	setupBackend(flags)

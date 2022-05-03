@@ -7,6 +7,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/tgs266/fleet/lib/errors"
+	"github.com/tgs266/fleet/lib/git"
 	"github.com/tgs266/fleet/lib/kubernetes"
 	"github.com/tgs266/fleet/lib/kubernetes/resources/container"
 	"github.com/tgs266/fleet/lib/logging"
@@ -34,12 +35,7 @@ func Restart(K8 *kubernetes.K8Client, namespace string, name string) error {
 		return errors.ParseInternalError(err)
 	}
 
-	repo, err := K8.GitManager.GetRepository("deployment", spec.Name)
-	if err != nil {
-		return nil // not worth panicking
-	}
-
-	repo.Commit(K8.Username, spec, fmt.Sprintf("deployment %s/%s restarted", spec.Namespace, spec.Name))
+	go git.Commit(K8.Username, K8.GitManager, spec, fmt.Sprintf("deployment %s/%s restarted", spec.Namespace, spec.Name))
 
 	return errors.ParseInternalError(err)
 }
