@@ -159,6 +159,11 @@ func (client *ClientManager) getK8Client(c *fiber.Ctx) (*kubernetes.K8Client, er
 		c.Response().Header.Add("Username", username)
 	}
 
+	if k8client != nil {
+		k8client.GitManager = client.gitManager
+		k8client.Username = c.GetRespHeader("Username")
+	}
+
 	return k8client, k8client.Connect(cfg)
 }
 

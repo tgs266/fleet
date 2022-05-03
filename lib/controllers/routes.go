@@ -1,6 +1,8 @@
 package controllers
 
-import "github.com/tgs266/fleet/lib/api"
+import (
+	"github.com/tgs266/fleet/lib/api"
+)
 
 func initializePodRoutes(app *api.API) {
 	app.Get("/api/v1/pods/:namespace", GetPodMetaList)
@@ -63,6 +65,11 @@ func initializeSecretRoutes(app *api.API) {
 	app.Get("/api/v1/secrets/:namespace/:name", GetSecret)
 }
 
+func initializeGitRoutes(app *api.API) {
+	app.Post("/api/v1/git/:kind/:name", CreateRepository)
+	app.Get("/api/v1/git/:kind/:name/history", GetHistory)
+}
+
 func initializeOtherRoutes(app *api.API) {
 	app.Get("/api/v1/auth/", UsingAuth)
 	app.Get("/api/v1/auth/cani", CanI)
@@ -99,4 +106,5 @@ func InitializeRoutes(app *api.API) {
 	initializeRoleBindingRoutes(app)
 	initializeSecretRoutes(app)
 	initializeOtherRoutes(app)
+	initializeGitRoutes(app)
 }

@@ -2,6 +2,7 @@ package kubernetes
 
 import (
 	"github.com/tgs266/fleet/lib/errors"
+	"github.com/tgs266/fleet/lib/git"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	metrics "k8s.io/metrics/pkg/client/clientset/versioned"
@@ -11,6 +12,8 @@ type K8Client struct {
 	K8              kubernetes.Interface
 	Metrics         *metrics.Clientset
 	Config          *rest.Config
+	GitManager      *git.GitManager
+	Username        string
 	ConnectionError error
 }
 

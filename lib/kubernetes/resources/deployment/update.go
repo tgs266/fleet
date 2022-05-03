@@ -2,6 +2,7 @@ package deployment
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/google/uuid"
@@ -28,7 +29,18 @@ func Restart(K8 *kubernetes.K8Client, namespace string, name string) error {
 		deployment.Spec.Template.ObjectMeta.Annotations = make(map[string]string, 0)
 	}
 	deployment.Spec.Template.ObjectMeta.Annotations["kubectl.kubernetes.io/restartedAt"] = time.Now().Format(time.RFC3339)
-	_, err = K8.K8.AppsV1().Deployments(namespace).Update(context.Background(), deployment, metaV1.UpdateOptions{})
+	spec, err := K8.K8.AppsV1().Deployments(namespace).Update(context.Background(), deployment, metaV1.UpdateOptions{})
+	if err != nil {
+		return errors.ParseInternalError(err)
+	}
+
+	repo, err := K8.GitManager.GetRepository("deployment", spec.Name)
+	if err != nil {
+		return nil // not worth panicking
+	}
+
+	repo.Commit(K8.Username, spec, fmt.Sprintf("deployment %s/%s restarted", spec.Namespace, spec.Name))
+
 	return errors.ParseInternalError(err)
 }
 
