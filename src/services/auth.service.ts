@@ -38,6 +38,9 @@ export default class Auth {
         if (token) {
             axios.post(`${Auth.base}/refresh`, { token: token }).then((r) => {
                 localStorage.setItem('jwe', r.data.token);
+                if (r.headers.username) {
+                    localStorage.setItem('username', r.headers.username);
+                }
             });
         }
     }

@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 /* eslint-disable no-param-reassign */
 /* eslint-disable react/no-render-return-value */
 import React from 'react';
@@ -27,8 +28,31 @@ api.interceptors.request.use((config: AxiosRequestConfig<any>) => {
     return config;
 });
 
+function isPromise(p: any) {
+    if (typeof p === 'object' && typeof p.then === 'function') {
+        return true;
+    }
+
+    return false;
+}
+
 api.interceptors.response.use(
-    (response: AxiosResponse<any, any> | Promise<AxiosResponse<any, any>>) => response,
+    (response: AxiosResponse<any, any> | Promise<AxiosResponse<any, any>>) => {
+        if (isPromise(response)) {
+            return new Promise((resolve) => {
+                (response as Promise<AxiosResponse<any, any>>).then((r) => {
+                    if (r.headers.username) {
+                        localStorage.setItem('username', r.headers.username);
+                    }
+                    return resolve(r);
+                });
+            });
+        }
+        if ((response as any).headers.username) {
+            localStorage.setItem('username', (response as any).headers.username);
+        }
+        return response;
+    },
     (error: AxiosError<FleetError>) => {
         if (error.response.data.status === 'KUBERNETES_CONFIG') {
             const containerElement = document.createElement('div');

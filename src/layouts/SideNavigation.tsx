@@ -162,13 +162,16 @@ export default function SideNavigation() {
                     type="hover"
                     hoverEle={
                         <div>
-                            Authentication:
-                            <Tag
-                                style={{ marginLeft: '0.5em' }}
-                                intent={usingAuth ? Intent.SUCCESS : Intent.DANGER}
-                            >
-                                {usingAuth ? 'ENABLED' : 'DISABLED'}
-                            </Tag>
+                            <div>
+                                Authentication:
+                                <Tag
+                                    style={{ marginLeft: '0.5em' }}
+                                    intent={usingAuth ? Intent.SUCCESS : Intent.DANGER}
+                                >
+                                    {usingAuth ? 'ENABLED' : 'DISABLED'}
+                                </Tag>
+                            </div>
+                            <div>Username: {localStorage.getItem('username')}</div>
                         </div>
                     }
                 />
