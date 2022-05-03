@@ -9,6 +9,7 @@ func initializePodRoutes(app *api.API) {
 	app.Get("/api/v1/pods/:namespace/:podName/containers/:containerName", GetPodContainer)
 	app.WebsocketGet("/ws/v1/pods/:namespace/:podName/containers/:containerName/logs", ContainerLogStream)
 	app.WebsocketGet("/ws/v1/pods/:namespace/:name/events", PodEventStream)
+	app.WebsocketGet("/ws/v1/pods/:namespace/:name/containers/:containerName/exec", PodExec)
 }
 
 func initializeDeploymentRoutes(app *api.API) {

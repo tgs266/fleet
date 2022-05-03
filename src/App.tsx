@@ -28,6 +28,7 @@ import ClusterRoleBindingList from './views/ClusterRoleBindingList/ClusterRoleBi
 import ClusterRoleBindingDetails from './views/ClusterRoleBindingDetails/ClusterRoleBindingDetails';
 import SecretList from './views/SecretList/SecretList';
 import SecretDetails from './views/SecretDetails/SecretDetails';
+import Shell from './views/Shell/Shell';
 
 function getCookie(name: string) {
     const value = `; ${document.cookie}`;
@@ -64,6 +65,10 @@ function App() {
                 <Route
                     path="pods/:namespace/:podName/containers/:containerName"
                     element={<PodContainerDetails />}
+                />
+                <Route
+                    path="pods/:namespace/:podName/containers/:containerName/shell"
+                    element={<Shell />}
                 />
 
                 <Route path="services" element={<ServiceList />} />
