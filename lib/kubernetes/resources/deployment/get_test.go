@@ -5,8 +5,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/tgs266/fleet/lib/kubernetes"
-	"github.com/tgs266/fleet/lib/kubernetes/types"
 	"github.com/tgs266/fleet/lib/shared"
+	"github.com/tgs266/fleet/lib/types"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"

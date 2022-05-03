@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/tgs266/fleet/lib/kubernetes"
-	"github.com/tgs266/fleet/lib/kubernetes/types"
+	"github.com/tgs266/fleet/lib/types"
 	rbac "k8s.io/api/rbac/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"

@@ -1,7 +1,7 @@
 package secret
 
 import (
-	"github.com/tgs266/fleet/lib/kubernetes/types"
+	"github.com/tgs266/fleet/lib/types"
 	core "k8s.io/api/core/v1"
 )
 

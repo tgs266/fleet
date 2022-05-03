@@ -4,8 +4,8 @@ import (
 	"testing"
 
 	"github.com/tgs266/fleet/lib/kubernetes"
-	"github.com/tgs266/fleet/lib/kubernetes/types"
 	"github.com/tgs266/fleet/lib/shared"
+	"github.com/tgs266/fleet/lib/types"
 	appsv1 "k8s.io/api/apps/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"

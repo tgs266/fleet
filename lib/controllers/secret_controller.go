@@ -4,8 +4,8 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/tgs266/fleet/lib/client"
 	"github.com/tgs266/fleet/lib/kubernetes/resources/secret"
-	"github.com/tgs266/fleet/lib/kubernetes/types"
 	"github.com/tgs266/fleet/lib/shared"
+	"github.com/tgs266/fleet/lib/types"
 )
 
 func GetSecrets(c *fiber.Ctx, client *client.ClientManager) error {

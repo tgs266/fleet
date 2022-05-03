@@ -34,6 +34,7 @@ type Flags struct {
 	oidcClientId     *string
 	oidcClientSecret *string
 	host             *string
+	gitPath          *string
 }
 
 func parseFlags() Flags {
@@ -44,6 +45,7 @@ func parseFlags() Flags {
 	oidcClientId := flag.String("oidc-client-id", "", "used for oidc authentication")
 	oidcClientSecret := flag.String("oidc-client-secret", "", "used for oidc authentication")
 	host := flag.String("host", "", "")
+	gitPath := flag.String("gitPath", "./.fleet/git", "git storage path")
 
 	flag.Parse()
 	return Flags{
@@ -54,11 +56,12 @@ func parseFlags() Flags {
 		oidcClientId:     oidcClientId,
 		oidcClientSecret: oidcClientSecret,
 		host:             host,
+		gitPath:          gitPath,
 	}
 }
 
 func setupBackend(flags Flags) *api.API {
-	manager := client.NewClientManager(*flags.useAuth)
+	manager := client.NewClientManager(*flags.useAuth, *flags.gitPath)
 
 	if *flags.oidcIssuerUrl != "" {
 		err := manager.InitializeOIDC(oidc.OIDCConfig{

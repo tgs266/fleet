@@ -4,7 +4,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/tgs266/fleet/lib/client"
 	"github.com/tgs266/fleet/lib/kubernetes/resources/node"
-	"github.com/tgs266/fleet/lib/kubernetes/types"
+	"github.com/tgs266/fleet/lib/types"
 )
 
 func GetNodes(c *fiber.Ctx, client *client.ClientManager) error {

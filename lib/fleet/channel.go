@@ -6,7 +6,7 @@ import (
 	"github.com/tgs266/fleet/lib/kubernetes"
 	"github.com/tgs266/fleet/lib/kubernetes/channels"
 	"github.com/tgs266/fleet/lib/kubernetes/resources/pod"
-	"github.com/tgs266/fleet/lib/kubernetes/types"
+	"github.com/tgs266/fleet/lib/types"
 	v1 "k8s.io/api/core/v1"
 	metaV1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )

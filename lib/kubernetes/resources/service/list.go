@@ -4,7 +4,7 @@ import (
 	"github.com/tgs266/fleet/lib/errors"
 	"github.com/tgs266/fleet/lib/kubernetes"
 	"github.com/tgs266/fleet/lib/kubernetes/channels"
-	"github.com/tgs266/fleet/lib/kubernetes/types"
+	"github.com/tgs266/fleet/lib/types"
 	metaV1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 

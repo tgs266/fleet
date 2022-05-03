@@ -7,8 +7,8 @@ import (
 	"github.com/tgs266/fleet/lib/kubernetes"
 	"github.com/tgs266/fleet/lib/kubernetes/resources/container"
 	"github.com/tgs266/fleet/lib/kubernetes/resources/image"
-	"github.com/tgs266/fleet/lib/kubernetes/types"
 	"github.com/tgs266/fleet/lib/shared"
+	"github.com/tgs266/fleet/lib/types"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -29,6 +29,7 @@ func TestRestart(t *testing.T) {
 			name: "get",
 			deps: []runtime.Object{
 				&appsv1.Deployment{
+
 					ObjectMeta: metav1.ObjectMeta{
 						Name:      "dep1",
 						Namespace: "namespace1",

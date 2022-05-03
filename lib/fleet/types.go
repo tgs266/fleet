@@ -1,7 +1,7 @@
 package fleet
 
 import (
-	"github.com/tgs266/fleet/lib/kubernetes/types"
+	"github.com/tgs266/fleet/lib/types"
 )
 
 type FleetColor string

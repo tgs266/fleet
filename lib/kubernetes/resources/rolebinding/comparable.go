@@ -1,7 +1,7 @@
 package rolebinding
 
 import (
-	"github.com/tgs266/fleet/lib/kubernetes/types"
+	"github.com/tgs266/fleet/lib/types"
 	rbac "k8s.io/api/rbac/v1"
 )
 

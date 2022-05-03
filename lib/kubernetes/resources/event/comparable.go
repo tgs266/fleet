@@ -1,7 +1,7 @@
 package event
 
 import (
-	"github.com/tgs266/fleet/lib/kubernetes/types"
+	"github.com/tgs266/fleet/lib/types"
 	v1 "k8s.io/api/core/v1"
 )
 

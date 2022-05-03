@@ -71,6 +71,14 @@ func NewResourceNotFoundError(resourceType string, resourceName string) *FleetEr
 	}
 }
 
+func NewGitNotInitialized() *FleetError {
+	return &FleetError{
+		Status:  STATUS_UNKNOWN,
+		Code:    fiber.StatusInternalServerError,
+		Message: "git was not initialized properly",
+	}
+}
+
 func NewConfigInitializationError(err error) *FleetError {
 	errText := "error initializing kubernetes config"
 	if err != nil {

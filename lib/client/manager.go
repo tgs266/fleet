@@ -11,6 +11,7 @@ import (
 	"github.com/tgs266/fleet/lib/auth"
 	"github.com/tgs266/fleet/lib/auth/oidc"
 	"github.com/tgs266/fleet/lib/errors"
+	"github.com/tgs266/fleet/lib/git"
 	"github.com/tgs266/fleet/lib/kubernetes"
 	"github.com/tgs266/fleet/lib/logging"
 	"github.com/tgs266/fleet/lib/raw"
@@ -37,6 +38,7 @@ type ClientManager struct {
 
 	authManager *auth.AuthManager
 	oidcManager *oidc.OIDCManager
+	gitManager  *git.GitManager
 }
 
 func usernameFromError(err error) string {
@@ -57,7 +59,7 @@ func usernameFromSA(name string) string {
 	return match[nameGroupIdx]
 }
 
-func NewClientManager(useAuth bool) *ClientManager {
+func NewClientManager(useAuth bool, gitPath string) *ClientManager {
 
 	kubeConfigPath := filepath.Join(homedir.HomeDir(), ".kube", "config")
 	if _, err := os.Stat(kubeConfigPath); errs.Is(err, os.ErrNotExist) {
@@ -69,10 +71,16 @@ func NewClientManager(useAuth bool) *ClientManager {
 		authManager = auth.New()
 	}
 
+	var gitManager *git.GitManager
+	if gitPath != "" {
+		gitManager = git.New(gitPath)
+	}
+
 	client := &ClientManager{
 		kubeConfigPath: kubeConfigPath,
 		UseAuth:        useAuth,
 		authManager:    authManager,
+		gitManager:     gitManager,
 	}
 
 	client.init()
@@ -149,6 +157,11 @@ func (client *ClientManager) getK8Client(c *fiber.Ctx) (*kubernetes.K8Client, er
 			}
 		}
 		c.Response().Header.Add("Username", username)
+	}
+
+	if k8client != nil {
+		k8client.GitManager = client.gitManager
+		k8client.Username = c.GetRespHeader("Username")
 	}
 
 	return k8client, k8client.Connect(cfg)

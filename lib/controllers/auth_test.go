@@ -23,7 +23,7 @@ func TestIsOIDCAvailableFail(t *testing.T) {
 
 	logging.Init(logging.LVL_INFO)
 
-	manager := client.NewClientManager(true)
+	manager := client.NewClientManager(true, "")
 	manager.TestMode = true
 	manager.InitializeOIDC(oidc.OIDCConfig{
 		IssuerURL:        m.Issuer(),
@@ -49,7 +49,7 @@ func TestIsOIDCAvailable(t *testing.T) {
 
 	logging.Init(logging.LVL_INFO)
 
-	manager := client.NewClientManager(true)
+	manager := client.NewClientManager(true, "")
 	manager.TestMode = true
 	manager.InitializeOIDC(oidc.OIDCConfig{
 		IssuerURL:        m.Issuer(),
@@ -75,7 +75,7 @@ func TestGetOIDC(t *testing.T) {
 
 	logging.Init(logging.LVL_INFO)
 
-	manager := client.NewClientManager(true)
+	manager := client.NewClientManager(true, "")
 	manager.TestMode = true
 	manager.InitializeOIDC(oidc.OIDCConfig{
 		IssuerURL:        m.Issuer(),
