@@ -3,14 +3,16 @@ import { Tooltip2 } from '@blueprintjs/popover2';
 import * as React from 'react';
 import TitledCard from './TitledCard';
 
-export default function InfoCard(props: {
+export interface IInfoCardProps {
     rightElement?: React.ReactNode;
     children?: React.ReactNode;
     style?: React.CSSProperties;
     title: string;
     statuColor?: string;
     statusHover?: string | JSX.Element;
-}) {
+}
+
+export default function InfoCard(props: IInfoCardProps) {
     const getStatusIndicator = () => {
         if (props.statuColor === null) {
             return null;

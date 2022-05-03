@@ -2,13 +2,15 @@
 import { Colors } from '@blueprintjs/core';
 import * as React from 'react';
 import AgeText from '../../components/AgeText';
-import AnnotationsTagList from '../../components/AnnotationsTagList';
-import InfoCard from '../../components/InfoCard';
 import LabeledText from '../../components/LabeledText';
-import LabelsTagList from '../../components/LabelsTagList';
+import ResourceTitleCard from '../../components/ResourceTitleCard';
 import { Deployment } from '../../models/deployment.model';
 
-export default function DeploymentInfoCard(props: { deployment: Deployment }) {
+export default function DeploymentInfoCard(props: {
+    deployment: Deployment;
+    selectedTab?: string;
+    onTabChange?: (id: string) => void;
+}) {
     const { deployment } = props;
     let color;
     switch (deployment.readyReplicas) {
@@ -25,7 +27,23 @@ export default function DeploymentInfoCard(props: { deployment: Deployment }) {
 
     return (
         <div style={{ margin: '1em' }}>
-            <InfoCard title={deployment.name} statuColor={color}>
+            <ResourceTitleCard
+                obj={deployment}
+                title={deployment.name}
+                statuColor={color}
+                tabs={[
+                    {
+                        name: 'Details',
+                        id: 'dt',
+                    },
+                    {
+                        name: 'Git',
+                        id: 'gt',
+                    },
+                ]}
+                onTabChange={props.onTabChange}
+                selectedTab={props.selectedTab}
+            >
                 <div style={{ marginTop: '0.25em', display: 'flex' }}>
                     <LabeledText label="NAMESPACE">{deployment.namespace}</LabeledText>
                     <LabeledText style={{ marginLeft: '2em' }} label="AGE">
@@ -38,13 +56,7 @@ export default function DeploymentInfoCard(props: { deployment: Deployment }) {
                         {deployment.uid}
                     </LabeledText>
                 </div>
-                <div style={{ marginTop: '0.25em', display: 'flex' }}>
-                    <LabelsTagList obj={deployment} />
-                </div>
-                <div style={{ marginTop: '0.25em', display: 'flex' }}>
-                    <AnnotationsTagList obj={deployment} />
-                </div>
-            </InfoCard>
+            </ResourceTitleCard>
         </div>
     );
 }
