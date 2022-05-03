@@ -27,6 +27,10 @@ export interface IResourceTableProps<T> {
     paginationProps: PaginationProps;
 }
 
+export const DEFAULT_SORTABLE_ID = 'name';
+export const DEFAULT_SORTABLE_ASCENDING = false;
+export const DEFAULT_SORTABLE_PAGE_SIZE = 20;
+
 // eslint-disable-next-line react/prefer-stateless-function
 export default class ResourceTable<T> extends React.Component<IResourceTableProps<T>, unknown> {
     render() {

@@ -1,6 +1,11 @@
 import { Card } from '@blueprintjs/core';
 import * as React from 'react';
 import PodTable from '../../components/PodTable';
+import {
+    DEFAULT_SORTABLE_ID,
+    DEFAULT_SORTABLE_ASCENDING,
+    DEFAULT_SORTABLE_PAGE_SIZE,
+} from '../../components/ResourceTable';
 import { TableSort } from '../../components/SortableTableHeaderCell';
 import { IBreadcrumb, NavContext } from '../../layouts/Navigation';
 import { Pagination } from '../../models/component.model';
@@ -27,11 +32,11 @@ class PodListTable extends React.Component<IPodTableProps, IPodListState> {
         this.state = {
             pods: [],
             sort: {
-                sortableId: 'name',
-                ascending: false,
+                sortableId: DEFAULT_SORTABLE_ID,
+                ascending: DEFAULT_SORTABLE_ASCENDING,
             },
             page: 0,
-            pageSize: 10,
+            pageSize: DEFAULT_SORTABLE_PAGE_SIZE,
             total: null,
             pollId: null,
         };

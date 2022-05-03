@@ -3,7 +3,11 @@ import { Card } from '@blueprintjs/core';
 import { Classes, Tooltip2 } from '@blueprintjs/popover2';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
-import ResourceTable from '../../components/ResourceTable';
+import ResourceTable, {
+    DEFAULT_SORTABLE_ASCENDING,
+    DEFAULT_SORTABLE_ID,
+    DEFAULT_SORTABLE_PAGE_SIZE,
+} from '../../components/ResourceTable';
 import { TableSort } from '../../components/SortableTableHeaderCell';
 import { IBreadcrumb, NavContext } from '../../layouts/Navigation';
 import { Pagination } from '../../models/component.model';
@@ -33,11 +37,11 @@ class SecretTable extends React.Component<ISecretTableProps, ISecretTableState> 
         this.state = {
             secrets: [],
             sort: {
-                sortableId: 'name',
-                ascending: false,
+                sortableId: DEFAULT_SORTABLE_ID,
+                ascending: DEFAULT_SORTABLE_ASCENDING,
             },
             page: 0,
-            pageSize: 10,
+            pageSize: DEFAULT_SORTABLE_PAGE_SIZE,
             total: null,
             pollId: null,
         };
