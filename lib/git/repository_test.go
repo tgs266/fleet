@@ -36,6 +36,6 @@ func TestGetHist(t *testing.T) {
 		Offset:   0,
 	})
 	assert.Nil(t, err)
-	assert.Len(t, hist, 1)
+	assert.Len(t, hist.Items, 1)
 	os.RemoveAll(".fleet-test")
 }

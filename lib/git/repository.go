@@ -8,6 +8,7 @@ import (
 
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing/object"
+	"github.com/tgs266/fleet/lib/types"
 	"k8s.io/apimachinery/pkg/runtime"
 )
 
@@ -63,7 +64,7 @@ func (self *Repository) Commit(username string, spec runtime.Object, message str
 	return nil
 }
 
-func (self *Repository) History(req HistoryRequest) ([]CommitLog, error) {
+func (self *Repository) History(req HistoryRequest) (*types.PaginationResponse, error) {
 
 	history, err := self.repository.Log(&git.LogOptions{
 		All: true,
@@ -74,9 +75,11 @@ func (self *Repository) History(req HistoryRequest) ([]CommitLog, error) {
 	}
 
 	hist := []CommitLog{}
+	totalCount := 0
 	count := 0
 	offset := req.Offset
 	err = history.ForEach(func(c *object.Commit) error {
+		totalCount += 1
 		if offset > 0 {
 			offset -= 1
 			return nil
@@ -95,5 +98,15 @@ func (self *Repository) History(req HistoryRequest) ([]CommitLog, error) {
 		return nil
 	})
 
-	return hist, err
+	p := &types.PaginationResponse{
+		Items: hist,
+		Total: totalCount,
+		Count: len(hist),
+	}
+
+	if req.Offset > 0 {
+		p.Offset = req.Offset
+	}
+
+	return p, err
 }

@@ -11,8 +11,8 @@ import (
 	"github.com/tgs266/fleet/lib/kubernetes"
 	"github.com/tgs266/fleet/lib/kubernetes/resources/container"
 	"github.com/tgs266/fleet/lib/kubernetes/resources/deployment"
-	"github.com/tgs266/fleet/lib/kubernetes/types"
 	"github.com/tgs266/fleet/lib/shared"
+	"github.com/tgs266/fleet/lib/types"
 )
 
 func GetDeploymentStubList(c *fiber.Ctx, client *client.ClientManager) error {
