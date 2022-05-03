@@ -34,7 +34,7 @@ class DeploymentTable extends React.Component<IDeploymentTableProps, IDeployment
             deployments: [],
             sort: {
                 sortableId: 'name',
-                ascending: true,
+                ascending: false,
             },
             page: 0,
             pageSize: 10,

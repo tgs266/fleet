@@ -34,7 +34,7 @@ class ServiceTable extends React.Component<IServiceTableProps, IServiceTableStat
             services: [],
             sort: {
                 sortableId: 'name',
-                ascending: true,
+                ascending: false,
             },
             page: 0,
             pageSize: 10,

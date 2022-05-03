@@ -32,7 +32,7 @@ class ServiceAccountTable extends React.Component<
             serviceAccounts: [],
             sort: {
                 sortableId: 'name',
-                ascending: true,
+                ascending: false,
             },
             page: 0,
             pageSize: 10,

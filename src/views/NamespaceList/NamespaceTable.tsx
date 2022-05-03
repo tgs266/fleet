@@ -25,7 +25,7 @@ class NamespaceTable extends React.Component<unknown, INamespaceTableState> {
             namespaces: [],
             sort: {
                 sortableId: 'name',
-                ascending: true,
+                ascending: false,
             },
             page: 0,
             pageSize: 10,

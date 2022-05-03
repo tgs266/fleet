@@ -26,7 +26,7 @@ class ClusterRoleBindingTable extends React.Component<unknown, IClusterRoleBindi
             bindings: [],
             sort: {
                 sortableId: 'name',
-                ascending: true,
+                ascending: false,
             },
             page: 0,
             pageSize: 10,

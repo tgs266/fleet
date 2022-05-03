@@ -34,7 +34,7 @@ class SecretTable extends React.Component<ISecretTableProps, ISecretTableState> 
             secrets: [],
             sort: {
                 sortableId: 'name',
-                ascending: true,
+                ascending: false,
             },
             page: 0,
             pageSize: 10,
