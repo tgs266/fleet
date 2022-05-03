@@ -63,7 +63,7 @@ const server = setupServer(
         res(ctx.json(generateServiceAccount('test')))
     ),
     rest.get(`${ClusterRoleBindings.base}/*`, (req, res, ctx) => {
-        const count = 20;
+        const count = 50;
         const items = [];
         for (let i = 0; i < count; i += 1) {
             items.push(generateClusterRoleBinding(`${i}-asdf`));
@@ -76,7 +76,7 @@ const server = setupServer(
         );
     }),
     rest.get(`${RoleBindings.base}/*`, (req, res, ctx) => {
-        const count = 20;
+        const count = 50;
         const items = [];
         for (let i = 0; i < count; i += 1) {
             items.push(generateRoleBinding(`${i}-asdf`));

@@ -14,7 +14,7 @@ import SecretList from './SecretList';
 const server = setupServer(
     rest.get(`${Auth.base}/cani`, (req, res, ctx) => res(ctx.json({ allowed: true }))),
     rest.get(`${Secrets.base}/*`, (req, res, ctx) => {
-        const count = 20;
+        const count = 50;
         const items = [];
         for (let i = 0; i < count; i += 1) {
             items.push(generateSecret(`${i}-asdf`));

@@ -22,7 +22,7 @@ const generateClusterRole = (name: string): ClusterRoleMeta => ({
 
 const server = setupServer(
     rest.get(`${Roles.base}/*`, (req, res, ctx) => {
-        const count = 20;
+        const count = 50;
         const items = [];
         for (let i = 0; i < count; i += 1) {
             items.push(generateRole(`${i}-asdf`));
@@ -35,7 +35,7 @@ const server = setupServer(
         );
     }),
     rest.get(`${ClusterRoles.base}/*`, (req, res, ctx) => {
-        const count = 20;
+        const count = 50;
         const items = [];
         for (let i = 0; i < count; i += 1) {
             items.push(generateClusterRole(`${i}-asdf`));
