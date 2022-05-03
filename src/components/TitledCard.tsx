@@ -1,13 +1,15 @@
 import React from 'react';
 import { Card } from '@blueprintjs/core';
 
-export default function TitledCard(props: {
+export interface ITitledCardProps {
     title: React.ReactNode;
     rightElement?: React.ReactNode;
     style?: React.CSSProperties;
     titleMarginBottom?: string;
     children?: React.ReactNode;
-}) {
+}
+
+export default function TitledCard(props: ITitledCardProps) {
     return (
         <Card style={{ ...props.style }}>
             <div
