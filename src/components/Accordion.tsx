@@ -1,4 +1,4 @@
-import { Button, Card, Collapse } from '@blueprintjs/core';
+import { Button, Card, Collapse, MaybeElement, IconName } from '@blueprintjs/core';
 import * as React from 'react';
 import PropTypes from 'prop-types'; // ES6
 
@@ -9,6 +9,8 @@ interface IAccordionState {
 interface IAccordionProps {
     isOpen?: boolean;
     onChange?: () => void;
+    iconClosed?: IconName | MaybeElement;
+    iconOpen?: IconName | MaybeElement;
     style?: React.CSSProperties;
     title: PropTypes.ReactNodeLike;
     children: PropTypes.ReactNodeLike;
@@ -41,6 +43,13 @@ class Accordion extends React.Component<IAccordionProps, IAccordionState> {
     };
 
     render() {
+        let icon = this.props.iconClosed;
+        if (!icon) {
+            icon = this.isOpen() ? 'arrow-up' : 'arrow-down';
+        } else {
+            icon = this.isOpen() ? this.props.iconOpen : this.props.iconClosed;
+        }
+
         return (
             <Card
                 className={this.props.className}
@@ -50,7 +59,7 @@ class Accordion extends React.Component<IAccordionProps, IAccordionState> {
                     <div style={{ flexGrow: 1 }}>{this.props.title}</div>
                     <Button
                         style={{ margin: 'auto 0' }}
-                        icon={this.isOpen() ? 'arrow-up' : 'arrow-down'}
+                        icon={icon}
                         onClick={this.toggle}
                         minimal
                     />

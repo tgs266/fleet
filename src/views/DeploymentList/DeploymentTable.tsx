@@ -3,7 +3,11 @@ import { Alignment, Card, Colors, Icon } from '@blueprintjs/core';
 import { Classes, Tooltip2 } from '@blueprintjs/popover2';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
-import ResourceTable from '../../components/ResourceTable';
+import ResourceTable, {
+    DEFAULT_SORTABLE_ASCENDING,
+    DEFAULT_SORTABLE_ID,
+    DEFAULT_SORTABLE_PAGE_SIZE,
+} from '../../components/ResourceTable';
 import { TableSort } from '../../components/SortableTableHeaderCell';
 import { IBreadcrumb, NavContext } from '../../layouts/Navigation';
 import { Pagination } from '../../models/component.model';
@@ -33,11 +37,11 @@ class DeploymentTable extends React.Component<IDeploymentTableProps, IDeployment
         this.state = {
             deployments: [],
             sort: {
-                sortableId: 'name',
-                ascending: false,
+                sortableId: DEFAULT_SORTABLE_ID,
+                ascending: DEFAULT_SORTABLE_ASCENDING,
             },
             page: 0,
-            pageSize: 10,
+            pageSize: DEFAULT_SORTABLE_PAGE_SIZE,
             total: null,
             pollId: null,
         };
@@ -115,7 +119,7 @@ class DeploymentTable extends React.Component<IDeploymentTableProps, IDeployment
                     columns={[
                         {
                             key: 'icon',
-                            alignment: Alignment.CENTER,
+                            alignment: Alignment.LEFT,
                             columnName: '',
                             columnFunction: (row: DeploymentMeta) => {
                                 let color;
@@ -175,60 +179,14 @@ class DeploymentTable extends React.Component<IDeploymentTableProps, IDeployment
                                 </Tooltip2>
                             ),
                         },
+                        {
+                            key: 'pods',
+                            columnName: 'Pods',
+                            columnFunction: (row: DeploymentMeta) =>
+                                `${row.readyReplicas}/${row.replicas}`,
+                        },
                     ]}
                 />
-                {/* <Table>
-                    <TableHeader>
-                        <SortableTableHeaderCell
-                            sort={this.state.sort}
-                            onSortChange={this.onSortChange}
-                            sortableId="name"
-                        >
-                            Name
-                        </SortableTableHeaderCell>
-                        <SortableTableHeaderCell
-                            sort={this.state.sort}
-                            onSortChange={this.onSortChange}
-                            sortableId="namespace"
-                        >
-                            Namespace
-                        </SortableTableHeaderCell>
-                        <SortableTableHeaderCell
-                            sort={this.state.sort}
-                            onSortChange={this.onSortChange}
-                            sortableId="createdAt"
-                        >
-                            Age
-                        </SortableTableHeaderCell>
-                        <TableCell>Replicas</TableCell>
-                    </TableHeader>
-                    <TableBody>
-                        {this.state.deployments.map((deployment) => (
-                            <TableRow key={deployment.name}>
-                                <TableCell>
-                                    <Link
-                                        to={buildLinkToDeployment(
-                                            deployment.name,
-                                            deployment.namespace
-                                        )}
-                                    >
-                                        {deployment.name}
-                                    </Link>
-                                </TableCell>
-                                <TableCell>{deployment.namespace}</TableCell>
-                                <TableCell>
-                                    <Tooltip2
-                                        className={Classes.TOOLTIP2_INDICATOR}
-                                        content={createdAtToOrigination(deployment.createdAt)}
-                                    >
-                                        {createdAtToHumanReadable(deployment.createdAt)}
-                                    </Tooltip2>
-                                </TableCell>
-                                <TableCell>{`${deployment.readyReplicas}/${deployment.replicas}`}</TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table> */}
             </Card>
         );
     }

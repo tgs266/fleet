@@ -7,7 +7,9 @@ module.exports = {
     transform: {
         '^.+\\.(j|t)sx?': 'ts-jest',
         '^.+\\.(j|t)s?': 'ts-jest',
+        '^.+\\.(j|t)s?': 'ts-jest',
     },
+    transformIgnorePatterns: ['node_modules/(?!.*xterm.*)'],
     setupFiles: ['jest-canvas-mock'],
     setupFilesAfterEnv: ['<rootDir>/src/testing/setup.js'],
     testEnvironment: 'jsdom',

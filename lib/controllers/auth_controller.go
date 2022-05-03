@@ -1,14 +1,63 @@
 package controllers
 
 import (
+	"context"
 	"encoding/json"
+	"fmt"
+	"strings"
 	"time"
+
+	metaV1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/tgs266/fleet/lib/api"
 	"github.com/tgs266/fleet/lib/auth"
 	"github.com/tgs266/fleet/lib/client"
+	"github.com/tgs266/fleet/lib/errors"
+	v1 "k8s.io/api/authorization/v1"
 )
+
+func CanI(c *fiber.Ctx, client *client.ClientManager) error {
+	K8, err := client.Client(c)
+	if err != nil {
+		return err
+	}
+
+	name := c.Query("name")
+	namespace := c.Query("namespace")
+	verb := c.Query("verb")
+	resource := c.Query("resource")
+
+	response, err := K8.K8.AuthorizationV1().SelfSubjectAccessReviews().Create(context.TODO(), &v1.SelfSubjectAccessReview{
+		Spec: v1.SelfSubjectAccessReviewSpec{
+			ResourceAttributes: &v1.ResourceAttributes{
+				Namespace: namespace,
+				Name:      name,
+				Resource:  fmt.Sprintf("%ss", strings.ToLower(resource)),
+				Verb:      strings.ToLower(verb),
+			},
+		},
+	}, metaV1.CreateOptions{})
+
+	if err != nil {
+		return errors.ParseInternalError(err)
+	}
+	resp := struct {
+		Allowed bool `json:"allowed"`
+	}{
+		Allowed: response.Status.Allowed,
+	}
+
+	return c.JSON(resp)
+}
+
+func UsingAuth(c *fiber.Ctx, client *client.ClientManager) error {
+	return c.JSON(struct {
+		UsingAuth bool `json:"usingAuth"`
+	}{
+		UsingAuth: client.UseAuth,
+	})
+}
 
 func Login(c *fiber.Ctx, client *client.ClientManager) error {
 	body := new(auth.LoginRequest)

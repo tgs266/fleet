@@ -19,15 +19,28 @@ func New() *AuthManager {
 	}
 }
 
+func HandleImpersonate(authInfo *api.AuthInfo, impersonate, impersonateGroups string) *api.AuthInfo {
+	if len(impersonate) > 0 {
+		authInfo.Impersonate = impersonate
+		if len(impersonateGroups) > 0 {
+			authInfo.ImpersonateGroups = strings.Split(impersonateGroups, ",")
+		}
+	}
+	return authInfo
+}
+
 func (self *AuthManager) ExtractAuthInfo(c *fiber.Ctx) (*api.AuthInfo, error) {
 	authHeader := string(c.Request().Header.Peek("Authorization"))
 	jweToken := string(c.Request().Header.Peek("jweToken"))
+	impersonate := string(c.Request().Header.Peek("Impersonate-User"))
+	impersonateGroups := string(c.Request().Header.Peek("Impersonate-Groups"))
 
 	// check authheader first, fail if it is invalid
 	if strings.HasPrefix(authHeader, "Bearer ") {
 		authHeader = strings.TrimPrefix(authHeader, "Bearer ")
 		if len(authHeader) > 0 {
-			return &api.AuthInfo{Token: authHeader}, nil
+			authInfo := &api.AuthInfo{Token: authHeader}
+			return HandleImpersonate(authInfo, impersonate, impersonateGroups), nil
 		} else {
 			return nil, fleetErrs.NewInvalidBearerToken()
 		}
@@ -38,7 +51,7 @@ func (self *AuthManager) ExtractAuthInfo(c *fiber.Ctx) (*api.AuthInfo, error) {
 		if err != nil {
 			return nil, err
 		}
-		return authInfo, nil
+		return HandleImpersonate(authInfo, impersonate, impersonateGroups), nil
 	}
 
 	return nil, fleetErrs.NewNoAuthenticationHeaderProvided()

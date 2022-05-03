@@ -18,7 +18,6 @@ const api = axios.create();
 let dialog: HTMLDivElement = null;
 
 api.defaults.baseURL = `${window.location.href.replace(window.location.hash, '')}`;
-
 api.interceptors.request.use((config: AxiosRequestConfig<any>) => {
     const token = localStorage.getItem('jwe');
     if (token) {

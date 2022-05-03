@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button, ButtonGroup, Card, Position } from '@blueprintjs/core';
+import { Button, ButtonGroup, Card, Menu, Position } from '@blueprintjs/core';
 import { Popover2 } from '@blueprintjs/popover2';
 import { Link } from 'react-router-dom';
 
@@ -11,7 +11,7 @@ export interface IBreadcrumb {
 export interface INavContext {
     breadcrumbs?: IBreadcrumb[];
     buttons?: React.ReactNode[];
-    menu?: JSX.Element;
+    menu?: React.ReactNode[];
 }
 
 export const NavContext = React.createContext(null);
@@ -71,8 +71,11 @@ export default function Navigation() {
             <div style={{ flexGrow: 1 }} />
             <ButtonGroup>
                 {state.buttons}
-                {state.menu && (
-                    <Popover2 content={state.menu} position={Position.BOTTOM_LEFT}>
+                {state.menu && state.menu.length !== 0 && (
+                    <Popover2
+                        content={<Menu id="top-menu">{state.menu}</Menu>}
+                        position={Position.BOTTOM_LEFT}
+                    >
                         <Button id="top-menu-more" icon="more" />
                     </Popover2>
                 )}

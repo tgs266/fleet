@@ -1,6 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const webpack = require('webpack');
 
 module.exports = {
     entry: './src/index.tsx',
@@ -70,6 +71,9 @@ module.exports = {
         }),
         new CopyWebpackPlugin({
             patterns: [{ from: path.resolve(__dirname, 'src', 'assets', 'gidole'), to: 'assets' }],
+        }),
+        new webpack.DefinePlugin({
+            'process.env.TEST_ENV': JSON.stringify(false),
         }),
     ],
 };

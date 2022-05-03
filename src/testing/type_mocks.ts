@@ -1,10 +1,114 @@
 /* eslint-disable import/prefer-default-export */
+import { ClusterRole, ClusterRoleBinding } from '../models/clusterrole.model';
 import { Container, ContainerSpec } from '../models/container.model';
 import { Deployment } from '../models/deployment.model';
 import { Node } from '../models/node.model';
 import { Pod } from '../models/pod.model';
+import { Role, RoleBinding } from '../models/role.model';
+import { Secret } from '../models/secret.model';
 import { ServiceMeta } from '../models/service.model';
+import { ServiceAccount } from '../models/serviceaccount.model';
 import { SystemResources } from '../models/system.model';
+
+export const generateRoleBinding = (name: string): RoleBinding => ({
+    name,
+    namespace: 'test',
+    uid: name,
+    createdAt: 0,
+    labels: { adsf: 'asdf' },
+    annotations: { asdf: 'asdf' },
+    roleName: 'asdf',
+    subjects: [
+        {
+            name: 'asdf',
+            namespace: 'asdf',
+            kind: 'group',
+            apiGroup: 'asdf',
+        },
+    ],
+});
+
+export const generateClusterRoleBinding = (name: string): ClusterRoleBinding => ({
+    name,
+    uid: name,
+    createdAt: 0,
+    labels: { adsf: 'asdf' },
+    annotations: { asdf: 'asdf' },
+    roleName: 'asdf',
+    subjects: [
+        {
+            name: 'asdf',
+            namespace: 'asdf',
+            kind: 'group',
+            apiGroup: 'asdf',
+        },
+    ],
+});
+
+export const generateRole = (name: string): Role => ({
+    name,
+    namespace: 'test',
+    uid: name,
+    createdAt: 0,
+    labels: { adsf: 'asdf' },
+    annotations: { asdf: 'asdf' },
+    rules: [
+        {
+            verbs: [],
+            apiGroups: ['asdf'],
+            nonResourceURLs: [],
+            resourceNames: [],
+            resources: ['pods'],
+        },
+    ],
+});
+
+export const generateClusterRole = (name: string): ClusterRole => ({
+    name,
+    uid: name,
+    createdAt: 0,
+    labels: { adsf: 'asdf' },
+    annotations: { asdf: 'asdf' },
+    rules: [
+        {
+            verbs: [],
+            apiGroups: ['asdf'],
+            nonResourceURLs: [],
+            resourceNames: [],
+            resources: ['pods'],
+        },
+    ],
+});
+
+export const generateServiceAccount = (name: string): ServiceAccount => ({
+    name,
+    namespace: 'asdf',
+    uid: name,
+    createdAt: 0,
+    labels: { adsf: 'asdf' },
+    annotations: { asdf: 'asdf' },
+    roleBindings: [
+        {
+            name: 'asdf',
+            namespace: 'asdf',
+            roleName: 'asdf',
+            createdAt: 0,
+            labels: {},
+            annotations: {},
+            uid: 'UID',
+        },
+    ],
+    clusterRoleBindings: [
+        {
+            name: 'asdf',
+            roleName: 'asdf',
+            createdAt: 0,
+            labels: {},
+            annotations: {},
+            uid: 'UID',
+        },
+    ],
+});
 
 export const generatePod = (name: string): Pod => ({
     namespace: 'test',
@@ -296,6 +400,19 @@ export const generateNode = (name: string = 'test'): Node => ({
         kubeProxyVersion: 'string',
         operatingSystem: 'string',
         architecture: 'string',
+    },
+});
+
+export const generateSecret = (name: string): Secret => ({
+    name,
+    namespace: 'asdf',
+    createdAt: 0,
+    uid: name,
+    annotations: { asdf: 'asdf' },
+    labels: { asdf: 'asdf' },
+    immutable: false,
+    data: {
+        first: window.btoa(String.fromCharCode.apply(null, new Uint8Array([0, 10, 54]))),
     },
 });
 

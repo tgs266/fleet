@@ -1,12 +1,11 @@
 /* eslint-disable indent */
-import { Colors, Tag, Intent } from '@blueprintjs/core';
+import { Colors } from '@blueprintjs/core';
 import * as React from 'react';
 import AgeText from '../../components/AgeText';
+import AnnotationsTagList from '../../components/AnnotationsTagList';
 import InfoCard from '../../components/InfoCard';
-import Label from '../../components/Label';
 import LabeledText from '../../components/LabeledText';
-import TagList from '../../components/TagList';
-import Text from '../../components/Text/Text';
+import LabelsTagList from '../../components/LabelsTagList';
 import { Deployment } from '../../models/deployment.model';
 
 export default function DeploymentInfoCard(props: { deployment: Deployment }) {
@@ -40,44 +39,10 @@ export default function DeploymentInfoCard(props: { deployment: Deployment }) {
                     </LabeledText>
                 </div>
                 <div style={{ marginTop: '0.25em', display: 'flex' }}>
-                    <Label label="LABELS">
-                        {deployment.labels && (
-                            <TagList>
-                                {Object.keys(deployment.labels).map((key) => (
-                                    <Tag
-                                        key={key}
-                                        style={{ marginRight: '0.25' }}
-                                        intent={Intent.NONE}
-                                        round
-                                    >
-                                        <Text small>
-                                            {key}: {deployment.labels[key]}
-                                        </Text>
-                                    </Tag>
-                                ))}
-                            </TagList>
-                        )}
-                    </Label>
+                    <LabelsTagList obj={deployment} />
                 </div>
                 <div style={{ marginTop: '0.25em', display: 'flex' }}>
-                    <Label label="ANNOTATIONS">
-                        {deployment.annotations && (
-                            <TagList>
-                                {Object.keys(deployment.annotations).map((key) => (
-                                    <Tag
-                                        key={key}
-                                        style={{ marginRight: '0.25' }}
-                                        intent={Intent.NONE}
-                                        round
-                                    >
-                                        <Text small>
-                                            {key}: {deployment.annotations[key]}
-                                        </Text>
-                                    </Tag>
-                                ))}
-                            </TagList>
-                        )}
-                    </Label>
+                    <AnnotationsTagList obj={deployment} />
                 </div>
             </InfoCard>
         </div>

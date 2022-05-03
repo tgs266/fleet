@@ -10,6 +10,7 @@ import (
 type K8Client struct {
 	K8              kubernetes.Interface
 	Metrics         *metrics.Clientset
+	Config          *rest.Config
 	ConnectionError error
 }
 
@@ -22,6 +23,7 @@ func (K8 *K8Client) Connect(config *rest.Config) error {
 		return err
 	}
 	K8.K8 = clientset
+	K8.Config = config
 	K8.connectMetrics(config)
 	return nil
 }

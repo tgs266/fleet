@@ -37,7 +37,7 @@ And then go to <http://localhost:8001/api/v1/namespaces/fleet/services/fleet/pro
 
 Or port forward the pod
 ```
-kubectl port-forward POD 9095:9095
+kubectl port-forward POD 9095:9095 -n fleet
 ```
 And go to <http://localhost:9095/#/>
 

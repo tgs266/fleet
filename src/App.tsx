@@ -17,6 +17,18 @@ import PodList from './views/PodList/PodList';
 import Namespace from './views/Namespace/Namespace';
 import NamespaceList from './views/NamespaceList/NamespaceList';
 import ServiceList from './views/ServiceList/ServiceList';
+import ServiceAccountList from './views/ServiceAccountList/ServiceAccountList';
+import RoleList from './views/RoleList/RoleList';
+import RoleDetails from './views/RoleDetails/RoleDetails';
+import ServiceAccountDetails from './views/ServiceAccountDetails/ServiceAccountDetails';
+import RoleBindingList from './views/RoleBindingList/RoleBindingList';
+import RoleBindingDetails from './views/RoleBindingDetails/RoleBindingDetails';
+import ClusterRoleDetails from './views/ClusterRoleDetails/ClusterRoleDetails';
+import ClusterRoleBindingList from './views/ClusterRoleBindingList/ClusterRoleBindingList';
+import ClusterRoleBindingDetails from './views/ClusterRoleBindingDetails/ClusterRoleBindingDetails';
+import SecretList from './views/SecretList/SecretList';
+import SecretDetails from './views/SecretDetails/SecretDetails';
+import Shell from './views/Shell/Shell';
 
 function getCookie(name: string) {
     const value = `; ${document.cookie}`;
@@ -54,6 +66,10 @@ function App() {
                     path="pods/:namespace/:podName/containers/:containerName"
                     element={<PodContainerDetails />}
                 />
+                <Route
+                    path="pods/:namespace/:podName/containers/:containerName/shell"
+                    element={<Shell />}
+                />
 
                 <Route path="services" element={<ServiceList />} />
                 <Route path="services/:namespace/:serviceName" element={<ServiceDetails />} />
@@ -64,6 +80,31 @@ function App() {
 
                 <Route path="namespaces" element={<NamespaceList />} />
                 <Route path="namespaces/:namespace" element={<Namespace />} />
+
+                <Route path="serviceaccounts/" element={<ServiceAccountList />} />
+                <Route
+                    path="serviceaccounts/:namespace/:serviceAccountName"
+                    element={<ServiceAccountDetails />}
+                />
+
+                <Route path="roles/" element={<RoleList />} />
+                <Route path="roles/:namespace/:roleName" element={<RoleDetails />} />
+
+                <Route path="rolebindings/" element={<RoleBindingList />} />
+                <Route
+                    path="rolebindings/:namespace/:roleBindingName"
+                    element={<RoleBindingDetails />}
+                />
+
+                <Route path="clusterroles/:roleName" element={<ClusterRoleDetails />} />
+                <Route path="clusterrolebindings/" element={<ClusterRoleBindingList />} />
+                <Route
+                    path="clusterrolebindings/:clusterRoleBindingName"
+                    element={<ClusterRoleBindingDetails />}
+                />
+
+                <Route path="secrets/" element={<SecretList />} />
+                <Route path="secrets/:namespace/:secretName" element={<SecretDetails />} />
             </Route>
         </Routes>
     );

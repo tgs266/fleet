@@ -52,13 +52,13 @@ export default function SortableTableHeaderCell(props: {
         } else {
             props.onSortChange({
                 sortableId,
-                ascending: false,
+                ascending: true,
             });
         }
     };
 
     if (sort.sortableId === sortableId) {
-        icon = <Icon icon={sort.ascending ? 'caret-down' : 'caret-up'} />;
+        icon = <Icon icon={sort.ascending ? 'caret-up' : 'caret-down'} />;
     }
 
     return (

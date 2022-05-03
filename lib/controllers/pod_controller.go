@@ -79,3 +79,20 @@ func PodEventStream(c *websocket.Conn, client *client.ClientManager) {
 
 	pod.StreamPodEvents(K8, namespace, name, c, pollInterval)
 }
+
+func PodExec(c *websocket.Conn, client *client.ClientManager) {
+	err := c.Locals("k8err")
+	if err != nil {
+		bytes, _ := json.Marshal(err.(*errors.FleetError))
+		c.WriteMessage(8, bytes)
+		c.Close()
+		return
+	}
+	K8 := c.Locals("k8").(*kubernetes.K8Client)
+
+	namespace := shared.GetNamespace(c.Params("namespace"))
+	name := c.Params("name")
+	containerName := c.Params("containerName")
+
+	pod.StreamPodTerminal(K8, namespace, name, containerName, c)
+}

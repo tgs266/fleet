@@ -12,7 +12,7 @@ import { delay } from '../../testing/utils';
 
 const server = setupServer(
     rest.get(`${Deployments.base}/*`, (req, res, ctx) => {
-        const count = 20;
+        const count = 50;
         const items = [];
         for (let i = 0; i < count; i += 1) {
             items.push(generateDeployment('asdf'));

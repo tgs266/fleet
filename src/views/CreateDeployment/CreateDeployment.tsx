@@ -134,7 +134,7 @@ class CreateDeployment extends React.Component<IWithRouterProps, ICreateDeployme
             .then(() => {
                 showToastWithActionInterval(
                     {
-                        message: 'App Created. Redirecting in 5s',
+                        message: 'Deployment Created. Redirecting in 5s',
                         intent: Intent.SUCCESS,
                         action: {
                             onClick: navigate,

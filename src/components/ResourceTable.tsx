@@ -20,19 +20,24 @@ export interface ColumnDefinition<T> {
 export interface IResourceTableProps<T> {
     columns: ColumnDefinition<T>[];
     data: T[];
+    title?: string;
     keyPath: string;
     sort: TableSort;
     onSortChange: (sort: TableSort) => void;
     paginationProps: PaginationProps;
 }
 
+export const DEFAULT_SORTABLE_ID = 'name';
+export const DEFAULT_SORTABLE_ASCENDING = false;
+export const DEFAULT_SORTABLE_PAGE_SIZE = 20;
+
 // eslint-disable-next-line react/prefer-stateless-function
 export default class ResourceTable<T> extends React.Component<IResourceTableProps<T>, unknown> {
     render() {
-        const { keyPath, columns, data, sort, onSortChange, paginationProps } = this.props;
+        const { title, keyPath, columns, data, sort, onSortChange, paginationProps } = this.props;
 
         return (
-            <Table>
+            <Table title={title}>
                 <TableHeader>
                     {columns.map((c, idx) => {
                         if (c.sortableId) {
