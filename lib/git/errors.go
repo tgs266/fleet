@@ -14,3 +14,11 @@ func NewRepositoryNotFound(resourceType string, resourceName string) *errors.Fle
 		Message: fmt.Sprintf("repository for resource %s of type %s not found", resourceName, resourceType),
 	}
 }
+
+func NewResourceAlreadyExists(resourceType string, resourceName string) *errors.FleetError {
+	return &errors.FleetError{
+		Status:  errors.STATUS_BAD_REQUEST,
+		Code:    fiber.StatusBadRequest,
+		Message: fmt.Sprintf("repository for resource %s of type %s already exists", resourceName, resourceType),
+	}
+}

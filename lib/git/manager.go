@@ -1,10 +1,12 @@
 package git
 
 import (
+	gerrs "errors"
 	"os"
 	"path/filepath"
 
 	"github.com/go-git/go-git/v5"
+	"github.com/tgs266/fleet/lib/errors"
 )
 
 type GitManager struct {
@@ -32,7 +34,10 @@ func (self *GitManager) CreateRepository(resourceType string, name string) (*Rep
 	}
 	repo, err := git.PlainInit(filepath.Join(resourcePath, name), false)
 	if err != nil {
-		return nil, err
+		if gerrs.Is(err, git.ErrRepositoryAlreadyExists) {
+			return nil, NewResourceAlreadyExists(resourceType, name)
+		}
+		return nil, errors.ParseInternalError(err)
 	}
 	return &Repository{
 		Name:         name,
@@ -48,11 +53,10 @@ func (self *GitManager) GetRepository(resourceType string, name string) (*Reposi
 	repo, err := git.PlainOpen(repoPath)
 
 	if err != nil {
-		repoObj, err := self.CreateRepository(resourceType, name)
-		if err != nil {
-			return nil, err
+		if gerrs.Is(err, git.ErrRepositoryNotExists) {
+			return nil, NewRepositoryNotFound(resourceType, name)
 		}
-		return repoObj, nil
+		return nil, errors.ParseInternalError(err)
 	}
 
 	return &Repository{
