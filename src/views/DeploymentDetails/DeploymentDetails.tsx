@@ -6,19 +6,17 @@ import K8 from '../../services/k8.service';
 import { IBreadcrumb, NavContext } from '../../layouts/Navigation';
 import Toaster from '../../services/toast.service';
 import { Deployment } from '../../models/deployment.model';
-import DeploymentEvents from './DeploymentEvents';
 import DeploymentInfoCard from './DeploymentInfoCard';
-import ContainerSpecContainer from '../../components/ContainerSpec/ContainerSpecContainer';
-import DeploymentServiceContainer from './DeploymentServiceContainer';
 import DeploymentScaleDialog from './DeploymentScaleDialog';
-import PodContainer from '../../components/PodContainer';
-import ConditionTable from '../../components/ConditionTable';
 import EditableResource from '../../components/EditableResource';
+import Details from './Tabs/Details';
+import Git from './Tabs/Git';
 
 interface IDeploymentDetailsState {
     deployment: Deployment;
     pollId: NodeJS.Timer;
     isScaleDialogOpen: boolean;
+    tab: string;
 }
 
 class DeploymentDetails extends React.Component<IWithRouterProps, IDeploymentDetailsState> {
@@ -37,6 +35,7 @@ class DeploymentDetails extends React.Component<IWithRouterProps, IDeploymentDet
             isScaleDialogOpen: false,
             deployment: null,
             pollId: null,
+            tab: 'dt',
         };
     }
 
@@ -56,6 +55,7 @@ class DeploymentDetails extends React.Component<IWithRouterProps, IDeploymentDet
                     text: this.deployment,
                 },
             ] as IBreadcrumb[],
+            gitButton: true,
             buttons: [
                 <Button
                     key="refresh"
@@ -118,6 +118,10 @@ class DeploymentDetails extends React.Component<IWithRouterProps, IDeploymentDet
         ];
     };
 
+    setTab = (tab: string) => {
+        this.setState({ tab });
+    };
+
     render() {
         if (!this.state.deployment) {
             return null;
@@ -139,29 +143,15 @@ class DeploymentDetails extends React.Component<IWithRouterProps, IDeploymentDet
                     onClose={this.toggleScaleDialog}
                     onSuccess={this.toggleScaleDialog}
                 />
-                <DeploymentInfoCard deployment={deployment} />
-                <div style={{ margin: '1em' }}>
-                    <ConditionTable conditions={deployment.conditions} ignoreProbe />
-                </div>
-                <PodContainer
-                    style={{ margin: '1em', marginTop: 0 }}
-                    pods={deployment.pods}
-                    readyReplicas={deployment.readyReplicas}
-                    replicas={deployment.replicas}
+                <DeploymentInfoCard
+                    deployment={deployment}
+                    selectedTab={this.state.tab}
+                    onTabChange={this.setTab}
                 />
-                <DeploymentServiceContainer
-                    style={{ margin: '1em', marginTop: 0 }}
-                    services={deployment.services}
-                />
-                <ContainerSpecContainer
-                    refresh={this.refresh}
-                    style={{ margin: '1em', marginTop: 0 }}
-                    containerSpecs={deployment.containerSpecs}
-                />
-                <DeploymentEvents
-                    deploymentName={deployment.name}
-                    namespace={deployment.namespace}
-                />
+                {this.state.tab === 'dt' && (
+                    <Details deployment={deployment} refresh={this.refresh} />
+                )}
+                {this.state.tab === 'gt' && <Git />}
             </div>
         );
     }
