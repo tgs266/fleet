@@ -22,3 +22,12 @@ func TestRawGet2(t *testing.T) {
 
 	app.Test(req)
 }
+
+func TestRawDelete(t *testing.T) {
+	app := setupApp()
+	app.Delete("/:kind/:namespace/:name", RawDelete)
+
+	req := httptest.NewRequest("DELETE", "/deployments/asdf/asdf", nil)
+
+	app.Test(req)
+}

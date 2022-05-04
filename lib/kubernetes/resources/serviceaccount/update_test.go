@@ -108,3 +108,57 @@ func TestUpdateClusterRoleBinding(t *testing.T) {
 		})
 	}
 }
+func TestDisconnectRoleBinding(t *testing.T) {
+	testCases := []struct {
+		name            string
+		accounts        []runtime.Object
+		roleBindings    []runtime.Object
+		br              BindRequest
+		targetName      string
+		targetNamespace string
+		expectedCount   int
+	}{
+		{
+			name: "bind1",
+			accounts: []runtime.Object{
+				&corev1.ServiceAccount{
+					ObjectMeta: metav1.ObjectMeta{
+						Name:      "asdf",
+						Namespace: "asdf",
+					},
+				},
+			},
+			roleBindings: []runtime.Object{
+				&rbac.ClusterRoleBinding{
+					ObjectMeta: metav1.ObjectMeta{
+						Name: "asdf-role-binding",
+					},
+					Subjects: []rbac.Subject{
+						{
+							Name:      "asdf",
+							Namespace: "asdf",
+							Kind:      "ServiceAccount",
+						},
+					},
+				},
+			},
+			br: BindRequest{
+				TargetRoleName: "asdf-role-binding",
+			},
+			targetName:      "asdf",
+			targetNamespace: "asdf",
+			expectedCount:   1,
+		},
+	}
+
+	for _, test := range testCases {
+		t.Run(test.name, func(t *testing.T) {
+			fakeClientset := fake.NewSimpleClientset(append(test.accounts, test.roleBindings...)...)
+			err := DisconnectClusterRoleBinding(&kubernetes.K8Client{
+				K8: fakeClientset,
+			}, test.targetNamespace, test.targetName, test.br)
+
+			assert.Nil(t, err)
+		})
+	}
+}
