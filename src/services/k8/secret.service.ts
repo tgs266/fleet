@@ -1,8 +1,8 @@
 import { AxiosResponse } from 'axios';
 import { TableSort } from '../../components/SortableTableHeaderCell';
-import { PaginationResponse } from '../../models/base';
+import { Filter, PaginationResponse } from '../../models/base';
 import { Secret, SecretMeta } from '../../models/secret.model';
-import getSortBy from '../../utils/sort';
+import getSortBy, { parseFilters } from '../../utils/sort';
 import api from '../axios.service';
 
 export default class Secrets {
@@ -16,10 +16,12 @@ export default class Secrets {
         namespace?: string,
         sort?: TableSort,
         offset?: number,
-        pageSize?: number
+        pageSize?: number,
+        filters?: Filter[]
     ): Promise<AxiosResponse<PaginationResponse<SecretMeta>>> {
+        const filterBy = parseFilters(filters);
         return api.get(`${Secrets.base}/${namespace || '_all_'}/`, {
-            params: { sortBy: getSortBy(sort), offset, pageSize },
+            params: { sortBy: getSortBy(sort), offset, pageSize, filterBy },
         });
     }
 }

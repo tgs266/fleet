@@ -1,7 +1,9 @@
+/* eslint-disable no-restricted-syntax */
 /* eslint-disable react/no-array-index-key */
 import { Alignment } from '@blueprintjs/core';
 import _ from 'lodash';
 import React from 'react';
+import { Filter } from '../models/base';
 import SortableTableHeaderCell, { TableSort } from './SortableTableHeaderCell';
 import Table, { PaginationProps } from './Table';
 import TableBody from './TableBody';
@@ -12,6 +14,7 @@ import TableRow from './TableRow';
 export interface ColumnDefinition<T> {
     columnName: string;
     sortableId?: string;
+    searchable?: boolean;
     key: string;
     alignment?: Alignment;
     columnFunction: (row: T) => JSX.Element | string;
@@ -24,6 +27,8 @@ export interface IResourceTableProps<T> {
     keyPath: string;
     sort: TableSort;
     onSortChange: (sort: TableSort) => void;
+    onFiltersChange?: (filters: Filter[]) => void;
+    filters?: Filter[];
     paginationProps: PaginationProps;
 }
 
@@ -35,6 +40,16 @@ export const DEFAULT_SORTABLE_PAGE_SIZE = 20;
 export default class ResourceTable<T> extends React.Component<IResourceTableProps<T>, unknown> {
     render() {
         const { title, keyPath, columns, data, sort, onSortChange, paginationProps } = this.props;
+
+        const fOps = [];
+        for (const c of this.props.columns) {
+            if (c.searchable) {
+                fOps.push({
+                    name: c.columnName,
+                    id: c.sortableId,
+                });
+            }
+        }
 
         return (
             <Table title={title}>
@@ -55,7 +70,19 @@ export default class ResourceTable<T> extends React.Component<IResourceTableProp
                         return <TableCell>{c.columnName}</TableCell>;
                     })}
                 </TableHeader>
-                <TableBody paginationProps={paginationProps}>
+                <TableBody
+                    filterOptions={fOps}
+                    onFilterAdd={(f) => {
+                        this.props.filters.push(f);
+                        this.props.onFiltersChange(this.props.filters);
+                    }}
+                    onFilterRemove={(idx) => {
+                        this.props.filters.splice(idx, 1);
+                        this.props.onFiltersChange(this.props.filters);
+                    }}
+                    filters={this.props.filters}
+                    paginationProps={paginationProps}
+                >
                     {data.map((row) => (
                         <TableRow key={_.get(row, keyPath)}>
                             {columns.map((c) => (

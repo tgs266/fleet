@@ -10,6 +10,7 @@ import ResourceTable, {
 } from '../../components/ResourceTable';
 import { TableSort } from '../../components/SortableTableHeaderCell';
 import { IBreadcrumb, NavContext } from '../../layouts/Navigation';
+import { Filter } from '../../models/base';
 import { Pagination } from '../../models/component.model';
 import { SecretMeta } from '../../models/secret.model';
 import K8 from '../../services/k8.service';
@@ -24,6 +25,7 @@ interface ISecretTableProps extends IWithRouterProps {
 
 interface ISecretTableState extends Pagination {
     secrets: SecretMeta[];
+    filters: Filter[];
     sort: TableSort;
     pollId: NodeJS.Timer;
 }
@@ -40,6 +42,7 @@ class SecretTable extends React.Component<ISecretTableProps, ISecretTableState> 
                 sortableId: DEFAULT_SORTABLE_ID,
                 ascending: DEFAULT_SORTABLE_ASCENDING,
             },
+            filters: [],
             page: 0,
             pageSize: DEFAULT_SORTABLE_PAGE_SIZE,
             total: null,
@@ -60,7 +63,13 @@ class SecretTable extends React.Component<ISecretTableProps, ISecretTableState> 
             menu: null,
         });
         K8.secrets
-            .getSecrets(this.props.namespace, this.state.sort, 0, this.state.pageSize)
+            .getSecrets(
+                this.props.namespace,
+                this.state.sort,
+                0,
+                this.state.pageSize,
+                this.state.filters
+            )
             .then((response) => {
                 this.setState({
                     secrets: response.data.items,
@@ -74,6 +83,10 @@ class SecretTable extends React.Component<ISecretTableProps, ISecretTableState> 
         clearInterval(this.state.pollId);
     }
 
+    onFilterChange = (filters: Filter[]) => {
+        this.setState({ filters }, () => this.pull(null, null));
+    };
+
     pull = (sort?: TableSort, page?: number) => {
         const usingSort = sort || this.state.sort;
         const usingPage = page !== null ? page : this.state.page;
@@ -82,7 +95,8 @@ class SecretTable extends React.Component<ISecretTableProps, ISecretTableState> 
                 this.props.namespace,
                 usingSort,
                 getOffset(usingPage, this.state.pageSize, this.state.total),
-                this.state.pageSize
+                this.state.pageSize,
+                this.state.filters
             )
             .then((response) => {
                 this.setState({
@@ -115,12 +129,15 @@ class SecretTable extends React.Component<ISecretTableProps, ISecretTableState> 
                     onSortChange={this.sortChange}
                     sort={this.state.sort}
                     data={this.state.secrets}
+                    filters={this.state.filters}
+                    onFiltersChange={this.onFilterChange}
                     keyPath="uid"
                     columns={[
                         {
                             key: 'name',
                             sortableId: 'name',
                             columnName: 'Name',
+                            searchable: true,
                             columnFunction: (row: SecretMeta) => (
                                 <Link to={buildLinkToSecret(row.namespace, row.name)}>
                                     {row.name}
@@ -131,6 +148,7 @@ class SecretTable extends React.Component<ISecretTableProps, ISecretTableState> 
                             key: 'namespace',
                             sortableId: 'namespace',
                             columnName: 'Namespace',
+                            searchable: true,
                             columnFunction: (row: SecretMeta) => (
                                 <Link to={buildLinkToNamespace(row.namespace)}>
                                     {row.namespace}
