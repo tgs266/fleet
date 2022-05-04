@@ -112,6 +112,13 @@ func (client *ClientManager) initClusterConfig() {
 
 }
 
+func (client *ClientManager) UsingInCluster() bool {
+	if client.clusterConfig != nil {
+		return true
+	}
+	return false
+}
+
 func (client *ClientManager) getK8Client(c *fiber.Ctx) (*kubernetes.K8Client, error) {
 
 	if client.TestMode {
@@ -151,7 +158,7 @@ func (client *ClientManager) getK8Client(c *fiber.Ctx) (*kubernetes.K8Client, er
 		c.Response().Header.Add("Username", username)
 	}
 
-	return k8client, k8client.Connect(cfg)
+	return k8client, k8client.Connect(cfg, client.UsingInCluster())
 }
 
 func (client *ClientManager) getAuthInfo(c *fiber.Ctx) (*api.AuthInfo, error) {
@@ -255,7 +262,7 @@ func (client *ClientManager) RawClient(c *fiber.Ctx) (*raw.Client, error) {
 func (self *ClientManager) ValidateAuthInfo(cfg *rest.Config, authInfo *api.AuthInfo) (string, error) {
 	k8client := new(kubernetes.K8Client)
 
-	err := k8client.Connect(cfg)
+	err := k8client.Connect(cfg, self.UsingInCluster())
 	if err != nil && !self.TestAuthMode {
 		return "", err
 	}
