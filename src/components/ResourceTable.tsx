@@ -40,14 +40,16 @@ export const DEFAULT_SORTABLE_PAGE_SIZE = 20;
 export default class ResourceTable<T> extends React.Component<IResourceTableProps<T>, unknown> {
     render() {
         const { title, keyPath, columns, data, sort, onSortChange, paginationProps } = this.props;
-
-        const fOps = [];
-        for (const c of this.props.columns) {
-            if (c.searchable) {
-                fOps.push({
-                    name: c.columnName,
-                    id: c.sortableId,
-                });
+        let fOps = null;
+        if (this.props.filters) {
+            fOps = [];
+            for (const c of this.props.columns) {
+                if (c.searchable) {
+                    fOps.push({
+                        name: c.columnName,
+                        id: c.sortableId,
+                    });
+                }
             }
         }
 

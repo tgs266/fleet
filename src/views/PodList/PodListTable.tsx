@@ -1,119 +1,94 @@
-import { Card } from '@blueprintjs/core';
+/* eslint-disable class-methods-use-this */
+import { Alignment, Icon } from '@blueprintjs/core';
+import { Tooltip2, Classes } from '@blueprintjs/popover2';
 import * as React from 'react';
-import PodTable from '../../components/PodTable';
-import {
-    DEFAULT_SORTABLE_ID,
-    DEFAULT_SORTABLE_ASCENDING,
-    DEFAULT_SORTABLE_PAGE_SIZE,
-} from '../../components/ResourceTable';
+import { Link } from 'react-router-dom';
+import AgeText from '../../components/AgeText';
+import ResourceTableView from '../../components/ResourceTableView';
 import { TableSort } from '../../components/SortableTableHeaderCell';
-import { IBreadcrumb, NavContext } from '../../layouts/Navigation';
-import { Pagination } from '../../models/component.model';
 import { PodMeta } from '../../models/pod.model';
 import K8 from '../../services/k8.service';
+import { getStatusColor } from '../../utils/pods';
+import { buildLinkToPod, buildLinkToNamespace, buildLinkToNode } from '../../utils/routing';
 import getOffset from '../../utils/table';
-
-interface IPodListState extends Pagination {
-    pods: PodMeta[];
-    sort: TableSort;
-    pollId: NodeJS.Timer;
-}
+import { createdAtToOrigination } from '../../utils/time';
 
 interface IPodTableProps {
     namespace?: string;
 }
 
-class PodListTable extends React.Component<IPodTableProps, IPodListState> {
-    // eslint-disable-next-line react/static-property-placement
-    static contextType = NavContext;
+class PodListTable extends ResourceTableView<IPodTableProps, PodMeta> {
+    itemsFcn = K8.pods.getPods;
 
-    constructor(props: any) {
-        super(props);
-        this.state = {
-            pods: [],
-            sort: {
-                sortableId: DEFAULT_SORTABLE_ID,
-                ascending: DEFAULT_SORTABLE_ASCENDING,
-            },
-            page: 0,
-            pageSize: DEFAULT_SORTABLE_PAGE_SIZE,
-            total: null,
-            pollId: null,
-        };
-    }
+    useFilters = true;
 
-    componentDidMount() {
-        const [, setState] = this.context;
-        setState({
-            breadcrumbs: [
-                {
-                    text: 'pods',
-                    link: '/pods',
-                },
-            ] as IBreadcrumb[],
-            buttons: [],
-            menu: null,
-        });
-        K8.pods
-            .getPods(this.props.namespace, this.state.sort, 0, this.state.pageSize)
-            .then((response) => {
-                this.setState({
-                    pods: response.data.items,
-                    total: response.data.total,
-                    pollId: K8.pollFunction(5000, () => this.pull(null, null)),
-                });
-            });
-    }
-
-    componentWillUnmount() {
-        clearInterval(this.state.pollId);
-    }
-
-    pull = (sort?: TableSort, page?: number) => {
+    getPullParameters = (sort?: TableSort, page?: number) => {
         const usingSort = sort || this.state.sort;
         const usingPage = page !== null ? page : this.state.page;
-        K8.pods
-            .getPods(
-                this.props.namespace,
-                usingSort,
-                getOffset(usingPage, this.state.pageSize, this.state.total),
-                this.state.pageSize
-            )
-            .then((response) => {
-                this.setState({
-                    pods: response.data.items,
-                    sort: usingSort,
-                    page: usingPage,
-                    total: response.data.total,
-                });
-            });
+
+        return [
+            this.props.namespace,
+            usingSort,
+            getOffset(usingPage, this.state.pageSize, this.state.total),
+            this.state.pageSize,
+        ];
     };
 
-    sortChange = (sort: TableSort) => {
-        this.pull(sort, null);
-    };
-
-    setPage = (page: number) => {
-        this.pull(null, page);
-    };
-
-    render() {
-        return (
-            <Card style={{ padding: 0, minWidth: '40em' }}>
-                <PodTable
-                    pods={this.state.pods}
-                    sort={this.state.sort}
-                    onSortChange={this.sortChange}
-                    paginationProps={{
-                        page: this.state.page,
-                        pageSize: this.state.pageSize,
-                        total: this.state.total,
-                        onPageChange: this.setPage,
-                    }}
-                />
-            </Card>
-        );
-    }
+    getColumns = () => [
+        {
+            key: 'icon',
+            alignment: Alignment.LEFT,
+            columnName: '',
+            columnFunction: (row: PodMeta) => {
+                const statusColor = getStatusColor(row);
+                const statusHtml = <Icon color={statusColor} icon="full-circle" size={14} />;
+                return <Tooltip2 content={row.status.reason}>{statusHtml}</Tooltip2>;
+            },
+        },
+        {
+            key: 'name',
+            columnName: 'Name',
+            sortableId: 'name',
+            searchable: true,
+            columnFunction: (row: PodMeta) => (
+                <Link to={buildLinkToPod(row.namespace, row.name)}>{row.name}</Link>
+            ),
+        },
+        {
+            key: 'namespace',
+            columnName: 'Namespace',
+            sortableId: 'namespace',
+            searchable: true,
+            columnFunction: (row: PodMeta) => (
+                <Link to={buildLinkToNamespace(row.namespace)}>{row.namespace}</Link>
+            ),
+        },
+        {
+            key: 'nodeName',
+            columnName: 'Node Name',
+            columnFunction: (row: PodMeta) => (
+                <Link to={buildLinkToNode(row.nodeName)}>{row.nodeName}</Link>
+            ),
+        },
+        {
+            key: 'age',
+            columnName: 'Age',
+            sortableId: 'created_at',
+            columnFunction: (row: PodMeta) => (
+                <Tooltip2
+                    className={Classes.TOOLTIP2_INDICATOR}
+                    content={createdAtToOrigination(row.createdAt)}
+                >
+                    <AgeText hr value={row.createdAt} />
+                </Tooltip2>
+            ),
+        },
+        {
+            key: 'restarts',
+            columnName: 'Restarts',
+            columnFunction: (row: PodMeta) => row.restarts.toString(),
+        },
+    ];
 }
 
 export default PodListTable;

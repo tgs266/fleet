@@ -10,10 +10,13 @@ export default function getSortBy(sort: TableSort) {
     return sortBy;
 }
 
-export function parseFilters(filters: Filter[]) {
-    const outArr = [];
-    for (const filter of filters) {
-        outArr.push(`${filter.property},${filter.value},${filter.operator}`);
+export function parseFilters(filters?: Filter[]) {
+    if (filters) {
+        const outArr = [];
+        for (const filter of filters) {
+            outArr.push(`${filter.property},${filter.value},${filter.operator}`);
+        }
+        return outArr.join('|');
     }
-    return outArr.join('|');
+    return '';
 }

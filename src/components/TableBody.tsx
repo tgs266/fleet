@@ -3,7 +3,7 @@
 /* eslint-disable react/no-unstable-nested-components */
 import * as React from 'react';
 import PropTypes from 'prop-types'; // ES6
-import { Button, ButtonGroup, Icon, InputGroup, MenuItem, Tag } from '@blueprintjs/core';
+import { Button, ButtonGroup, Icon, InputGroup, Intent, MenuItem, Tag } from '@blueprintjs/core';
 import { Select } from '@blueprintjs/select';
 import TableRow from './TableRow';
 import TableCell from './TableCell';
@@ -61,7 +61,6 @@ export default function TableBody(props: {
     }
 
     const [selectedFilter, setSelectedFilter] = React.useState(defaultFilterProp);
-    // const [operator, setSelectedOperator] = React.useState(OPERATORS[0])
 
     const ref = React.useRef<HTMLInputElement>();
 
@@ -112,7 +111,9 @@ export default function TableBody(props: {
                                                 }
                                             }}
                                         />
-                                        <Button onClick={add}>Filter</Button>
+                                        <Button onClick={add} intent={Intent.PRIMARY}>
+                                            Search
+                                        </Button>
                                         <TagList style={{ marginLeft: '1em', marginRight: '1em' }}>
                                             {props.filters.map((f, idx) => (
                                                 <Tag key={idx} style={{ height: '25px' }} round>

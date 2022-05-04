@@ -1,8 +1,8 @@
 import { AxiosResponse } from 'axios';
 import { TableSort } from '../../components/SortableTableHeaderCell';
-import { PaginationResponse } from '../../models/base';
+import { Filter, PaginationResponse } from '../../models/base';
 import { ClusterRole, ClusterRoleMeta } from '../../models/clusterrole.model';
-import getSortBy from '../../utils/sort';
+import getSortBy, { parseFilters } from '../../utils/sort';
 import api from '../axios.service';
 
 export default class ClusterRoles {
@@ -15,10 +15,11 @@ export default class ClusterRoles {
     static getClusterRoles(
         sort?: TableSort,
         offset?: number,
-        pageSize?: number
+        pageSize?: number,
+        filters?: Filter[]
     ): Promise<AxiosResponse<PaginationResponse<ClusterRoleMeta>>> {
-        return api.get(`${ClusterRoles.base}/`, {
-            params: { sortBy: getSortBy(sort), offset, pageSize },
+        return api.get(`${ClusterRoles.base}`, {
+            params: { sortBy: getSortBy(sort), offset, pageSize, filterBy: parseFilters(filters) },
         });
     }
 }

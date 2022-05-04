@@ -1,8 +1,8 @@
 import { AxiosResponse } from 'axios';
 import { TableSort } from '../../components/SortableTableHeaderCell';
-import { PaginationResponse } from '../../models/base';
+import { Filter, PaginationResponse } from '../../models/base';
 import { Role, RoleMeta } from '../../models/role.model';
-import getSortBy from '../../utils/sort';
+import getSortBy, { parseFilters } from '../../utils/sort';
 import api from '../axios.service';
 
 export default class Roles {
@@ -16,10 +16,12 @@ export default class Roles {
         namespace?: string,
         sort?: TableSort,
         offset?: number,
-        pageSize?: number
+        pageSize?: number,
+        filters?: Filter[]
     ): Promise<AxiosResponse<PaginationResponse<RoleMeta>>> {
+        const filterBy = parseFilters(filters);
         return api.get(`${Roles.base}/${namespace || '_all_'}/`, {
-            params: { sortBy: getSortBy(sort), offset, pageSize },
+            params: { sortBy: getSortBy(sort), offset, pageSize, filterBy },
         });
     }
 }
