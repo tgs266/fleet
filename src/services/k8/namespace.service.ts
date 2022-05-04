@@ -1,9 +1,9 @@
 /* eslint-disable object-shorthand */
 import { AxiosResponse } from 'axios';
 import { TableSort } from '../../components/SortableTableHeaderCell';
-import { PaginationResponse } from '../../models/base';
+import { Filter, PaginationResponse } from '../../models/base';
 import { NamespaceMeta as NS } from '../../models/namespace.model';
-import getSortBy from '../../utils/sort';
+import getSortBy, { parseFilters } from '../../utils/sort';
 import api from '../axios.service';
 
 export default class Namespaces {
@@ -12,10 +12,11 @@ export default class Namespaces {
     static getNamespaces(
         sort?: TableSort,
         offset?: number,
-        pageSize?: number
+        pageSize?: number,
+        filters?: Filter[]
     ): Promise<AxiosResponse<PaginationResponse<NS>>> {
         return api.get(`${Namespaces.base}/`, {
-            params: { sortBy: getSortBy(sort), offset, pageSize },
+            params: { sortBy: getSortBy(sort), offset, pageSize, filterBy: parseFilters(filters) },
         });
     }
 

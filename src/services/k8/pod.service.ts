@@ -1,9 +1,9 @@
 import { AxiosResponse } from 'axios';
 import { TableSort } from '../../components/SortableTableHeaderCell';
-import { PaginationResponse } from '../../models/base';
+import { Filter, PaginationResponse } from '../../models/base';
 import { JSONObject } from '../../models/json.model';
 import { Pod, PodMeta } from '../../models/pod.model';
-import getSortBy from '../../utils/sort';
+import getSortBy, { parseFilters } from '../../utils/sort';
 import api, { getWSUrl } from '../axios.service';
 import getWebsocket from '../websocket';
 
@@ -18,10 +18,11 @@ export default class Pods {
         namespace?: string,
         sort?: TableSort,
         offset?: number,
-        pageSize?: number
+        pageSize?: number,
+        filters?: Filter[]
     ): Promise<AxiosResponse<PaginationResponse<PodMeta>>> {
         return api.get(`${Pods.base}/${namespace || '_all_'}`, {
-            params: { sortBy: getSortBy(sort), offset, pageSize },
+            params: { sortBy: getSortBy(sort), offset, pageSize, filterBy: parseFilters(filters) },
         });
     }
 

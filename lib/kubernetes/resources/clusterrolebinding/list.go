@@ -35,9 +35,6 @@ func List(K8 *kubernetes.K8Client, selector *types.DataSelector) (*types.Paginat
 	if selector != nil {
 		resp.Total = selector.TotalItemCount
 		resp.Offset = selector.Offset
-	} else {
-		resp.Total = resp.Count
-		resp.Offset = 0
 	}
 
 	return resp, nil
