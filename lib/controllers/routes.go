@@ -58,6 +58,11 @@ func initializeRoleBindingRoutes(app *api.API) {
 	app.Get("/api/v1/clusterrolebindings/:name", GetClusterRoleBinding)
 }
 
+func initializePromRoutes(app *api.API) {
+	app.Get("/api/v1/metrics/query", PrometheusQuery)
+	app.Get("/api/v1/metrics/query/range", PrometheusQueryRange)
+}
+
 func initializeSecretRoutes(app *api.API) {
 	app.Get("/api/v1/secrets/:namespace/", GetSecrets)
 	app.Get("/api/v1/secrets/:namespace/:name", GetSecret)
@@ -99,4 +104,5 @@ func InitializeRoutes(app *api.API) {
 	initializeRoleBindingRoutes(app)
 	initializeSecretRoutes(app)
 	initializeOtherRoutes(app)
+	initializePromRoutes(app)
 }
