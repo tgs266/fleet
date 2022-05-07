@@ -32,28 +32,34 @@ type PrometheusQueryRangeRequest struct {
 	Timeout string `json:"timeout"`
 }
 
-func New(restClient rest.Interface) *PrometheusManager {
-	res := restClient.Get().
-		Namespace("fleet-metrics").
+const METRICS_NS = "fleet-metrics"
+const SERVICE_NAME = "prometheus:web"
+
+func (self *PrometheusManager) getBaseRequest() *rest.Request {
+	return self.RestClient.Get().
+		Namespace(METRICS_NS).
 		Resource("services").
-		Name("prometheus:web").
-		SubResource("proxy").
-		Suffix("-/ready").
-		// SetHeader("Accept", "text/plain; charset=utf-8").
-		Do(context.TODO())
+		Name(SERVICE_NAME).
+		SubResource("proxy")
+}
+
+func New(restClient rest.Interface) *PrometheusManager {
+
+	client := &PrometheusManager{
+		RestClient: restClient,
+	}
+
+	res := client.getBaseRequest().Suffix("-/ready").Do(context.TODO())
 
 	var sc int
 	res.StatusCode(&sc)
-	ready := true
+	client.Ready = true
 	if sc != 200 {
 		logging.WARN("could not connect to prometheus, ", res.Error())
-		ready = false
+		client.Ready = false
 	}
 
-	return &PrometheusManager{
-		Ready:      ready,
-		RestClient: restClient,
-	}
+	return client
 }
 
 func (pm *PrometheusManager) DoQuery(c *fiber.Ctx) (map[string]map[string]interface{}, error) {
@@ -100,11 +106,7 @@ func (pm *PrometheusManager) DoQuery(c *fiber.Ctx) (map[string]map[string]interf
 func (pm *PrometheusManager) doSingleQueryRequest(r PrometheusQueryRequest, channel chan map[string]interface{}, err chan error) {
 	result := &runtime.Unknown{}
 
-	errresp := pm.RestClient.Get().
-		Namespace("fleet-metrics").
-		Resource("services").
-		Name("prometheus:web").
-		SubResource("proxy").
+	errresp := pm.getBaseRequest().
 		Suffix("api/v1/query").
 		Param("query", r.Query).
 		Param("time", r.Time).
@@ -156,8 +158,6 @@ func (pm *PrometheusManager) DoQueryRange(c *fiber.Ctx) (map[string]map[string]i
 	channels := make(map[string]chan map[string]interface{}, len(body))
 	err_channels := make(map[string]chan error, len(body))
 
-	fmt.Println(body)
-
 	for i, b := range body {
 		channels[i] = make(chan map[string]interface{}, 1)
 		err_channels[i] = make(chan error, 1)
@@ -191,11 +191,7 @@ func (pm *PrometheusManager) doSingleQueryRangeRequest(now time.Time, r Promethe
 		r.Step = "60s"
 	}
 
-	err := pm.RestClient.Get().
-		Namespace("fleet-metrics").
-		Resource("services").
-		Name("prometheus:web").
-		SubResource("proxy").
+	err := pm.getBaseRequest().
 		Suffix("api/v1/query_range").
 		Param("query", r.Query).
 		Param("start", r.Start).
@@ -204,8 +200,6 @@ func (pm *PrometheusManager) doSingleQueryRangeRequest(now time.Time, r Promethe
 		Param("timeout", r.Timeout).
 		Do(context.TODO()).
 		Into(result)
-
-	fmt.Println(err)
 
 	if err != nil {
 		err_channel <- err
