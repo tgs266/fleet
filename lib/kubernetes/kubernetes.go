@@ -40,5 +40,5 @@ func (K8 *K8Client) connectMetrics(cfg *rest.Config) {
 }
 
 func (K8 *K8Client) connectPrometheus() {
-	K8.Prometheus = prometheus.New(K8.K8)
+	K8.Prometheus = prometheus.New(K8.K8.CoreV1().RESTClient())
 }

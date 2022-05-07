@@ -10,12 +10,12 @@ import (
 	"github.com/tgs266/fleet/lib/errors"
 	"github.com/tgs266/fleet/lib/logging"
 	"k8s.io/apimachinery/pkg/runtime"
-	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/rest"
 )
 
 type PrometheusManager struct {
-	K8    kubernetes.Interface
-	Ready bool
+	RestClient rest.Interface
+	Ready      bool
 }
 
 type PrometheusQueryRequest struct {
@@ -32,8 +32,8 @@ type PrometheusQueryRangeRequest struct {
 	Timeout string `json:"timeout"`
 }
 
-func New(K8 kubernetes.Interface) *PrometheusManager {
-	res := K8.CoreV1().RESTClient().Get().
+func New(restClient rest.Interface) *PrometheusManager {
+	res := restClient.Get().
 		Namespace("fleet-metrics").
 		Resource("services").
 		Name("prometheus:web").
@@ -51,8 +51,8 @@ func New(K8 kubernetes.Interface) *PrometheusManager {
 	}
 
 	return &PrometheusManager{
-		Ready: ready,
-		K8:    K8,
+		Ready:      ready,
+		RestClient: restClient,
 	}
 }
 
@@ -100,7 +100,7 @@ func (pm *PrometheusManager) DoQuery(c *fiber.Ctx) (map[string]map[string]interf
 func (pm *PrometheusManager) doSingleQueryRequest(r PrometheusQueryRequest, channel chan map[string]interface{}, err chan error) {
 	result := &runtime.Unknown{}
 
-	errresp := pm.K8.CoreV1().RESTClient().Get().
+	errresp := pm.RestClient.Get().
 		Namespace("fleet-metrics").
 		Resource("services").
 		Name("prometheus:web").
@@ -191,7 +191,7 @@ func (pm *PrometheusManager) doSingleQueryRangeRequest(now time.Time, r Promethe
 		r.Step = "60s"
 	}
 
-	err := pm.K8.CoreV1().RESTClient().Get().
+	err := pm.RestClient.Get().
 		Namespace("fleet-metrics").
 		Resource("services").
 		Name("prometheus:web").
