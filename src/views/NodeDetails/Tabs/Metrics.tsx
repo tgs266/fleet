@@ -34,7 +34,7 @@ export default function Metrics(props: {
                             cpuUsage: metricsData.cpuUsage,
                         }}
                         height={150}
-                        labels={{ cpuUsage: 'CPU Cores Usage' }}
+                        labels={{ cpuUsage: 'CPU Usage' }}
                     />
                 </Card>
             </div>
