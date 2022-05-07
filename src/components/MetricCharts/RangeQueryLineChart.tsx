@@ -1,3 +1,4 @@
+/* eslint-disable no-continue */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable react/prefer-stateless-function */
 import React from 'react';
@@ -77,11 +78,13 @@ class RangeQueryLineChartState extends React.Component<
         const data = this.props.data || this.state.data;
         const labels = [];
         for (const k of Object.keys(data)) {
-            if (data[k].data.result.length !== 0) {
-                for (const values of data[k].data.result[0].values) {
-                    labels.push(new Date(values[0] * 1000));
+            if (data[k]) {
+                if (data[k].data.result.length !== 0) {
+                    for (const values of data[k].data.result[0].values) {
+                        labels.push(new Date(values[0] * 1000));
+                    }
+                    break;
                 }
-                break;
             }
         }
 
@@ -92,6 +95,9 @@ class RangeQueryLineChartState extends React.Component<
         const datasets = [];
         let i = 0;
         for (const key of Object.keys(data)) {
+            if (!data[key]) {
+                continue;
+            }
             const { values } = data[key].data.result[0];
             datasets.push({
                 label: this.props.labels[key],

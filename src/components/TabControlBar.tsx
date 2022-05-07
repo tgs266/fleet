@@ -12,6 +12,7 @@ export default function TabControlBar(props: {
             <Tabs large selectedTabId={props.selectedTab} onChange={props.setSelectedTab}>
                 {props.tabs.map((t) => (
                     <Tab
+                        data-testid={`tab-${t}`}
                         key={t}
                         id={t}
                         style={{

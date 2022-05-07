@@ -26,7 +26,35 @@ const server = setupServer(
     rest.get(`${Pods.base}/test/test`, (req, res, ctx) => res(ctx.json(generatePod('test')))),
     rest.get('/api/v1/raw/pods/test/test', (req, res, ctx) => res(ctx.json(generatePod('test')))),
     rest.delete('/api/v1/pods/test/test', (req, res, ctx) => res(ctx.status(201))),
-    rest.put('/api/v1/raw/pods/test/test', (req, res, ctx) => res(ctx.json('asdf')))
+    rest.put('/api/v1/raw/pods/test/test', (req, res, ctx) => res(ctx.json('asdf'))),
+    rest.post('/api/v1/metrics/*', (req, res, ctx) =>
+        res(
+            ctx.json({
+                cpuUsage: {
+                    status: 'success',
+                    error: '',
+                    errorType: '',
+                    warnings: [],
+                    data: {
+                        resultType: 'asdf',
+                        result: [
+                            {
+                                metric: {},
+                                values: [
+                                    [1234, '1234'],
+                                    [1234, '1234'],
+                                    [1234, '1234'],
+                                    [1234, '1234'],
+                                    [1234, '1234'],
+                                    [1234, '1234'],
+                                ],
+                            },
+                        ],
+                    },
+                },
+            })
+        )
+    )
 );
 
 beforeAll(() => server.listen());
@@ -112,4 +140,22 @@ test('can refresh', async () => {
     fireEvent.click(wrapper.getByTestId('refresh'));
     await delay(500);
     await waitFor(() => expect(wrapper.queryByTestId('infocard-title').innerHTML).toBe('test1'));
+});
+
+test('can switch tabs', async () => {
+    const wrapper = render(
+        <MemoryRouter initialEntries={['/pods/test/test']}>
+            <Routes>
+                <Route path="/" element={<Layout />}>
+                    <Route path="pods/:namespace/:podName" element={<PodDetails />} />
+                </Route>
+            </Routes>
+        </MemoryRouter>
+    );
+
+    await waitFor(() => expect(wrapper.queryByTestId('infocard-title').innerHTML).toBe('test'));
+
+    fireEvent.click(wrapper.getByTestId('tab-Metrics'));
+    await delay(500);
+    await waitFor(() => expect(wrapper.queryByTestId('infocard-title').innerHTML).toBe('test'));
 });
