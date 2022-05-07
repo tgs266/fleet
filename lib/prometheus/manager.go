@@ -156,6 +156,8 @@ func (pm *PrometheusManager) DoQueryRange(c *fiber.Ctx) (map[string]map[string]i
 	channels := make(map[string]chan map[string]interface{}, len(body))
 	err_channels := make(map[string]chan error, len(body))
 
+	fmt.Println(body)
+
 	for i, b := range body {
 		channels[i] = make(chan map[string]interface{}, 1)
 		err_channels[i] = make(chan error, 1)
@@ -202,6 +204,8 @@ func (pm *PrometheusManager) doSingleQueryRangeRequest(now time.Time, r Promethe
 		Param("timeout", r.Timeout).
 		Do(context.TODO()).
 		Into(result)
+
+	fmt.Println(err)
 
 	if err != nil {
 		err_channel <- err
