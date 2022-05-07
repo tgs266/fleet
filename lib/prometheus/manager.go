@@ -83,16 +83,16 @@ func (pm *PrometheusManager) DoQuery(c *fiber.Ctx) (map[string]map[string]interf
 
 	results := make(map[string]map[string]interface{}, len(body))
 	channels := make(map[string]chan map[string]interface{}, len(body))
-	err_channels := make(map[string]chan error, len(body))
+	errChannels := make(map[string]chan error, len(body))
 
 	for i, b := range body {
 		channels[i] = make(chan map[string]interface{}, 1)
-		err_channels[i] = make(chan error, 1)
-		go pm.doSingleQueryRequest(b, channels[i], err_channels[i])
+		errChannels[i] = make(chan error, 1)
+		go pm.doSingleQueryRequest(b, channels[i], errChannels[i])
 	}
 
 	for i, _ := range body {
-		err := <-err_channels[i]
+		err := <-errChannels[i]
 		if err != nil {
 			return nil, errors.CreateError(500, fmt.Sprintf("requests %s failed with error '%s'", i, err.Error()))
 		} else {
@@ -156,16 +156,16 @@ func (pm *PrometheusManager) DoQueryRange(c *fiber.Ctx) (map[string]map[string]i
 
 	results := make(map[string]map[string]interface{}, len(body))
 	channels := make(map[string]chan map[string]interface{}, len(body))
-	err_channels := make(map[string]chan error, len(body))
+	errChannels := make(map[string]chan error, len(body))
 
 	for i, b := range body {
 		channels[i] = make(chan map[string]interface{}, 1)
-		err_channels[i] = make(chan error, 1)
-		go pm.doSingleQueryRangeRequest(now, b, channels[i], err_channels[i])
+		errChannels[i] = make(chan error, 1)
+		go pm.doSingleQueryRangeRequest(now, b, channels[i], errChannels[i])
 	}
 
 	for i, _ := range body {
-		err := <-err_channels[i]
+		err := <-errChannels[i]
 		if err != nil {
 			return nil, errors.CreateError(500, fmt.Sprintf("requests %s failed with error '%s'", i, err.Error()))
 		} else {
@@ -176,7 +176,7 @@ func (pm *PrometheusManager) DoQueryRange(c *fiber.Ctx) (map[string]map[string]i
 	return results, nil
 }
 
-func (pm *PrometheusManager) doSingleQueryRangeRequest(now time.Time, r PrometheusQueryRangeRequest, channel chan map[string]interface{}, err_channel chan error) {
+func (pm *PrometheusManager) doSingleQueryRangeRequest(now time.Time, r PrometheusQueryRangeRequest, channel chan map[string]interface{}, errChannel chan error) {
 	result := &runtime.Unknown{}
 
 	if r.Start == "" {
@@ -202,7 +202,7 @@ func (pm *PrometheusManager) doSingleQueryRangeRequest(now time.Time, r Promethe
 		Into(result)
 
 	if err != nil {
-		err_channel <- err
+		errChannel <- err
 		channel <- nil
 		return
 	}
@@ -210,11 +210,11 @@ func (pm *PrometheusManager) doSingleQueryRangeRequest(now time.Time, r Promethe
 	var res map[string]interface{}
 	err = json.Unmarshal(result.Raw, &res)
 	if err != nil {
-		err_channel <- err
+		errChannel <- err
 		channel <- nil
 		return
 	}
 
-	err_channel <- nil
+	errChannel <- nil
 	channel <- res
 }
