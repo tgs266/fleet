@@ -8,7 +8,7 @@ import TableBody from './TableBody';
 import TableCell from './TableCell';
 import TableHeader from './TableHeader';
 import TableRow from './TableRow';
-import TitledCard from './TitledCard';
+import TitledCard from './Cards/TitledCard';
 
 export default function ConditionTable(props: { conditions: Condition[]; ignoreProbe?: boolean }) {
     return (

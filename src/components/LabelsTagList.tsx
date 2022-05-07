@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 import { Intent, Tag } from '@blueprintjs/core';
 import React from 'react';
 import { BaseMeta } from '../models/base';
@@ -10,8 +11,8 @@ export default function LabelsTagList(props: { obj: BaseMeta }) {
         <Label label="LABELS">
             <TagList>
                 {props.obj.labels &&
-                    Object.keys(props.obj.labels).map((key) => (
-                        <Tag key={key} intent={Intent.NONE} round>
+                    Object.keys(props.obj.labels).map((key, idx) => (
+                        <Tag key={idx} intent={Intent.NONE} round>
                             <Text small>
                                 {key}: {props.obj.labels[key]}
                             </Text>

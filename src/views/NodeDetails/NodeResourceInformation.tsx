@@ -3,7 +3,7 @@ import * as React from 'react';
 import LabeledText from '../../components/LabeledText';
 import SpinnerWrapper from '../../components/SpinnerWrapper';
 import Text from '../../components/Text/Text';
-import TitledCard from '../../components/TitledCard';
+import TitledCard from '../../components/Cards/TitledCard';
 import { NodeMeta } from '../../models/node.model';
 import { BytesTo } from '../../utils/conversions';
 

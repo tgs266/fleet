@@ -34,6 +34,7 @@ type Flags struct {
 	oidcClientId     *string
 	oidcClientSecret *string
 	host             *string
+	proxyPort        *string
 }
 
 func parseFlags() Flags {
@@ -44,6 +45,7 @@ func parseFlags() Flags {
 	oidcClientId := flag.String("oidc-client-id", "", "used for oidc authentication")
 	oidcClientSecret := flag.String("oidc-client-secret", "", "used for oidc authentication")
 	host := flag.String("host", "", "")
+	proxyPort := flag.String("proxyPort", "", "")
 
 	flag.Parse()
 	return Flags{
@@ -54,6 +56,7 @@ func parseFlags() Flags {
 		oidcClientId:     oidcClientId,
 		oidcClientSecret: oidcClientSecret,
 		host:             host,
+		proxyPort:        proxyPort,
 	}
 }
 
@@ -78,6 +81,19 @@ func setupBackend(flags Flags) *api.API {
 
 	app.RegisterMiddleware(cors.New())
 	app.RegisterMiddleware(recover.New())
+
+	// if manager.UsingInCluster() {
+	// 	_, _ = prom.NewClient(prom.Config{
+	// 		Address: "http://localhost:9090",
+	// 	})
+	// } else {
+	// 	proxyPort := *flags.proxyPort
+	// 	fmt.Println(proxyPort)
+	// 	pc, err := prom.NewClient(prom.Config{
+	// 		Address: "http://localhost:" + proxyPort + "/api/v1/namespaces/fleet/services/prometheus:web/proxy/",
+	// 	})
+	// 	fmt.Println(pc, err)
+	// }
 
 	app.Use("/ws", func(c *fiber.Ctx) error {
 		// IsWebSocketUpgrade returns true if the client

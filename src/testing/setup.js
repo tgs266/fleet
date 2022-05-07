@@ -1,3 +1,5 @@
+/* eslint-disable class-methods-use-this */
+/* eslint-disable import/no-extraneous-dependencies */
 import { TextEncoder, TextDecoder } from 'util';
 
 const nodeCrypto = require('crypto');
@@ -12,6 +14,32 @@ window.crypto = {
         return nodeCrypto.randomFillSync(buffer);
     },
 };
+global.ResizeObserver = require('resize-observer-polyfill');
+
+jest.mock('use-resize-observer', () => ({
+    __esModule: true,
+    default: jest.fn().mockImplementation(() => ({
+        observe: jest.fn(),
+        unobserve: jest.fn(),
+        disconnect: jest.fn(),
+    })),
+}));
+
+class ResizeObserver {
+    observe() {
+        // do nothing
+    }
+
+    unobserve() {
+        // do nothing
+    }
+
+    disconnect() {
+        // do nothing
+    }
+}
+
+window.ResizeObserver = ResizeObserver;
 
 global.TextEncoder = TextEncoder;
 global.TextDecoder = TextDecoder;

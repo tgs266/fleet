@@ -5,7 +5,7 @@ import Label from '../Label';
 import LabeledText from '../LabeledText';
 import TagList from '../TagList';
 import Text from '../Text/Text';
-import TitledCard from '../TitledCard';
+import TitledCard from '../Cards/TitledCard';
 import { FleetSprite } from './helper';
 
 // eslint-disable-next-line consistent-return

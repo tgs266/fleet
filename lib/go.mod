@@ -11,6 +11,7 @@ require (
 	github.com/coreos/go-oidc/v3 v3.1.0 // indirect
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
 	github.com/moby/spdystream v0.2.0 // indirect
+	github.com/prometheus/client_golang v1.12.1 // indirect
 	golang.org/x/crypto v0.0.0-20220214200702-86341886e292 // indirect
 )
 

@@ -5,7 +5,7 @@ import { Alignment, Button, MenuItem } from '@blueprintjs/core';
 import { IItemRendererProps, Select } from '@blueprintjs/select';
 import React from 'react';
 import Text from '../Text/Text';
-import TitledCard from '../TitledCard';
+import TitledCard from '../Cards/TitledCard';
 import FleetManager from './FleetManager';
 
 interface IFleetControlsProps {

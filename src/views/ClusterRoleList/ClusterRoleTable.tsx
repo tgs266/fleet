@@ -32,7 +32,7 @@ class ClusterRoleTable extends ResourceTableView<unknown, ClusterRoleMeta> {
         {
             key: 'name',
             columnName: 'Name',
-            sortableId: 'name',
+            sortableId: 'na]me',
             searchable: true,
             columnFunction: (row: ClusterRoleMeta) => (
                 <Link to={buildLinkToClusterRole(row.name)}>{row.name}</Link>

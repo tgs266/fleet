@@ -4,7 +4,7 @@ import { Button } from '@blueprintjs/core';
 import { IWithRouterProps, withRouter } from '../../utils/withRouter';
 import K8 from '../../services/k8.service';
 import { IBreadcrumb, NavContext } from '../../layouts/Navigation';
-import InfoCard from '../../components/InfoCard';
+import InfoCard from '../../components/Cards/InfoCard';
 import LabeledText from '../../components/LabeledText';
 import AgeText from '../../components/AgeText';
 import { Secret } from '../../models/secret.model';

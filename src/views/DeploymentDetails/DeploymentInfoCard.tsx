@@ -3,7 +3,7 @@ import { Colors } from '@blueprintjs/core';
 import * as React from 'react';
 import AgeText from '../../components/AgeText';
 import AnnotationsTagList from '../../components/AnnotationsTagList';
-import InfoCard from '../../components/InfoCard';
+import InfoCard from '../../components/Cards/InfoCard';
 import LabeledText from '../../components/LabeledText';
 import LabelsTagList from '../../components/LabelsTagList';
 import { Deployment } from '../../models/deployment.model';

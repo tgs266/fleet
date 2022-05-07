@@ -112,6 +112,13 @@ func (client *ClientManager) initClusterConfig() {
 
 }
 
+func (client *ClientManager) UsingInCluster() bool {
+	if client.clusterConfig != nil {
+		return true
+	}
+	return false
+}
+
 func (client *ClientManager) getK8Client(c *fiber.Ctx) (*kubernetes.K8Client, error) {
 
 	if client.TestMode {
@@ -141,17 +148,21 @@ func (client *ClientManager) getK8Client(c *fiber.Ctx) (*kubernetes.K8Client, er
 			return nil, errors.NewInvalidKubernetesCredentials()
 		}
 	} else if client.clusterConfig == nil {
-		kubeCfg, _ := parseKubeConfig(client.kubeConfigPath)
-		username := ""
-		for _, context := range kubeCfg.Contexts {
-			if context.Name == kubeCfg.CurrentContext {
-				username = context.Context.User
-			}
-		}
-		c.Response().Header.Add("Username", username)
+		client.parseUsernameFromConfig(c)
 	}
 
-	return k8client, k8client.Connect(cfg)
+	return k8client, k8client.Connect(cfg, client.UsingInCluster())
+}
+
+func (client *ClientManager) parseUsernameFromConfig(c *fiber.Ctx) {
+	kubeCfg, _ := parseKubeConfig(client.kubeConfigPath)
+	username := ""
+	for _, context := range kubeCfg.Contexts {
+		if context.Name == kubeCfg.CurrentContext {
+			username = context.Context.User
+		}
+	}
+	c.Response().Header.Add("Username", username)
 }
 
 func (client *ClientManager) getAuthInfo(c *fiber.Ctx) (*api.AuthInfo, error) {
@@ -255,7 +266,7 @@ func (client *ClientManager) RawClient(c *fiber.Ctx) (*raw.Client, error) {
 func (self *ClientManager) ValidateAuthInfo(cfg *rest.Config, authInfo *api.AuthInfo) (string, error) {
 	k8client := new(kubernetes.K8Client)
 
-	err := k8client.Connect(cfg)
+	err := k8client.Connect(cfg, self.UsingInCluster())
 	if err != nil && !self.TestAuthMode {
 		return "", err
 	}
