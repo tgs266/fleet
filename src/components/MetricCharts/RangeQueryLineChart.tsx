@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 /* eslint-disable no-continue */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable react/prefer-stateless-function */
@@ -74,8 +75,7 @@ class RangeQueryLineChartState extends React.Component<
         }
     }
 
-    buildDatasets = () => {
-        const data = this.props.data || this.state.data;
+    getLabels = (data: JSONObjectType<PrometheusResponse<PrometheusQueryResponse>>) => {
         const labels = [];
         for (const k of Object.keys(data)) {
             if (data[k]) {
@@ -87,6 +87,12 @@ class RangeQueryLineChartState extends React.Component<
                 }
             }
         }
+        return labels;
+    };
+
+    buildDatasets = () => {
+        const data = this.props.data || this.state.data;
+        const labels = this.getLabels(data);
 
         if (labels.length === 0) {
             return null;

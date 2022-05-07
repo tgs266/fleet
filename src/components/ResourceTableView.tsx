@@ -123,12 +123,10 @@ class ResourceTableView<P, T extends BaseMeta> extends React.Component<
 
     sortChange = (sort: TableSort) => {
         this.setState({ sort }, () => this.pull(null, null));
-        // this.pull(sort, null);
     };
 
     setPage = (page: number) => {
         this.setState({ page }, () => this.pull(null, null));
-        // this.pull(null, page);
     };
 
     onFilterChange = (filters: Filter[]) => {
