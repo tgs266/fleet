@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus
+  namespace: fleet-metrics
+  labels:
+    app.kubernetes.io/name: prometheus
+  annotations:
+    prometheus.io/scrape: 'true'
+spec:
+  ports:
+  - name: web
+    port: 80
+    targetPort: 9090
+    protocol: TCP
+  selector:
+    app.kubernetes.io/name: prometheus    

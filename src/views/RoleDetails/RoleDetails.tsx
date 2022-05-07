@@ -5,14 +5,14 @@ import { Button, Card, Intent, Tag } from '@blueprintjs/core';
 import { IWithRouterProps, withRouter } from '../../utils/withRouter';
 import K8 from '../../services/k8.service';
 import { IBreadcrumb, NavContext } from '../../layouts/Navigation';
-import InfoCard from '../../components/InfoCard';
+import InfoCard from '../../components/Cards/InfoCard';
 import LabeledText from '../../components/LabeledText';
 import Label from '../../components/Label';
 import Text from '../../components/Text/Text';
 import AgeText from '../../components/AgeText';
 import TagList from '../../components/TagList';
 import { Role } from '../../models/role.model';
-import TitledCard from '../../components/TitledCard';
+import TitledCard from '../../components/Cards/TitledCard';
 import RuleTable from '../../components/RuleTable';
 import EditableResource from '../../components/EditableResource';
 

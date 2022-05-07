@@ -11,7 +11,7 @@ import BasicDetails from './BasicDetails';
 import ContainerTable from './ContainerTable/ContainerTable';
 import K8 from '../../services/k8.service';
 import { IBreadcrumb, NavContext } from '../../layouts/Navigation';
-import TitledCard from '../../components/TitledCard';
+import TitledCard from '../../components/Cards/TitledCard';
 
 interface ICreateDeploymentState {
     deployment: CD;

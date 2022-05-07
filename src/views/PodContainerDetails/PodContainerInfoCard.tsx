@@ -2,7 +2,7 @@
 /* eslint-disable indent */
 import { Colors, Tag, Intent } from '@blueprintjs/core';
 import * as React from 'react';
-import InfoCard from '../../components/InfoCard';
+import InfoCard from '../../components/Cards/InfoCard';
 import Label from '../../components/Label';
 import LabeledText from '../../components/LabeledText';
 import PortTag from '../../components/Port/PortTag';

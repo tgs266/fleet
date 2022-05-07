@@ -1,6 +1,9 @@
 import { Icon } from '@blueprintjs/core';
 import { Tooltip2 } from '@blueprintjs/popover2';
 import * as React from 'react';
+import { BaseMeta } from '../../models/base';
+import AnnotationsTagList from '../AnnotationsTagList';
+import LabelsTagList from '../LabelsTagList';
 import TitledCard from './TitledCard';
 
 export default function InfoCard(props: {
@@ -10,6 +13,7 @@ export default function InfoCard(props: {
     title: string;
     statuColor?: string;
     statusHover?: string | JSX.Element;
+    object?: BaseMeta;
 }) {
     const getStatusIndicator = () => {
         if (props.statuColor === null) {
@@ -36,6 +40,16 @@ export default function InfoCard(props: {
             rightElement={props.rightElement}
         >
             {props.children}
+            {props.object && (
+                <>
+                    <div style={{ marginTop: '0.25em', display: 'flex' }}>
+                        <LabelsTagList obj={props.object} />
+                    </div>
+                    <div style={{ marginTop: '0.25em', display: 'flex' }}>
+                        <AnnotationsTagList obj={props.object} />
+                    </div>
+                </>
+            )}
         </TitledCard>
     );
 }

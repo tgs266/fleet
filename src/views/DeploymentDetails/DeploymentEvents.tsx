@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Card } from '@blueprintjs/core';
 import K8 from '../../services/k8.service';
-import TitledCard from '../../components/TitledCard';
+import TitledCard from '../../components/Cards/TitledCard';
 import Table from '../../components/Table';
 import TableHeader from '../../components/TableHeader';
 import TableCell from '../../components/TableCell';

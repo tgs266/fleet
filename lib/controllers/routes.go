@@ -60,7 +60,9 @@ func initializeRoleBindingRoutes(app *api.API) {
 
 func initializePromRoutes(app *api.API) {
 	app.Get("/api/v1/metrics/query", PrometheusQuery)
+	app.Post("/api/v1/metrics/query", PrometheusQuery)
 	app.Get("/api/v1/metrics/query/range", PrometheusQueryRange)
+	app.Post("/api/v1/metrics/query/range", PrometheusQueryRange)
 }
 
 func initializeSecretRoutes(app *api.API) {
