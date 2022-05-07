@@ -7,6 +7,7 @@ import (
 	"github.com/gofiber/websocket/v2"
 	"github.com/tgs266/fleet/lib/client"
 	"github.com/tgs266/fleet/lib/logging"
+	"github.com/valyala/fasthttp"
 )
 
 type API struct {
@@ -71,6 +72,10 @@ func (api *API) WebsocketPost(path string, handler func(c *websocket.Conn, clien
 
 func (api *API) Use(args ...interface{}) {
 	api.app.Use(args...)
+}
+
+func (api *API) AcquireCtx(fctx *fasthttp.RequestCtx) *fiber.Ctx {
+	return api.app.AcquireCtx(fctx)
 }
 
 func (api *API) Listen(host string) {
