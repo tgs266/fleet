@@ -2,7 +2,8 @@ import * as React from 'react';
 import { Outlet, useLocation } from 'react-router';
 import Auth from '../services/auth.service';
 import Navigation, { NavContextProvider } from './Navigation';
-import SideNavigation from './SideNavigation';
+import Sidebar from './Sidebar';
+// import SideNavigation from './SideNavigation';
 
 function Layout() {
     const location = useLocation();
@@ -13,9 +14,9 @@ function Layout() {
     return (
         <div className="fleet fleet-blueprint-theme">
             <div style={{ display: 'flex', width: '100%' }} id="main-container">
-                <SideNavigation />
+                <Sidebar />
                 <NavContextProvider>
-                    <div style={{ width: 'calc(100% - 4em)', flexGrow: 1 }}>
+                    <div style={{ flexGrow: 1 }}>
                         <Navigation />
                         <Outlet />
                     </div>
