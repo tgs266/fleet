@@ -23,6 +23,10 @@ input::-webkit-inner-spin-button {
   margin: 0;
 }
 
+.block {
+    display: block !important
+}
+
 /* Firefox */
 input[type=number] {
   -moz-appearance: textfield;
@@ -143,14 +147,40 @@ html {
 
     .sidebar {
         background-color: @dark-gray5;
-        width: 4em !important;
         height: 100vh;
         position: sticky;
         top: 0;
         display: flex;
         flex-flow: column;
-        align-items: center;
+        // align-items: center;
         z-index: 101;
+
+        .sidebar-hover {
+            user-select: none;
+            -webkit-user-select: none;
+            cursor: pointer;
+            color: @light-gray5
+        }
+
+        .sidebar-hover.sidebar-disabled {
+            cursor: default;
+        }
+
+        .sidebar-hover:hover {
+            background-color: @dark-gray3;
+        }
+
+        .sidebar-parent-active {
+            background-color: @dark-gray3;
+        }
+
+        .sidebar-child {
+            color: @gray3
+        }
+
+        .sidebar-child.active {
+            color: @light-gray5
+        }
 
         .sidebar-icon-logo {
             color: white;

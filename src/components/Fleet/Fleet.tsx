@@ -58,7 +58,7 @@ export default function Fleet() {
         setState({
             breadcrumbs: [
                 {
-                    text: 'Home',
+                    text: 'Fleet',
                 },
             ],
             menu: null,
