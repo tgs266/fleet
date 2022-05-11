@@ -30,3 +30,8 @@ func TestDoRangeQuery(t *testing.T) {
 	ctx := app.AcquireCtx(&fasthttp.RequestCtx{})
 	client.DoQueryRange(ctx)
 }
+
+func TestGetAlerts(t *testing.T) {
+	_, client := setup()
+	client.GetAlerts()
+}

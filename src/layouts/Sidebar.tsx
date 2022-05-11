@@ -4,6 +4,7 @@ import { Intent, Tag } from '@blueprintjs/core';
 import { useSpring, animated, config } from '@react-spring/web';
 import SidebarItem, { SidebarItemProps } from './SidebarItem';
 import Auth from '../services/auth.service';
+import K8 from '../services/k8.service';
 
 const SIDEBAR_ITEM_PROPS: SidebarItemProps[] = [
     {
@@ -20,6 +21,13 @@ const SIDEBAR_ITEM_PROPS: SidebarItemProps[] = [
         type: 'button',
         title: 'Fleet',
         target: '/fleet',
+    },
+    {
+        id: 'nodes',
+        icon: 'diagram-tree',
+        type: 'button',
+        title: 'Nodes',
+        target: '/nodes',
     },
     {
         id: 'namespaces',
@@ -114,51 +122,75 @@ export default function Sidebar() {
     }));
     const [open, setOpen] = useState(false);
     const [usingAuth, setUsingAuth] = React.useState(false);
+    const [clusterName, setClusterName] = React.useState('');
 
     React.useEffect(() => {
         Auth.using().then((r) => {
             setUsingAuth(r.data.usingAuth);
         });
+        K8.cluster.getCurrentClusterName().then((r) => {
+            setClusterName(r.data);
+        });
     }, []);
     api.start({ width: open ? '15em' : '3em', treeOpacity: open ? 1 : 0 });
-
     return (
-        <animated.div
-            onMouseEnter={() => setOpen(true)}
-            onMouseLeave={() => setOpen(false)}
-            className="sidebar"
-            style={{ width: styles.width, overflow: 'hidden' }}
-        >
-            {SIDEBAR_ITEM_PROPS.map((sp) => (
-                <SidebarItem key={sp.id} {...sp} opacity={styles.treeOpacity} isExpanded={open} />
-            ))}
-            <div style={{ flexGrow: 1 }} />
-            <SidebarItem
-                sideIcon="info-sign"
-                id="component"
-                type="component"
-                icon="person"
-                opacity={styles.treeOpacity}
-                isExpanded={open}
-                hover={
-                    <div>
-                        <div>
-                            Authentication:
-                            <Tag
-                                style={{ marginLeft: '0.5em' }}
-                                intent={usingAuth ? Intent.SUCCESS : Intent.DANGER}
-                            >
-                                {usingAuth ? 'ENABLED' : 'DISABLED'}
-                            </Tag>
-                        </div>
-                        <div style={{ marginTop: '0.25em' }}>
-                            Username: {localStorage.getItem('username')}
-                        </div>
-                    </div>
-                }
+        <div style={{ position: 'fixed', zIndex: 1000000 }}>
+            <animated.div
+                onMouseEnter={() => setOpen(true)}
+                onMouseLeave={() => setOpen(false)}
+                className="sidebar"
+                style={{
+                    width: styles.width,
+                    overflow: 'hidden',
+                    position: 'absolute',
+                    zIndex: 1000,
+                }}
             >
-                User Details
-            </SidebarItem>
-        </animated.div>
+                <SidebarItem
+                    id="cluster"
+                    type="button"
+                    icon="desktop"
+                    opacity={styles.treeOpacity}
+                    isExpanded={open}
+                    title={clusterName}
+                    sideIcon="exchange"
+                />
+                {SIDEBAR_ITEM_PROPS.map((sp) => (
+                    <SidebarItem
+                        key={sp.id}
+                        {...sp}
+                        opacity={styles.treeOpacity}
+                        isExpanded={open}
+                    />
+                ))}
+                <div style={{ flexGrow: 1 }} />
+                <SidebarItem
+                    sideIcon="info-sign"
+                    id="component"
+                    type="component"
+                    icon="person"
+                    opacity={styles.treeOpacity}
+                    isExpanded={open}
+                    hover={
+                        <div>
+                            <div>
+                                Authentication:
+                                <Tag
+                                    style={{ marginLeft: '0.5em' }}
+                                    intent={usingAuth ? Intent.SUCCESS : Intent.DANGER}
+                                >
+                                    {usingAuth ? 'ENABLED' : 'DISABLED'}
+                                </Tag>
+                            </div>
+                            <div style={{ marginTop: '0.25em' }}>
+                                Username: {localStorage.getItem('username')}
+                            </div>
+                        </div>
+                    }
+                >
+                    User Details
+                </SidebarItem>
+            </animated.div>
+        </div>
     );
 }

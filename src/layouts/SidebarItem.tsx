@@ -102,6 +102,14 @@ export default function SidebarItem(props: SidebarItemProps) {
                             iconProps={{ color: Colors.LIGHT_GRAY5, size: 20 }}
                         />
                     )}
+                    {props.type === 'button' && props.sideIcon && (
+                        <Icon
+                            style={{ marginRight: '10px' }}
+                            color={Colors.LIGHT_GRAY5}
+                            size={20}
+                            icon={props.sideIcon}
+                        />
+                    )}
                 </animated.div>
             </div>
             {props.type === 'menu' && (

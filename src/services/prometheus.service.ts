@@ -4,9 +4,10 @@ import { JSONObjectType } from '../models/json.model';
 import {
     MetricsQueryName,
     MetricsQueryOptions,
-    PrometheusQueryResponse,
+    PrometheusRangeQueryResponse,
     PrometheusRangeQuery,
     PrometheusResponse,
+    PrometheusQueryResponse,
 } from '../models/prometheus.model';
 import api from './axios.service';
 import K8 from './k8.service';
@@ -16,14 +17,14 @@ export default class Prometheus {
 
     static queryRange(
         query: JSONObjectType<PrometheusRangeQuery>
-    ): Promise<AxiosResponse<JSONObjectType<PrometheusResponse<PrometheusQueryResponse>>>> {
+    ): Promise<AxiosResponse<JSONObjectType<PrometheusResponse<PrometheusRangeQueryResponse>>>> {
         return api.post('/api/v1/metrics/query/range', query);
     }
 
     static pollQueryRange(
         query: JSONObjectType<PrometheusRangeQuery>,
         callback: (
-            resp: AxiosResponse<JSONObjectType<PrometheusResponse<PrometheusQueryResponse>>>
+            resp: AxiosResponse<JSONObjectType<PrometheusResponse<PrometheusRangeQueryResponse>>>
         ) => void,
         timerCallback: (timer: NodeJS.Timer) => void
     ) {
@@ -38,11 +39,69 @@ export default class Prometheus {
         });
     }
 
-    static buildRangeQuery(
+    static query(
+        query: JSONObjectType<PrometheusRangeQuery>
+    ): Promise<AxiosResponse<JSONObjectType<PrometheusResponse<PrometheusQueryResponse>>>> {
+        return api.post('/api/v1/metrics/query', query);
+    }
+
+    static pollQuery(
+        query: JSONObjectType<PrometheusRangeQuery>,
+        callback: (
+            resp: AxiosResponse<JSONObjectType<PrometheusResponse<PrometheusQueryResponse>>>
+        ) => void,
+        timerCallback: (timer: NodeJS.Timer) => void
+    ) {
+        this.query(query).then((resp1) => {
+            callback(resp1);
+            const timer = K8.pollFunction(30 * 1000, () => {
+                this.query(query).then((resp2) => {
+                    callback(resp2);
+                });
+            });
+            timerCallback(timer);
+        });
+    }
+
+    static buildQuery(
         queryName: MetricsQueryName,
         options: MetricsQueryOptions
     ): PrometheusRangeQuery {
         switch (options.resource) {
+            case 'cluster': {
+                switch (queryName) {
+                    case 'cpuUsage':
+                        return {
+                            query: `sum(rate(node_cpu_seconds_total{kubernetes_node=~"${options.name}", mode=~"user|system"}[${Prometheus.accuracy}])) by (kubernetes_node)`,
+                        };
+                    case 'cpuCapacity':
+                        return {
+                            query: `sum(kube_node_status_capacity{node=~"${options.name}", resource="cpu"})`,
+                        };
+                    case 'memoryUsage':
+                        return {
+                            query: `sum(
+                                node_memory_MemTotal_bytes - (node_memory_MemFree_bytes + node_memory_Buffers_bytes + node_memory_Cached_bytes)
+                              ) by (kubernetes_node)`.replace(
+                                '_bytes',
+                                `_bytes{kubernetes_node=~"${options.name}"}`
+                            ),
+                        };
+                    case 'memoryCapacity':
+                        return {
+                            query: `sum(kube_node_status_capacity{node=~"${options.name}", resource="memory"})`,
+                        };
+                    case 'podUsage':
+                        return {
+                            query: `sum({__name__=~"kubelet_running_pod_count|kubelet_running_pods"}) by (instance)`,
+                        };
+                    case 'podCapacity':
+                        return {
+                            query: `sum(kube_node_status_capacity{node=~"${options.name}", resource="pods"})`,
+                        };
+                }
+                break;
+            }
             case 'node': {
                 switch (queryName) {
                     case 'memoryUsage': {

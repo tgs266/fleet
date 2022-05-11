@@ -119,6 +119,14 @@ func (client *ClientManager) UsingInCluster() bool {
 	return false
 }
 
+func (client *ClientManager) GetClusterName() (string, error) {
+	if client.UsingInCluster() {
+		return client.clusterConfig.Host, nil
+	}
+	kubeCfg, _ := parseKubeConfig(client.kubeConfigPath)
+	return kubeCfg.CurrentContext, nil
+}
+
 func (client *ClientManager) getK8Client(c *fiber.Ctx) (*kubernetes.K8Client, error) {
 
 	if client.TestMode {

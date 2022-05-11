@@ -54,6 +54,9 @@ api.interceptors.response.use(
         return response;
     },
     (error: AxiosError<FleetError>) => {
+        if (error.config.url.includes('metrics')) {
+            return;
+        }
         if (error.response.data.status === 'KUBERNETES_CONFIG') {
             const containerElement = document.createElement('div');
             document.body.appendChild(containerElement);

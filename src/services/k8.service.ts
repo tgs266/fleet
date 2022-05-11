@@ -14,6 +14,7 @@ import ClusterRoles from './k8/clusterrole.service';
 import RoleBindings from './k8/rolebinding.service';
 import ClusterRoleBindings from './k8/clusterrolebinding.service';
 import Secrets from './k8/secret.service';
+import Cluster from './k8/cluster.service';
 
 export default class K8 {
     static deployments = Deployments;
@@ -41,6 +42,8 @@ export default class K8 {
     static clusterRoleBindings = ClusterRoleBindings;
 
     static secrets = Secrets;
+
+    static cluster = Cluster;
 
     static getFilterProperties(): Promise<AxiosResponse<JSONObjectType<string>>> {
         return api.get('/api/v1/filters/properties');

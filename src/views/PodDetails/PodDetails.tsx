@@ -18,7 +18,7 @@ import TabControlBar from '../../components/TabControlBar';
 import Details from './Tabs/Details';
 import Prometheus from '../../services/prometheus.service';
 import { JSONObjectType } from '../../models/json.model';
-import { PrometheusQueryResponse, PrometheusResponse } from '../../models/prometheus.model';
+import { PrometheusRangeQueryResponse, PrometheusResponse } from '../../models/prometheus.model';
 import Metrics from './Tabs/Metrics';
 
 interface IPodDetailsState {
@@ -26,7 +26,7 @@ interface IPodDetailsState {
     pollId: NodeJS.Timer;
     metricsPollId: NodeJS.Timer;
     selectedTab: string;
-    metricsData: JSONObjectType<PrometheusResponse<PrometheusQueryResponse>>;
+    metricsData: JSONObjectType<PrometheusResponse<PrometheusRangeQueryResponse>>;
 }
 
 class PodDetails extends React.Component<IWithRouterProps, IPodDetailsState> {
@@ -61,22 +61,22 @@ class PodDetails extends React.Component<IWithRouterProps, IPodDetailsState> {
         });
         Prometheus.pollQueryRange(
             {
-                memoryUsage: Prometheus.buildRangeQuery('memoryUsage', {
+                memoryUsage: Prometheus.buildQuery('memoryUsage', {
                     resource: 'pod',
                     name: this.props.params.podName,
                     namespace: this.props.params.namespace,
                 }),
-                cpuUsage: Prometheus.buildRangeQuery('cpuUsage', {
+                cpuUsage: Prometheus.buildQuery('cpuUsage', {
                     resource: 'pod',
                     name: this.props.params.podName,
                     namespace: this.props.params.namespace,
                 }),
-                networkTransmitted: Prometheus.buildRangeQuery('networkTransmitted', {
+                networkTransmitted: Prometheus.buildQuery('networkTransmitted', {
                     resource: 'pod',
                     name: this.props.params.podName,
                     namespace: this.props.params.namespace,
                 }),
-                networkRecieved: Prometheus.buildRangeQuery('networkRecieved', {
+                networkRecieved: Prometheus.buildQuery('networkRecieved', {
                     resource: 'pod',
                     name: this.props.params.podName,
                     namespace: this.props.params.namespace,

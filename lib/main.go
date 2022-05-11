@@ -82,19 +82,6 @@ func setupBackend(flags Flags) *api.API {
 	app.RegisterMiddleware(cors.New())
 	app.RegisterMiddleware(recover.New())
 
-	// if manager.UsingInCluster() {
-	// 	_, _ = prom.NewClient(prom.Config{
-	// 		Address: "http://localhost:9090",
-	// 	})
-	// } else {
-	// 	proxyPort := *flags.proxyPort
-	// 	fmt.Println(proxyPort)
-	// 	pc, err := prom.NewClient(prom.Config{
-	// 		Address: "http://localhost:" + proxyPort + "/api/v1/namespaces/fleet/services/prometheus:web/proxy/",
-	// 	})
-	// 	fmt.Println(pc, err)
-	// }
-
 	app.Use("/ws", func(c *fiber.Ctx) error {
 		// IsWebSocketUpgrade returns true if the client
 		// requested upgrade to the WebSocket protocol.

@@ -12,7 +12,7 @@ import { TableSort } from '../../components/SortableTableHeaderCell';
 import { Pagination } from '../../models/component.model';
 import Prometheus from '../../services/prometheus.service';
 import { JSONObjectType } from '../../models/json.model';
-import { PrometheusQueryResponse, PrometheusResponse } from '../../models/prometheus.model';
+import { PrometheusRangeQueryResponse, PrometheusResponse } from '../../models/prometheus.model';
 import TabControlBar from '../../components/TabControlBar';
 import Details from './Tabs/Details';
 import Metrics from './Tabs/Metrics';
@@ -23,7 +23,7 @@ interface INodeDetailsState {
     pagination: Pagination;
     pollId: NodeJS.Timer;
     metricsPollId: NodeJS.Timer;
-    metricsData: JSONObjectType<PrometheusResponse<PrometheusQueryResponse>>;
+    metricsData: JSONObjectType<PrometheusResponse<PrometheusRangeQueryResponse>>;
     selectedTab: string;
 }
 
@@ -60,19 +60,19 @@ class NodeDetails extends React.Component<IWithRouterProps, INodeDetailsState> {
         });
         Prometheus.pollQueryRange(
             {
-                memoryUsage: Prometheus.buildRangeQuery('memoryUsage', {
+                memoryUsage: Prometheus.buildQuery('memoryUsage', {
                     resource: 'node',
                     name: this.props.params.nodeName,
                 }),
-                cpuUsage: Prometheus.buildRangeQuery('cpuUsage', {
+                cpuUsage: Prometheus.buildQuery('cpuUsage', {
                     resource: 'node',
                     name: this.props.params.nodeName,
                 }),
-                networkTransmitted: Prometheus.buildRangeQuery('networkTransmitted', {
+                networkTransmitted: Prometheus.buildQuery('networkTransmitted', {
                     resource: 'node',
                     name: this.props.params.nodeName,
                 }),
-                networkRecieved: Prometheus.buildRangeQuery('networkRecieved', {
+                networkRecieved: Prometheus.buildQuery('networkRecieved', {
                     resource: 'node',
                     name: this.props.params.nodeName,
                 }),
