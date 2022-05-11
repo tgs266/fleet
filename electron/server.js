@@ -6,6 +6,7 @@ const net = require('net');
 const homedir = require('os').homedir();
 const bodyParser = require('body-parser');
 const k8s = require('@kubernetes/client-node');
+const { default: axios } = require('axios');
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -63,7 +64,14 @@ app.post('/api/v1/electron/connect', (req, res) => {
                         );
                     });
                     server.listen(9095, '127.0.0.1');
-                    res.json('connected');
+                    axios
+                        .post('http://127.0.0.1:9095/api/v1/auth/login', { configFile: kubeconfig })
+                        .then((r2) => {
+                            res.json(r2.data);
+                        })
+                        .catch((r3) => {
+                            res.json(r3);
+                        });
                     return;
                 }
             }
