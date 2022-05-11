@@ -60,7 +60,7 @@ func TestConnectToClusterRoleBinding(t *testing.T) {
 
 func TestDisconnectToRoleBinding(t *testing.T) {
 	app := setupApp()
-	app.Put("/:namespace/:name/bind", ConnectToRoleBinding)
+	app.Put("/:namespace/:name/bind", DisconnectRoleBinding)
 
 	data := serviceaccount.BindRequest{
 		TargetRoleName:      "asdf",
@@ -76,7 +76,7 @@ func TestDisconnectToRoleBinding(t *testing.T) {
 
 func TestDisconnectToClusterRoleBinding(t *testing.T) {
 	app := setupApp()
-	app.Put("/:namespace/:name/bind", ConnectToClusterRoleBinding)
+	app.Put("/:namespace/:name/bind", DisconnectClusterRoleBinding)
 
 	data := serviceaccount.BindRequest{
 		TargetRoleName: "asdf",
