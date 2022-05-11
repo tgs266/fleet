@@ -356,6 +356,7 @@ export const generateNode = (name: string = 'test'): Node => ({
     createdAt: 0,
     labels: {
         asdf: 'adsf',
+        role_master: true,
     },
     annotations: { asdf: 'asdf' },
     uid: name,

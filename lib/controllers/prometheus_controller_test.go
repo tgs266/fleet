@@ -51,3 +51,12 @@ func TestPromPost(t *testing.T) {
 
 	app.Test(req)
 }
+
+func TestPromAlerts(t *testing.T) {
+	app := setupApp()
+	app.Get("/query", PrometheusQuery)
+
+	req := httptest.NewRequest("GET", "/query", nil)
+
+	app.Test(req)
+}

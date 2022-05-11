@@ -107,7 +107,10 @@ class RangeQueryLineChart extends React.Component<
                 continue;
             }
             for (const { values, metric } of data[key].data.result) {
-                const label = metric[this.props.labels[key]] as string;
+                let label = metric[this.props.labels[key]] as string;
+                if (!label) {
+                    label = this.props.labels[key];
+                }
                 datasets.push({
                     label,
                     data: values.map((value) => precisionRound(Number(value[1]), 3)),

@@ -1,8 +1,8 @@
 import React from 'react';
-import { Card } from '@blueprintjs/core';
 import RangeQueryLineChart from '../../../components/MetricCharts/RangeQueryLineChart';
 import { JSONObjectType } from '../../../models/json.model';
 import { PrometheusRangeQueryResponse, PrometheusResponse } from '../../../models/prometheus.model';
+import TitledCard from '../../../components/Cards/TitledCard';
 
 export default function Metrics(props: {
     metricsData: JSONObjectType<PrometheusResponse<PrometheusRangeQueryResponse>>;
@@ -18,40 +18,46 @@ export default function Metrics(props: {
                     marginBottom: '1em',
                 }}
             >
-                <Card style={{ width: 'calc(50% - 0.5em)', marginRight: '0.5em' }}>
+                <TitledCard
+                    titleMarginBottom="0"
+                    title="CPU Usage"
+                    style={{ width: 'calc(50% - 0.5em)', marginLeft: '0.5em' }}
+                >
+                    <RangeQueryLineChart
+                        data={{
+                            cpuUsage: metricsData.cpuUsage,
+                        }}
+                        height="215px"
+                        labels={{ cpuUsage: 'CPU Usage' }}
+                    />
+                </TitledCard>
+                <TitledCard
+                    titleMarginBottom="0"
+                    title="Memory Usage"
+                    style={{ width: 'calc(50% - 0.5em)', marginRight: '0.5em' }}
+                >
                     <RangeQueryLineChart
                         data={{
                             memoryUsage: metricsData.memoryUsage,
                         }}
                         labels={{ memoryUsage: 'Memory Usage' }}
-                        height={150}
+                        height="215px"
                         bytes
                     />
-                </Card>
-                <Card style={{ width: 'calc(50% - 0.5em)', marginLeft: '0.5em' }}>
-                    <RangeQueryLineChart
-                        data={{
-                            cpuUsage: metricsData.cpuUsage,
-                        }}
-                        height={150}
-                        labels={{ cpuUsage: 'CPU Usage' }}
-                    />
-                </Card>
+                </TitledCard>
             </div>
-            <Card style={{ marginBottom: '1em' }}>
+            <TitledCard titleMarginBottom="0" title="Network Usage" style={{ marginBottom: '1em' }}>
                 <RangeQueryLineChart
                     data={{
                         networkRecieved: metricsData.networkRecieved,
                         networkTransmitted: metricsData.networkTransmitted,
                     }}
-                    height={100}
-                    labels={{
-                        networkRecieved: 'Bytes Recieved',
-                        networkTransmitted: 'Bytes Transmitted',
-                    }}
+                    height="215px"
+                    labels={{ networkRecieved: 'Recieved', networkTransmitted: 'Transmitted' }}
                     bytes
+                    legend
                 />
-            </Card>
+            </TitledCard>
         </>
     );
 }
