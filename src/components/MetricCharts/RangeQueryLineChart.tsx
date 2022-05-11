@@ -159,7 +159,7 @@ class RangeQueryLineChart extends React.Component<
         }
 
         return (
-            <div>
+            <div style={{ height: this.props.height }}>
                 <Line
                     height={this.props.height}
                     data={ds}
@@ -191,6 +191,7 @@ class RangeQueryLineChart extends React.Component<
                         },
                         scales: {
                             x: {
+                                offset: true,
                                 ticks: {
                                     callback: skipTicksCallback(3),
                                     maxRotation: 20,
@@ -204,6 +205,8 @@ class RangeQueryLineChart extends React.Component<
                                 },
                             },
                         },
+                        responsive: true,
+                        maintainAspectRatio: false,
                     }}
                 />
             </div>

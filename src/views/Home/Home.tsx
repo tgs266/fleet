@@ -1,7 +1,9 @@
 /* eslint-disable no-restricted-syntax */
-import { Card } from '@blueprintjs/core';
 import * as React from 'react';
+import TitledCard from '../../components/Cards/TitledCard';
+import FillErrorBoundary from '../../components/FillErrorBoundary';
 import RangeQueryLineChart from '../../components/MetricCharts/RangeQueryLineChart';
+import NoMetrics from '../../components/NoMetrics';
 import { useNavContext } from '../../layouts/Navigation';
 import K8 from '../../services/k8.service';
 import Prometheus from '../../services/prometheus.service';
@@ -108,6 +110,17 @@ export default function Home() {
         return null;
     }
 
+    const getMetricsChart = (name: string, label: string, bytes: boolean) => {
+        if (metrics[name]) {
+            const data: any = {};
+            const labels: any = {};
+            data[name] = metrics[name];
+            labels[name] = label;
+            return <RangeQueryLineChart data={data} height="215px" labels={labels} bytes={bytes} />;
+        }
+        return <NoMetrics height="215px" />;
+    };
+
     return (
         <div style={{ margin: '1em' }}>
             <div
@@ -118,38 +131,35 @@ export default function Home() {
                     marginBottom: '1em',
                 }}
             >
-                <Card style={{ width: 'calc(50% - 0.5em)', marginRight: '0.5em' }}>
-                    <RangeQueryLineChart
-                        data={{
-                            cpuUsage: metrics.cpuUsage,
-                        }}
-                        height={150}
-                        labels={{ cpuUsage: 'kubernetes_node' }}
-                        title="CPU Core Usage"
-                    />
-                </Card>
-                <Card style={{ width: 'calc(50% - 0.5em)', marginLeft: '0.5em' }}>
-                    <RangeQueryLineChart
-                        data={{
-                            memoryUsage: metrics.memoryUsage,
-                        }}
-                        labels={{ memoryUsage: 'kubernetes_node' }}
-                        height={150}
-                        title="Memory Usage"
-                        bytes
-                    />
-                </Card>
+                <TitledCard
+                    titleMarginBottom="0"
+                    title="CPU Core Usage"
+                    style={{ width: 'calc(50% - 0.5em)', marginRight: '0.5em' }}
+                >
+                    {getMetricsChart('cpuUsage', 'kubernetes_node', false)}
+                </TitledCard>
+                <TitledCard
+                    titleMarginBottom="0"
+                    title="Memory Usage"
+                    style={{ width: 'calc(50% - 0.5em)', marginLeft: '0.5em' }}
+                >
+                    {getMetricsChart('memoryUsage', 'kubernetes_node', true)}
+                </TitledCard>
             </div>
-            <ResourceCard
-                metrics={{
-                    cpuUsage: metrics.cpuUsage,
-                    cpuCapacity: metrics.cpuCapacity,
-                    memoryUsage: metrics.memoryUsage,
-                    memoryCapacity: metrics.memoryCapacity,
-                    podUsage: metrics.podUsage,
-                    podCapacity: metrics.podCapacity,
-                }}
-            />
+            <TitledCard title="Resource Allocations">
+                <FillErrorBoundary errorComponent={<NoMetrics />}>
+                    <ResourceCard
+                        metrics={{
+                            cpuUsage: metrics.cpuUsage,
+                            cpuCapacity: metrics.cpuCapacity,
+                            memoryUsage: metrics.memoryUsage,
+                            memoryCapacity: metrics.memoryCapacity,
+                            podUsage: metrics.podUsage,
+                            podCapacity: metrics.podCapacity,
+                        }}
+                    />
+                </FillErrorBoundary>
+            </TitledCard>
         </div>
     );
 }
