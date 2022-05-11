@@ -1,11 +1,11 @@
 import React from 'react';
 import { Card } from '@blueprintjs/core';
-import RangeQueryLineChartState from '../../../components/MetricCharts/RangeQueryLineChart';
+import RangeQueryLineChart from '../../../components/MetricCharts/RangeQueryLineChart';
 import { JSONObjectType } from '../../../models/json.model';
-import { PrometheusQueryResponse, PrometheusResponse } from '../../../models/prometheus.model';
+import { PrometheusRangeQueryResponse, PrometheusResponse } from '../../../models/prometheus.model';
 
 export default function Metrics(props: {
-    metricsData: JSONObjectType<PrometheusResponse<PrometheusQueryResponse>>;
+    metricsData: JSONObjectType<PrometheusResponse<PrometheusRangeQueryResponse>>;
 }) {
     const { metricsData } = props;
     return (
@@ -19,7 +19,7 @@ export default function Metrics(props: {
                 }}
             >
                 <Card style={{ width: 'calc(50% - 0.5em)', marginRight: '0.5em' }}>
-                    <RangeQueryLineChartState
+                    <RangeQueryLineChart
                         data={{
                             memoryUsage: metricsData.memoryUsage,
                         }}
@@ -29,7 +29,7 @@ export default function Metrics(props: {
                     />
                 </Card>
                 <Card style={{ width: 'calc(50% - 0.5em)', marginLeft: '0.5em' }}>
-                    <RangeQueryLineChartState
+                    <RangeQueryLineChart
                         data={{
                             cpuUsage: metricsData.cpuUsage,
                         }}
@@ -39,7 +39,7 @@ export default function Metrics(props: {
                 </Card>
             </div>
             <Card style={{ marginBottom: '1em' }}>
-                <RangeQueryLineChartState
+                <RangeQueryLineChart
                     data={{
                         networkRecieved: metricsData.networkRecieved,
                         networkTransmitted: metricsData.networkTransmitted,

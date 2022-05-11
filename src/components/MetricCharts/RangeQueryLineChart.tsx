@@ -9,7 +9,7 @@ import 'chartjs-adapter-date-fns';
 import { Line } from 'react-chartjs-2';
 import { JSONObjectType } from '../../models/json.model';
 import {
-    PrometheusQueryResponse,
+    PrometheusRangeQueryResponse,
     PrometheusRangeQuery,
     PrometheusResponse,
 } from '../../models/prometheus.model';
@@ -17,24 +17,26 @@ import Prometheus from '../../services/prometheus.service';
 import skipTicksCallback, { COLORS } from '../../utils/charts';
 import K8 from '../../services/k8.service';
 import { BytesTo } from '../../utils/conversions';
+import precisionRound from '../../utils/numbers';
 
 export interface IRangeQueryLineChartProps {
     queries?: JSONObjectType<PrometheusRangeQuery>;
     labels: JSONObjectType<string>;
-    data?: JSONObjectType<PrometheusResponse<PrometheusQueryResponse>>;
+    data?: JSONObjectType<PrometheusResponse<PrometheusRangeQueryResponse>>;
     unit?: string;
     bytes?: boolean;
     height?: string | number;
     title?: string;
     lineWidth?: number;
+    legend?: boolean;
 }
 
 interface IRangeQueryLineChartState {
-    data: JSONObjectType<PrometheusResponse<PrometheusQueryResponse>>;
+    data: JSONObjectType<PrometheusResponse<PrometheusRangeQueryResponse>>;
     pollId: NodeJS.Timer;
 }
 
-class RangeQueryLineChartState extends React.Component<
+class RangeQueryLineChart extends React.Component<
     IRangeQueryLineChartProps,
     IRangeQueryLineChartState
 > {
@@ -75,7 +77,7 @@ class RangeQueryLineChartState extends React.Component<
         }
     }
 
-    getLabels = (data: JSONObjectType<PrometheusResponse<PrometheusQueryResponse>>) => {
+    getLabels = (data: JSONObjectType<PrometheusResponse<PrometheusRangeQueryResponse>>) => {
         const labels = [];
         for (const k of Object.keys(data)) {
             if (data[k]) {
@@ -104,17 +106,22 @@ class RangeQueryLineChartState extends React.Component<
             if (!data[key]) {
                 continue;
             }
-            const { values } = data[key].data.result[0];
-            datasets.push({
-                label: this.props.labels[key],
-                data: values.map((value) => Number(value[1])),
-                backgroundColor: COLORS[i],
-                borderColor: COLORS[i],
-                pointRadius: 0,
-                tension: 0.4,
-                borderWidth: this.props.lineWidth || 2,
-            });
-            i += 1;
+            for (const { values, metric } of data[key].data.result) {
+                const label = metric[this.props.labels[key]] as string;
+                datasets.push({
+                    label,
+                    data: values.map((value) => precisionRound(Number(value[1]), 3)),
+                    backgroundColor: COLORS[i],
+                    borderColor: COLORS[i],
+                    pointRadius: 0,
+                    tension: 0.4,
+                    borderWidth: this.props.lineWidth || 2,
+                });
+                i += 1;
+                if (i > COLORS.length) {
+                    i = 0;
+                }
+            }
         }
 
         return {
@@ -167,7 +174,18 @@ class RangeQueryLineChartState extends React.Component<
                                     },
                                 },
                             },
+                            legend: {
+                                position: 'right',
+                                align: 'start',
+                                display: this.props.legend || false,
+                            },
                             title: {
+                                padding: 5,
+                                font: {
+                                    size: 16,
+                                    family: 'Gidole',
+                                },
+                                display: true,
                                 text: this.props.title,
                             },
                         },
@@ -193,4 +211,4 @@ class RangeQueryLineChartState extends React.Component<
     }
 }
 
-export default RangeQueryLineChartState;
+export default RangeQueryLineChart;

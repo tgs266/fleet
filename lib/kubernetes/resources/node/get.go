@@ -2,6 +2,7 @@ package node
 
 import (
 	"context"
+	"strings"
 
 	"github.com/tgs266/fleet/lib/errors"
 	"github.com/tgs266/fleet/lib/kubernetes"
@@ -20,6 +21,33 @@ func Get(K8 *kubernetes.K8Client, name string, dataSelector *types.DataSelector)
 		return nil, errors.ParseInternalError(err)
 	}
 
+	return finalizeNodeBuild(K8, dataSelector, node)
+}
+
+func GetMaster(K8 *kubernetes.K8Client, dataSelector *types.DataSelector) (*Node, error) {
+	nodes, err := K8.K8.CoreV1().Nodes().List(context.TODO(), metaV1.ListOptions{})
+
+	if err != nil {
+		return nil, errors.ParseInternalError(err)
+	}
+
+	var node *v1.Node
+	for _, n := range nodes.Items {
+		for l, _ := range n.Labels {
+			if strings.Contains(l, "roles") && strings.Contains(l, "master") {
+				node = &n
+				break
+			}
+		}
+	}
+
+	if node == nil {
+		return nil, errors.CreateError(404, "could not find master node")
+	}
+	return finalizeNodeBuild(K8, dataSelector, node)
+}
+
+func finalizeNodeBuild(K8 *kubernetes.K8Client, dataSelector *types.DataSelector, node *v1.Node) (*Node, error) {
 	fieldSelector, err := fields.ParseSelector("spec.nodeName=" + node.Name +
 		",status.phase!=" + string(v1.PodSucceeded) +
 		",status.phase!=" + string(v1.PodFailed))

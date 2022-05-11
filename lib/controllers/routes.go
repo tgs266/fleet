@@ -63,6 +63,7 @@ func initializePromRoutes(app *api.API) {
 	app.Post("/api/v1/metrics/query", PrometheusQuery)
 	app.Get("/api/v1/metrics/query/range", PrometheusQueryRange)
 	app.Post("/api/v1/metrics/query/range", PrometheusQueryRange)
+	app.Get("/api/v1/metrics/alerts", PrometheusAlert)
 }
 
 func initializeSecretRoutes(app *api.API) {
@@ -94,6 +95,8 @@ func initializeOtherRoutes(app *api.API) {
 	app.Delete(rawBase+"/:name", RawDelete)
 
 	app.Get("/api/v1/filters/properties", GetFilters)
+
+	app.Get("/api/v1/cluster/name", GetCurrentClusterName)
 }
 
 func InitializeRoutes(app *api.API) {

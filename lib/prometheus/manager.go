@@ -218,3 +218,24 @@ func (pm *PrometheusManager) doSingleQueryRangeRequest(now time.Time, r Promethe
 	errChannel <- nil
 	channel <- res
 }
+
+func (pm *PrometheusManager) GetAlerts() (map[string]interface{}, error) {
+	result := &runtime.Unknown{}
+
+	err := pm.getBaseRequest().
+		Suffix("api/v1/alerts").
+		Do(context.TODO()).
+		Into(result)
+
+	if err != nil {
+		return nil, err
+	}
+
+	var res map[string]interface{}
+	err = json.Unmarshal(result.Raw, &res)
+	if err != nil {
+		return nil, err
+	}
+
+	return res, nil
+}

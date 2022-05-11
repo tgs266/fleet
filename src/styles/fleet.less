@@ -33,7 +33,12 @@ input[type=number] {
 }
 
 html {
-    background: @gray4;
+    background: @light-gray5;
+    min-height: 100vh;
+}
+
+body {
+    min-height: 100vh;
 }
 
 .bp4-overlay {
@@ -70,7 +75,7 @@ html {
 
 .fleet.fleet-blueprint-theme {
     background: @light-gray5;
-    height: 100%;
+    // min-height: 100vh;
     
 
     .fleet-container {
@@ -147,13 +152,12 @@ html {
 
     .sidebar {
         background-color: @dark-gray5;
-        height: 100vh;
         position: sticky;
         top: 0;
         display: flex;
         flex-flow: column;
-        // align-items: center;
         z-index: 101;
+        height: 100vh;
 
         .sidebar-hover {
             user-select: none;
