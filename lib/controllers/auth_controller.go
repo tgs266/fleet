@@ -66,7 +66,7 @@ func Login(c *fiber.Ctx, client *client.ClientManager) error {
 		return err
 	}
 
-	resp, err := client.Authenticate(c, *body)
+	resp, err := client.Authenticate(*body)
 	if err != nil {
 		return err
 	}
