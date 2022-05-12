@@ -1,14 +1,8 @@
 import { AxiosResponse } from 'axios';
-import api from '../axios.service';
-
-const userAgent = navigator.userAgent.toLowerCase();
-let isElectron = false;
-if (userAgent.indexOf(' electron/') > -1) {
-    isElectron = true;
-}
+import api, { getBackendApiUrl } from '../axios.service';
 
 export default class Cluster {
-    static base = `${isElectron ? 'http://localhost:9095' : ''}/api/v1/cluster`;
+    static base = `/api/v1/cluster`;
 
     static getCurrentClusterName(): Promise<AxiosResponse<string>> {
         if (process.env.TEST_ENV) {
@@ -23,6 +17,6 @@ export default class Cluster {
                 resolve(x);
             });
         }
-        return api.get(`${Cluster.base}/name`);
+        return api.get(`${getBackendApiUrl(Cluster.base)}/name`);
     }
 }

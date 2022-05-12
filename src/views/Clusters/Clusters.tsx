@@ -1,7 +1,8 @@
 /* eslint-disable react/no-unstable-nested-components */
 import * as React from 'react';
-import { useNavigate } from 'react-router';
-import { Alignment, Button, Card, Intent, Tag } from '@blueprintjs/core';
+import { Alignment, ButtonGroup, Button, Card, Intent, Tag } from '@blueprintjs/core';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faLink, faLinkSlash } from '@fortawesome/free-solid-svg-icons';
 import { useNavContext } from '../../layouts/Navigation';
 import Electron from '../../services/electron.service';
 import { ElectronCluster } from '../../models/cluster.model';
@@ -32,13 +33,18 @@ export default function Clusters() {
     );
 
     const [clusters, setClusters] = React.useState<ElectronCluster[]>([]);
-    const nav = useNavigate();
+    const [cluster, setCluster] = React.useState<ElectronCluster>({
+        name: '',
+        source: '',
+        isConnected: false,
+        port: '',
+    });
 
     if (!Electron.isElectron) {
         return <div>NOT ELECTRON</div>;
     }
 
-    React.useEffect(() => {
+    const getData = () => {
         Electron.getClusters().then((r) => {
             if (r.data.length === 0) {
                 Toaster.show({
@@ -49,6 +55,23 @@ export default function Clusters() {
             }
             setClusters(r.data);
         });
+        Electron.getCurrentCluster()
+            .then((r) => {
+                sessionStorage.setItem('path', `http://localhost:${r.data.port}`);
+                setCluster(r.data);
+            })
+            .catch(() => {
+                setCluster({
+                    name: '',
+                    source: '',
+                    isConnected: false,
+                    port: '',
+                });
+            });
+    };
+
+    React.useEffect(() => {
+        getData();
     }, []);
 
     return (
@@ -88,19 +111,49 @@ export default function Clusters() {
                             },
                         },
                         {
+                            columnName: 'In Use',
+                            key: 'inUse',
+                            columnFunction: (row: ElectronCluster) => {
+                                if (row.name === cluster.name) {
+                                    return (
+                                        <Tag round intent={Intent.SUCCESS}>
+                                            True
+                                        </Tag>
+                                    );
+                                }
+                                return (
+                                    <Tag round intent={Intent.DANGER}>
+                                        False
+                                    </Tag>
+                                );
+                            },
+                        },
+                        {
                             columnName: '',
                             key: 'connect',
                             alignment: Alignment.RIGHT,
                             columnFunction: (row: ElectronCluster) => (
-                                <Button
-                                    icon="link"
-                                    onClick={() => {
-                                        Electron.connectToCluster(row).then((r) => {
-                                            window.localStorage.setItem('jwe', r.data.token);
-                                            nav('/');
-                                        });
-                                    }}
-                                />
+                                <ButtonGroup>
+                                    <Button
+                                        onClick={() => {
+                                            Electron.connectToCluster(row).then((r) => {
+                                                window.localStorage.setItem('jwe', r.data.token);
+                                                getData();
+                                            });
+                                        }}
+                                    >
+                                        <FontAwesomeIcon className="bp4-icon" icon={faLink} />
+                                    </Button>
+                                    <Button
+                                        onClick={() => {
+                                            Electron.disconnectFromCluster(row.name).then(() => {
+                                                getData();
+                                            });
+                                        }}
+                                    >
+                                        <FontAwesomeIcon className="bp4-icon" icon={faLinkSlash} />
+                                    </Button>
+                                </ButtonGroup>
                             ),
                         },
                     ]}

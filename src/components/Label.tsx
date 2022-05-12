@@ -25,13 +25,14 @@ export default function Label(props: {
     small?: boolean;
     muted?: boolean;
 }) {
+    let small = false;
     if (props.small === null || props.small === undefined) {
-        props.small = true;
+        small = true;
     }
     const alignItems = getFlexAlignment(props.alignment);
     return (
         <div style={{ ...props.style, display: 'flex', flexDirection: 'column', alignItems }}>
-            <Text small={props.small} muted={props.muted}>
+            <Text small={small} muted={props.muted}>
                 {props.label}
             </Text>
             {props.children}

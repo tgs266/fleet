@@ -129,9 +129,11 @@ export default function Sidebar() {
             setUsingAuth(r.data.usingAuth);
         });
         if (Electron.isElectron) {
-            Electron.getCurrentCluster().then((r) => {
-                setClusterName(r.data);
-            });
+            Electron.getCurrentCluster()
+                .then((r) => {
+                    setClusterName(r.data.name);
+                })
+                .catch(() => setClusterName('No Cluster Selected'));
         }
     }, []);
     api.start({ width: open ? '15em' : '3em', treeOpacity: open ? 1 : 0 });

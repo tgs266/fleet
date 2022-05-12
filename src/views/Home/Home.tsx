@@ -103,7 +103,7 @@ export default function Home() {
                         },
                     ],
                     menu: null,
-                    buttons: [<div>{Electron.isElectron ? `Cluster: ${r.data}` : ''}</div>],
+                    buttons: [<div>{Electron.isElectron ? `Cluster: ${r.data.name}` : ''}</div>],
                 });
             });
         }

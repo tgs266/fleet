@@ -1,13 +1,12 @@
 /* eslint-disable object-shorthand */
 import { AxiosResponse } from 'axios';
 import { Image } from '../../models/image.model';
-import api from '../axios.service';
-import Electron from '../electron.service';
+import api, { getBackendApiUrl } from '../axios.service';
 
 export default class Images {
-    static base = `${Electron.isElectron ? `http://localhost:9095/proxy` : ''}/api/v1/images`;
+    static base = `/api/v1/images`;
 
     static getImages(): Promise<AxiosResponse<Image[]>> {
-        return api.get(`${Images.base}/`);
+        return api.get(`${getBackendApiUrl(Images.base)}/`);
     }
 }

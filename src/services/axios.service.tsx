@@ -16,7 +16,16 @@ export function getWSUrl(path: string): string {
         const currentBase = `${window.location.href.replace(window.location.hash, '')}`;
         return urlJoin(currentBase.replace(window.location.protocol, 'ws:'), path);
     }
-    const base = `http://localhost:9095`;
+    const base = sessionStorage.getItem('path') || '';
+    return urlJoin(base.replace('http:', 'ws:').replace('https:', 'ws:'), path);
+}
+
+export function getBackendApiUrl(path: string): string {
+    if (!Electron.isElectron) {
+        const currentBase = `${window.location.href.replace(window.location.hash, '')}`;
+        return urlJoin(currentBase, path);
+    }
+    const base = sessionStorage.getItem('path') || '';
     return urlJoin(base, path);
 }
 
@@ -63,7 +72,7 @@ api.interceptors.response.use(
             return;
         }
         // no server running - indicates electron
-        if (!error.response && Electron.isElectron) {
+        if (error.response.data.status === 'NO_CLUSTER_SELECTED' && Electron.isElectron) {
             console.log(window.location.pathname);
             window.location.href = `${window.location.pathname}#/clusters`;
         } else if (error.response.data.status === 'KUBERNETES_CONFIG') {

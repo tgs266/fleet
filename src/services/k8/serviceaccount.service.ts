@@ -3,19 +3,16 @@ import { TableSort } from '../../components/SortableTableHeaderCell';
 import { Filter, PaginationResponse } from '../../models/base';
 import { BindRequest, ServiceAccount, ServiceAccountMeta } from '../../models/serviceaccount.model';
 import getSortBy, { parseFilters } from '../../utils/sort';
-import api from '../axios.service';
-import Electron from '../electron.service';
+import api, { getBackendApiUrl } from '../axios.service';
 
 export default class ServiceAccounts {
-    static base = `${
-        Electron.isElectron ? `http://localhost:9095/proxy` : ''
-    }/api/v1/serviceaccounts`;
+    static base = `/api/v1/serviceaccounts`;
 
     static getServiceAccount(
         name: string,
         namespace?: string
     ): Promise<AxiosResponse<ServiceAccount>> {
-        return api.get(`${ServiceAccounts.base}/${namespace}/${name}`);
+        return api.get(`${getBackendApiUrl(ServiceAccounts.base)}/${namespace}/${name}`);
     }
 
     static getServiceAccounts(
@@ -26,7 +23,7 @@ export default class ServiceAccounts {
         filters?: Filter[]
     ): Promise<AxiosResponse<PaginationResponse<ServiceAccountMeta>>> {
         const filterBy = parseFilters(filters);
-        return api.get(`${ServiceAccounts.base}/${namespace || '_all_'}`, {
+        return api.get(`${getBackendApiUrl(ServiceAccounts.base)}/${namespace || '_all_'}`, {
             params: { sortBy: getSortBy(sort), offset, pageSize, filterBy },
         });
     }
@@ -36,7 +33,10 @@ export default class ServiceAccounts {
         namespace: string,
         req: BindRequest
     ): Promise<AxiosResponse<PaginationResponse<ServiceAccountMeta>>> {
-        return api.put(`${ServiceAccounts.base}/${namespace}/${name}/bind/role`, req);
+        return api.put(
+            `${getBackendApiUrl(ServiceAccounts.base)}/${namespace}/${name}/bind/role`,
+            req
+        );
     }
 
     static bindToClusterRole(
@@ -44,7 +44,10 @@ export default class ServiceAccounts {
         namespace: string,
         req: BindRequest
     ): Promise<AxiosResponse<PaginationResponse<ServiceAccountMeta>>> {
-        return api.put(`${ServiceAccounts.base}/${namespace}/${name}/bind/clusterrole`, req);
+        return api.put(
+            `${getBackendApiUrl(ServiceAccounts.base)}/${namespace}/${name}/bind/clusterrole`,
+            req
+        );
     }
 
     static disconnectRole(
@@ -52,7 +55,10 @@ export default class ServiceAccounts {
         namespace: string,
         req: BindRequest
     ): Promise<AxiosResponse<PaginationResponse<ServiceAccountMeta>>> {
-        return api.put(`${ServiceAccounts.base}/${namespace}/${name}/remove/role`, req);
+        return api.put(
+            `${getBackendApiUrl(ServiceAccounts.base)}/${namespace}/${name}/remove/role`,
+            req
+        );
     }
 
     static disconnectClusterRole(
@@ -60,6 +66,9 @@ export default class ServiceAccounts {
         namespace: string,
         req: BindRequest
     ): Promise<AxiosResponse<PaginationResponse<ServiceAccountMeta>>> {
-        return api.put(`${ServiceAccounts.base}/${namespace}/${name}/remove/clusterrole`, req);
+        return api.put(
+            `${getBackendApiUrl(ServiceAccounts.base)}/${namespace}/${name}/remove/clusterrole`,
+            req
+        );
     }
 }

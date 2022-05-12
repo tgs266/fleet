@@ -33,6 +33,26 @@ app.use(
     })
 );
 
+app.use(
+    '/ws-proxy',
+    proxy.createProxyMiddleware({
+        ws: true,
+        target: 'ws://localhost:9095',
+        onClose: (r) => console.log('CLOSE', r),
+        onError: (r) => console.log('ERROR', r),
+        changeOrigin: true,
+        logLevel: 'debug',
+        pathRewrite: { '^/ws-proxy/': '' },
+        secure: true,
+        router() {
+            if (clusters.current) {
+                return `ws://localhost:${clusters.current.port}/`;
+            }
+            return 'http://localhost:9095/proxyFail';
+        },
+    })
+);
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(bodyParser.raw());
@@ -71,16 +91,13 @@ app.get('/api/v1/electron/clusters', (req, res) => {
 });
 
 app.get('/api/v1/electron/current', (req, res) => {
-    try {
-        const rawYaml = fs.readFileSync(path.join(homedir, '.kube', 'config'));
-        const kubeconfig = new k8s.KubeConfig();
-        kubeconfig.loadFromString(rawYaml.toString());
-        res.status(200).json(kubeconfig.currentContext);
-    } catch {
-        res.status(404).json({
-            status: 'NO_FILE_FOUND',
-            code: 404,
-            message: 'could not find kubernetes config file',
+    if (clusters.current) {
+        res.status(200).json(clusters.current);
+    } else {
+        res.status(500).json({
+            status: 'NO_CLUSTER_SELECTED',
+            code: 500,
+            message: 'no cluster selected',
         });
     }
 });
@@ -158,6 +175,30 @@ app.post('/api/v1/electron/connect', (req, res) => {
                 message: 'could not find fleet deployment on cluster',
             });
         });
+});
+
+app.post('/api/v1/electron/disconnect', (req, res) => {
+    try {
+        const { name } = req.body;
+
+        const cluster = clusters.getCluster(name);
+        cluster.isConnected = false;
+        cluster.server.close();
+        cluster.server = null;
+        cluster.port = '';
+        clusters.updateOrAdd(cluster);
+        if (clusters.current.name === cluster.name) {
+            clusters.current = null;
+        }
+
+        res.status(200).json({});
+    } catch {
+        res.status(500).json({
+            status: 'DISCONNECT_FAILURE',
+            code: 500,
+            message: 'could not disconnect',
+        });
+    }
 });
 
 app.listen(9095);

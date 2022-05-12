@@ -1,21 +1,10 @@
 /* eslint-disable import/no-cycle */
 /* eslint-disable object-shorthand */
 import axios, { AxiosResponse } from 'axios';
-import urlJoin from '../utils/urljoin';
-import api from './axios.service';
-
-const userAgent = navigator.userAgent.toLowerCase();
-let isElectron = false;
-if (userAgent.indexOf(' electron/') > -1) {
-    isElectron = true;
-}
+import api, { getBackendApiUrl } from './axios.service';
 
 export default class Auth {
-    static base = `${
-        isElectron
-            ? `http://localhost:9095/proxy/api/v1/auth`
-            : urlJoin(window.location.href.replace(window.location.hash, ''), '/api/v1/auth')
-    }`;
+    static base = 'api/v1/auth';
 
     static using(): Promise<AxiosResponse<{ usingAuth: boolean }>> {
         if (process.env.TEST_ENV) {
@@ -32,21 +21,23 @@ export default class Auth {
                 resolve(x);
             });
         }
-        return axios.get(`${Auth.base}/`);
+        return axios.get(`${getBackendApiUrl(Auth.base)}/`);
     }
 
     static login(token: string): Promise<AxiosResponse<any>> {
-        return axios.post(`${Auth.base}/login`, { token: token });
+        return axios.post(`${getBackendApiUrl(Auth.base)}/login`, { token: token });
     }
 
     static getOIDCUrl(): Promise<AxiosResponse<{ url: string }>> {
-        return axios.get(`${Auth.base}/oauth2/url`, { params: { location: window.location.href } });
+        return axios.get(`${getBackendApiUrl(Auth.base)}/oauth2/url`, {
+            params: { location: window.location.href },
+        });
     }
 
     static refresh(): void {
         const token = localStorage.getItem('jwe');
         if (token) {
-            axios.post(`${Auth.base}/refresh`, { token: token }).then((r) => {
+            axios.post(`${getBackendApiUrl(Auth.base)}/refresh`, { token: token }).then((r) => {
                 localStorage.setItem('jwe', r.data.token);
                 if (r.headers.username) {
                     localStorage.setItem('username', r.headers.username);
@@ -56,7 +47,7 @@ export default class Auth {
     }
 
     static canUseOIDC(): Promise<AxiosResponse<{ available: boolean }>> {
-        return axios.get(`${Auth.base}/oauth2`);
+        return axios.get(`${getBackendApiUrl(Auth.base)}/oauth2`);
     }
 
     static canI(
