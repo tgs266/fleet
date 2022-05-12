@@ -10,60 +10,15 @@ const homedir = require('os').homedir();
 const bodyParser = require('body-parser');
 const k8s = require('@kubernetes/client-node');
 const { default: axios } = require('axios');
-const proxy = require('http-proxy-middleware');
 const { ClusterManager } = require('./clustermanager');
 
 const app = express();
 
 const clusters = new ClusterManager();
 
-app.use(
-    '/proxy',
-    proxy.createProxyMiddleware({
-        target: 'http://localhost:9095',
-        changeOrigin: true,
-        pathRewrite: { '^/proxy/': '' },
-        secure: true,
-        router() {
-            if (clusters.current) {
-                return `http://localhost:${clusters.current.port}/`;
-            }
-            return 'http://localhost:9095/proxyFail';
-        },
-    })
-);
-
-app.use(
-    '/ws-proxy',
-    proxy.createProxyMiddleware({
-        ws: true,
-        target: 'ws://localhost:9095',
-        onClose: (r) => console.log('CLOSE', r),
-        onError: (r) => console.log('ERROR', r),
-        changeOrigin: true,
-        logLevel: 'debug',
-        pathRewrite: { '^/ws-proxy/': '' },
-        secure: true,
-        router() {
-            if (clusters.current) {
-                return `ws://localhost:${clusters.current.port}/`;
-            }
-            return 'http://localhost:9095/proxyFail';
-        },
-    })
-);
-
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(bodyParser.raw());
-
-app.use('/proxyFail/*', (req, res) => {
-    res.status(500).json({
-        status: 'NO_CLUSTER_SELECTED',
-        code: 500,
-        message: 'no cluster selected',
-    });
-});
 
 app.get('/api/v1/electron/clusters', (req, res) => {
     try {
@@ -100,6 +55,39 @@ app.get('/api/v1/electron/current', (req, res) => {
             message: 'no cluster selected',
         });
     }
+});
+
+app.post('/api/v1/electron/start', (req, res) => {
+    let kubeconfig = null;
+    try {
+        const rawYaml = fs.readFileSync(path.join(homedir, '.kube', 'config'));
+        kubeconfig = new k8s.KubeConfig();
+        kubeconfig.loadFromString(rawYaml.toString());
+    } catch {
+        res.status(404).json({
+            status: 'NO_FILE_FOUND',
+            code: 404,
+            message: 'could not find kubernetes config file',
+        });
+        return;
+    }
+    const context = req.body;
+    const result = clusters.setCurrent(context.name, app);
+    if (result) {
+        kubeconfig.setCurrentContext(context.name);
+        res.status(200).json({});
+        return;
+    }
+    res.status(404).json({
+        status: 'NO_CLUSTER_FOUND',
+        code: 404,
+        message: 'could not find cluster',
+    });
+});
+
+app.post('/api/v1/electron/stop', (req, res) => {
+    clusters.setCurrent(null, app);
+    res.status(200).json({});
 });
 
 app.post('/api/v1/electron/connect', (req, res) => {
@@ -151,7 +139,6 @@ app.post('/api/v1/electron/connect', (req, res) => {
                             configFile: YAML.stringify(JSON.parse(kubeconfig.exportConfig())),
                         })
                         .then((r2) => {
-                            console.log(r2.headers);
                             res.json({
                                 token: r2.data.token,
                                 cluster: clusters.getCluster(context.name),

@@ -24,6 +24,10 @@ export default class Auth {
         return axios.get(`${getBackendApiUrl(Auth.base)}/`);
     }
 
+    static whoami(): Promise<AxiosResponse<{ username: string }>> {
+        return api.get(`${getBackendApiUrl(Auth.base)}/whoami`);
+    }
+
     static login(token: string): Promise<AxiosResponse<any>> {
         return axios.post(`${getBackendApiUrl(Auth.base)}/login`, { token: token });
     }

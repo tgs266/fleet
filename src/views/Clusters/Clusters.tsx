@@ -1,22 +1,20 @@
 /* eslint-disable react/no-unstable-nested-components */
 import * as React from 'react';
 import { Alignment, ButtonGroup, Button, Card, Intent, Tag } from '@blueprintjs/core';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLink, faLinkSlash } from '@fortawesome/free-solid-svg-icons';
 import { useNavContext } from '../../layouts/Navigation';
 import Electron from '../../services/electron.service';
 import { ElectronCluster } from '../../models/cluster.model';
 import ResourceTable from '../../components/ResourceTable';
 import Toaster from '../../services/toast.service';
 import ClusterConfigureDialog from './ClusterConfigureDialog';
-import { useClusterContext } from '../../contexts/ClusterContext';
+import { useAuthContext } from '../../contexts/AuthContext';
 import Auth from '../../services/auth.service';
 
 export default function Clusters() {
     const [isDialogOpen, setIsDialogOpen] = React.useState(false);
 
     const [, setState] = useNavContext();
-    const [clusterCtx, setClusterContext] = useClusterContext();
+    const [authCtx, setAuthCtx] = useAuthContext();
     React.useEffect(
         () =>
             setState({
@@ -36,12 +34,6 @@ export default function Clusters() {
     );
 
     const [clusters, setClusters] = React.useState<ElectronCluster[]>([]);
-    const [cluster, setCluster] = React.useState<ElectronCluster>({
-        name: '',
-        source: '',
-        isConnected: false,
-        port: '',
-    });
 
     if (!Electron.isElectron) {
         return <div>NOT ELECTRON</div>;
@@ -61,23 +53,34 @@ export default function Clusters() {
         Electron.getCurrentCluster()
             .then((r) => {
                 sessionStorage.setItem('path', `http://localhost:${r.data.port}`);
-                Auth.using().then((r2) => {
-                    setCluster(r.data);
-                    setClusterContext({
-                        ...clusterCtx,
-                        cluster: r.data,
-                        useAuth: r2.data.usingAuth,
+                Auth.using()
+                    .then((r2) => {
+                        Auth.whoami()
+                            .then((r3) => {
+                                setAuthCtx({
+                                    cluster: r.data,
+                                    useAuth: r2.data.usingAuth,
+                                    username: r3.data.username,
+                                });
+                            })
+                            .catch(() => {
+                                setAuthCtx({
+                                    cluster: r.data,
+                                    useAuth: r2.data.usingAuth,
+                                    username: null,
+                                });
+                            });
+                    })
+                    .catch(() => {
+                        setAuthCtx({
+                            cluster: r.data,
+                            useAuth: null,
+                            username: null,
+                        });
                     });
-                });
             })
             .catch(() => {
-                setCluster({
-                    name: '',
-                    source: '',
-                    isConnected: false,
-                    port: '',
-                });
-                setClusterContext({ cluster: null, useAuth: null, username: null });
+                setAuthCtx({ cluster: null, useAuth: null, username: null });
             });
     };
 
@@ -125,7 +128,7 @@ export default function Clusters() {
                             columnName: 'In Use',
                             key: 'inUse',
                             columnFunction: (row: ElectronCluster) => {
-                                if (row.name === cluster.name) {
+                                if (authCtx.cluster && row.name === authCtx.cluster.name) {
                                     return (
                                         <Tag round intent={Intent.SUCCESS}>
                                             True
@@ -143,30 +146,54 @@ export default function Clusters() {
                             columnName: '',
                             key: 'connect',
                             alignment: Alignment.RIGHT,
-                            columnFunction: (row: ElectronCluster) => (
-                                <ButtonGroup>
-                                    <Button
-                                        onClick={() => {
-                                            Electron.connectToCluster(row).then((r) => {
-                                                console.log(r.headers);
-                                                window.localStorage.setItem('jwe', r.data.token);
-                                                getData();
-                                            });
-                                        }}
-                                    >
-                                        <FontAwesomeIcon className="bp4-icon" icon={faLink} />
-                                    </Button>
-                                    <Button
-                                        onClick={() => {
-                                            Electron.disconnectFromCluster(row.name).then(() => {
-                                                getData();
-                                            });
-                                        }}
-                                    >
-                                        <FontAwesomeIcon className="bp4-icon" icon={faLinkSlash} />
-                                    </Button>
-                                </ButtonGroup>
-                            ),
+                            columnFunction: (row: ElectronCluster) => {
+                                const using = authCtx.cluster && row.name === authCtx.cluster.name;
+                                return (
+                                    <ButtonGroup>
+                                        <Button
+                                            intent={
+                                                row.isConnected ? Intent.DANGER : Intent.SUCCESS
+                                            }
+                                            onClick={() => {
+                                                if (!row.isConnected) {
+                                                    Electron.connectToCluster(row).then((r) => {
+                                                        window.localStorage.setItem(
+                                                            'jwe',
+                                                            r.data.token
+                                                        );
+                                                        getData();
+                                                    });
+                                                } else {
+                                                    Electron.disconnectFromCluster(row.name).then(
+                                                        () => {
+                                                            getData();
+                                                        }
+                                                    );
+                                                }
+                                            }}
+                                        >
+                                            {row.isConnected ? 'Disconnect' : 'Connect'}
+                                        </Button>
+                                        <Button
+                                            intent={using ? Intent.DANGER : Intent.SUCCESS}
+                                            onClick={() => {
+                                                if (using) {
+                                                    Electron.stop(row).then(() => {
+                                                        getData();
+                                                    });
+                                                } else {
+                                                    Electron.start(row).then(() => {
+                                                        getData();
+                                                    });
+                                                }
+                                            }}
+                                            disabled={!row.isConnected}
+                                        >
+                                            {using ? 'Stop' : 'Start'}
+                                        </Button>
+                                    </ButtonGroup>
+                                );
+                            },
                         },
                     ]}
                 />

@@ -5,7 +5,7 @@ import { Intent, Tag } from '@blueprintjs/core';
 import { useSpring, animated, config } from '@react-spring/web';
 import SidebarItem, { SidebarItemProps } from './SidebarItem';
 import Electron from '../services/electron.service';
-import { useClusterContext } from '../contexts/ClusterContext';
+import { useAuthContext } from '../contexts/AuthContext';
 
 const SIDEBAR_ITEM_PROPS: SidebarItemProps[] = [
     {
@@ -122,21 +122,21 @@ export default function Sidebar() {
         },
     }));
     const [open, setOpen] = useState(false);
-    const [clusterCtx] = useClusterContext();
+    const [authCtx] = useAuthContext();
 
-    const userName = clusterCtx
-        ? clusterCtx.username
-            ? clusterCtx.username
+    const userName = authCtx
+        ? authCtx.username
+            ? authCtx.username
             : 'No username found'
         : 'No username found';
-    const useAuth = clusterCtx
-        ? clusterCtx.useAuth !== null && clusterCtx.useAuth !== undefined
-            ? clusterCtx.useAuth
+    const useAuth = authCtx
+        ? authCtx.useAuth !== null && authCtx.useAuth !== undefined
+            ? authCtx.useAuth
             : null
         : null;
-    const clusterName = clusterCtx
-        ? clusterCtx.cluster
-            ? clusterCtx.cluster.name
+    const clusterName = authCtx
+        ? authCtx.cluster
+            ? authCtx.cluster.name
             : 'No connected cluster'
         : 'No connected cluster';
 

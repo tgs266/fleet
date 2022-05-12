@@ -35,4 +35,12 @@ export default class Electron {
     ): Promise<AxiosResponse<{ token: string; cluster: ElectronCluster }>> {
         return api.post('http://localhost:9095/api/v1/electron/disconnect', { name: cluster });
     }
+
+    static start(cluster: any): Promise<AxiosResponse<any>> {
+        return api.post('http://localhost:9095/api/v1/electron/start', cluster);
+    }
+
+    static stop(cluster: any): Promise<AxiosResponse<any>> {
+        return api.post('http://localhost:9095/api/v1/electron/stop', cluster);
+    }
 }

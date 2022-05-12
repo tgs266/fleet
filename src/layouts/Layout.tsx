@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Outlet, useLocation } from 'react-router';
-import { ClusterContextProvider } from '../contexts/ClusterContext';
+import { AuthContextProvider } from '../contexts/AuthContext';
 import Auth from '../services/auth.service';
 import Navigation, { NavContextProvider } from './Navigation';
 import Sidebar from './Sidebar';
@@ -14,7 +14,7 @@ function Layout() {
     return (
         <div className="fleet fleet-blueprint-theme">
             <div style={{ display: 'flex', width: '100%' }} id="main-container">
-                <ClusterContextProvider>
+                <AuthContextProvider>
                     <div style={{ flexBasis: '3em' }}>
                         <Sidebar />
                     </div>
@@ -24,7 +24,7 @@ function Layout() {
                             <Outlet />
                         </div>
                     </NavContextProvider>
-                </ClusterContextProvider>
+                </AuthContextProvider>
             </div>
         </div>
     );

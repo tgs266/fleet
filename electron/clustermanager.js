@@ -1,18 +1,20 @@
 /* eslint-disable no-restricted-syntax */
-const { createProxyMiddleware } = require('http-proxy-middleware');
-
 class ClusterManager {
     clusters = [];
 
     current = null;
 
-    setCurrent(name, app) {
+    setCurrent(name) {
+        if (!name) {
+            this.current = null;
+            return true;
+        }
         const cluster = this.getCluster(name);
-        const apiProxy = createProxyMiddleware('/proxy', {
-            target: `http://localhost:${cluster.server.address().port}`,
-        });
+        if (!cluster) {
+            return false;
+        }
         this.current = cluster;
-        app.use(apiProxy);
+        return true;
     }
 
     getCluster(name) {
