@@ -62,7 +62,8 @@ type RefreshRequest struct {
 }
 
 type LoginResponse struct {
-	Token string `json:"token"`
+	Token    string        `json:"token"`
+	AuthInfo *api.AuthInfo `json:""`
 }
 
 func (request LoginRequest) GetAuthInfo() (*api.AuthInfo, error) {

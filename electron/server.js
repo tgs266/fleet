@@ -151,6 +151,7 @@ app.post('/api/v1/electron/connect', (req, res) => {
                             configFile: YAML.stringify(JSON.parse(kubeconfig.exportConfig())),
                         })
                         .then((r2) => {
+                            console.log(r2.headers);
                             res.json({
                                 token: r2.data.token,
                                 cluster: clusters.getCluster(context.name),

@@ -1,10 +1,11 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable react/prop-types */
 import React, { useState } from 'react';
 import { Intent, Tag } from '@blueprintjs/core';
 import { useSpring, animated, config } from '@react-spring/web';
 import SidebarItem, { SidebarItemProps } from './SidebarItem';
-import Auth from '../services/auth.service';
 import Electron from '../services/electron.service';
+import { useClusterContext } from '../contexts/ClusterContext';
 
 const SIDEBAR_ITEM_PROPS: SidebarItemProps[] = [
     {
@@ -121,21 +122,36 @@ export default function Sidebar() {
         },
     }));
     const [open, setOpen] = useState(false);
-    const [usingAuth, setUsingAuth] = React.useState(false);
-    const [clusterName, setClusterName] = React.useState('');
+    const [clusterCtx] = useClusterContext();
 
-    React.useEffect(() => {
-        Auth.using().then((r) => {
-            setUsingAuth(r.data.usingAuth);
-        });
-        if (Electron.isElectron) {
-            Electron.getCurrentCluster()
-                .then((r) => {
-                    setClusterName(r.data.name);
-                })
-                .catch(() => setClusterName('No Cluster Selected'));
-        }
-    }, []);
+    const userName = clusterCtx
+        ? clusterCtx.username
+            ? clusterCtx.username
+            : 'No username found'
+        : 'No username found';
+    const useAuth = clusterCtx
+        ? clusterCtx.useAuth !== null && clusterCtx.useAuth !== undefined
+            ? clusterCtx.useAuth
+            : null
+        : null;
+    const clusterName = clusterCtx
+        ? clusterCtx.cluster
+            ? clusterCtx.cluster.name
+            : 'No connected cluster'
+        : 'No connected cluster';
+
+    let authIntent = null;
+    let authString = 'UNKNOWN';
+    if (useAuth === false) {
+        authIntent = Intent.DANGER;
+        authString = 'DISABLED';
+    } else if (useAuth === true) {
+        authIntent = Intent.SUCCESS;
+        authString = 'ENABLED';
+    } else {
+        authIntent = Intent.NONE;
+    }
+
     api.start({ width: open ? '15em' : '3em', treeOpacity: open ? 1 : 0 });
     return (
         <div style={{ position: 'fixed', zIndex: 1000000 }}>
@@ -181,16 +197,11 @@ export default function Sidebar() {
                         <div>
                             <div>
                                 Authentication:
-                                <Tag
-                                    style={{ marginLeft: '0.5em' }}
-                                    intent={usingAuth ? Intent.SUCCESS : Intent.DANGER}
-                                >
-                                    {usingAuth ? 'ENABLED' : 'DISABLED'}
+                                <Tag style={{ marginLeft: '0.5em' }} intent={authIntent}>
+                                    {authString}
                                 </Tag>
                             </div>
-                            <div style={{ marginTop: '0.25em' }}>
-                                Username: {localStorage.getItem('username')}
-                            </div>
+                            <div style={{ marginTop: '0.25em' }}>Username: {userName}</div>
                         </div>
                     }
                 >

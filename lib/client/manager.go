@@ -236,8 +236,24 @@ func (client *ClientManager) Encode(token string) (*auth.LoginResponse, error) {
 	})
 }
 
-func (client *ClientManager) Authenticate(request auth.LoginRequest) (*auth.LoginResponse, error) {
-	return client.authManager.Login(request)
+func (client *ClientManager) Authenticate(c *fiber.Ctx, request auth.LoginRequest) (*auth.LoginResponse, error) {
+	res, err := client.authManager.Login(request)
+	if err != nil {
+		return nil, err
+	}
+	cfg, err := client.buildConfig()
+	if err != nil && !client.TestAuthMode {
+		return nil, err
+	}
+
+	cfg, err = client.Wrap(res.AuthInfo, cfg)
+	if err != nil && !client.TestAuthMode {
+		return nil, err
+	}
+
+	username, err := client.ValidateAuthInfo(cfg, res.AuthInfo)
+	c.Response().Header.Add("Username", username)
+	return res, nil
 }
 
 func (client *ClientManager) RefreshToken(request auth.RefreshRequest) (*auth.LoginResponse, error) {

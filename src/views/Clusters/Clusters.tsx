@@ -9,11 +9,14 @@ import { ElectronCluster } from '../../models/cluster.model';
 import ResourceTable from '../../components/ResourceTable';
 import Toaster from '../../services/toast.service';
 import ClusterConfigureDialog from './ClusterConfigureDialog';
+import { useClusterContext } from '../../contexts/ClusterContext';
+import Auth from '../../services/auth.service';
 
 export default function Clusters() {
     const [isDialogOpen, setIsDialogOpen] = React.useState(false);
 
     const [, setState] = useNavContext();
+    const [clusterCtx, setClusterContext] = useClusterContext();
     React.useEffect(
         () =>
             setState({
@@ -58,7 +61,14 @@ export default function Clusters() {
         Electron.getCurrentCluster()
             .then((r) => {
                 sessionStorage.setItem('path', `http://localhost:${r.data.port}`);
-                setCluster(r.data);
+                Auth.using().then((r2) => {
+                    setCluster(r.data);
+                    setClusterContext({
+                        ...clusterCtx,
+                        cluster: r.data,
+                        useAuth: r2.data.usingAuth,
+                    });
+                });
             })
             .catch(() => {
                 setCluster({
@@ -67,6 +77,7 @@ export default function Clusters() {
                     isConnected: false,
                     port: '',
                 });
+                setClusterContext({ cluster: null, useAuth: null, username: null });
             });
     };
 
@@ -137,6 +148,7 @@ export default function Clusters() {
                                     <Button
                                         onClick={() => {
                                             Electron.connectToCluster(row).then((r) => {
+                                                console.log(r.headers);
                                                 window.localStorage.setItem('jwe', r.data.token);
                                                 getData();
                                             });
