@@ -175,7 +175,7 @@ app.post('/api/v1/electron/disconnect', (req, res) => {
         cluster.server = null;
         cluster.port = '';
         clusters.updateOrAdd(cluster);
-        if (clusters.current.name === cluster.name) {
+        if (clusters.current && clusters.current.name === cluster.name) {
             clusters.current = null;
         }
 
