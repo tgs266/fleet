@@ -50,6 +50,65 @@ function isPromise(p: any) {
     return false;
 }
 
+export function handleError(error: AxiosError<FleetError>) {
+    if (error.config.url.includes('metrics')) {
+        return;
+    }
+    // no server running - indicates electron
+    if (error.response.data.status === 'NO_CLUSTER_SELECTED' && Electron.isElectron) {
+        window.location.href = `${window.location.pathname}#/clusters`;
+    } else if (error.response.data.status === 'KUBERNETES_CONFIG') {
+        const containerElement = document.createElement('div');
+        document.body.appendChild(containerElement);
+        ReactDOM.render(
+            React.createElement(
+                Alert,
+                {
+                    isOpen: true,
+                    onClose: () => {
+                        ReactDOM.unmountComponentAtNode(containerElement);
+                        containerElement.remove();
+                    },
+                },
+                <div>
+                    Could not connect to kubernetes backend. Please make sure you are running a
+                    cluster, and specify the kubernetes config file path in the fleet config.
+                </div>
+            ),
+            containerElement
+        );
+    } else if (
+        (error.response.data.status === 'UNAUTHORIZED' ||
+            error.response.data.status === 'UNAUTHORIZED_EXPIRED') &&
+        !Electron.isElectron
+    ) {
+        localStorage.removeItem('jwe');
+        if (!dialog) {
+            dialog = document.createElement('div');
+            document.body.appendChild(dialog);
+            ReactDOM.render(
+                React.createElement(AuthDialog, {
+                    mode: error.response.data.status,
+                    onClose: () => {
+                        ReactDOM.unmountComponentAtNode(dialog);
+                        dialog = null;
+                        window.location.reload();
+                    },
+                }),
+                dialog
+            );
+        }
+    } else if (
+        (error.response.data.status === 'UNAUTHORIZED' ||
+            error.response.data.status === 'UNAUTHORIZED_EXPIRED') &&
+        Electron.isElectron
+    ) {
+        window.location.href = `${window.location.pathname}#/clusters`;
+    } else {
+        Toaster.show({ message: error.response.data.message, intent: Intent.DANGER });
+    }
+}
+
 api.interceptors.response.use(
     (response: AxiosResponse<any, any> | Promise<AxiosResponse<any, any>>) => {
         if (isPromise(response)) {
@@ -68,63 +127,7 @@ api.interceptors.response.use(
         return response;
     },
     (error: AxiosError<FleetError>) => {
-        if (error.config.url.includes('metrics')) {
-            return;
-        }
-        // no server running - indicates electron
-        if (error.response.data.status === 'NO_CLUSTER_SELECTED' && Electron.isElectron) {
-            console.log(window.location.pathname);
-            window.location.href = `${window.location.pathname}#/clusters`;
-        } else if (error.response.data.status === 'KUBERNETES_CONFIG') {
-            const containerElement = document.createElement('div');
-            document.body.appendChild(containerElement);
-            ReactDOM.render(
-                React.createElement(
-                    Alert,
-                    {
-                        isOpen: true,
-                        onClose: () => {
-                            ReactDOM.unmountComponentAtNode(containerElement);
-                            containerElement.remove();
-                        },
-                    },
-                    <div>
-                        Could not connect to kubernetes backend. Please make sure you are running a
-                        cluster, and specify the kubernetes config file path in the fleet config.
-                    </div>
-                ),
-                containerElement
-            );
-        } else if (
-            (error.response.data.status === 'UNAUTHORIZED' ||
-                error.response.data.status === 'UNAUTHORIZED_EXPIRED') &&
-            !Electron.isElectron
-        ) {
-            localStorage.removeItem('jwe');
-            if (!dialog) {
-                dialog = document.createElement('div');
-                document.body.appendChild(dialog);
-                ReactDOM.render(
-                    React.createElement(AuthDialog, {
-                        mode: error.response.data.status,
-                        onClose: () => {
-                            ReactDOM.unmountComponentAtNode(dialog);
-                            dialog = null;
-                            window.location.reload();
-                        },
-                    }),
-                    dialog
-                );
-            }
-        } else if (
-            (error.response.data.status === 'UNAUTHORIZED' ||
-                error.response.data.status === 'UNAUTHORIZED_EXPIRED') &&
-            Electron.isElectron
-        ) {
-            window.location.href = `${window.location.pathname}#/clusters`;
-        } else {
-            Toaster.show({ message: error.response.data.message, intent: Intent.DANGER });
-        }
+        handleError(error);
     }
 );
 

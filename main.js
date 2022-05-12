@@ -13,7 +13,7 @@ function createWindow() {
         height: 600,
     });
 
-    // mainWindow.setMenu(null);
+    mainWindow.setMenu(null);
 
     // and load the index.html of the app.
     mainWindow.loadFile('build/index.html');

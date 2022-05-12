@@ -4,7 +4,12 @@ import { ElectronCluster } from '../models/cluster.model';
 import api from './axios.service';
 
 export default class Electron {
+    static override = false;
+
     static get isElectron() {
+        if (Electron.override) {
+            return true;
+        }
         const userAgent = navigator.userAgent.toLowerCase();
         if (userAgent.indexOf(' electron/') > -1) {
             return true;
