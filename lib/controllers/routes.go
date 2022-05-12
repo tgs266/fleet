@@ -74,6 +74,7 @@ func initializeSecretRoutes(app *api.API) {
 func initializeOtherRoutes(app *api.API) {
 	app.Get("/api/v1/auth/", UsingAuth)
 	app.Get("/api/v1/auth/cani", CanI)
+	app.Get("/api/v1/auth/whoami", WhoAmI)
 	app.Post("/api/v1/auth/login", Login)
 	app.Post("/api/v1/auth/refresh", Refresh)
 	app.Get("/api/v1/images", GetAllImages)

@@ -71,6 +71,14 @@ func NewResourceNotFoundError(resourceType string, resourceName string) *FleetEr
 	}
 }
 
+func NewNoUsernameFound() *FleetError {
+	return &FleetError{
+		Status:  STATUS_UNKNOWN,
+		Code:    fiber.StatusInternalServerError,
+		Message: fmt.Sprintf("no username found"),
+	}
+}
+
 func NewConfigInitializationError(err error) *FleetError {
 	errText := "error initializing kubernetes config"
 	if err != nil {

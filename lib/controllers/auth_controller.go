@@ -59,6 +59,22 @@ func UsingAuth(c *fiber.Ctx, client *client.ClientManager) error {
 	})
 }
 
+func WhoAmI(c *fiber.Ctx, client *client.ClientManager) error {
+	_, err := client.Client(c)
+	if err != nil {
+		return err
+	}
+	username := c.Response().Header.Peek("username")
+	if len(username) == 0 {
+		return errors.NewNoUsernameFound()
+	}
+	return c.Status(200).JSON(struct {
+		Username string `json:"username"`
+	}{
+		Username: string(username),
+	})
+}
+
 func Login(c *fiber.Ctx, client *client.ClientManager) error {
 	body := new(auth.LoginRequest)
 
