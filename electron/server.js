@@ -51,6 +51,7 @@ app.post('/api/v1/electron/connect', (req, res) => {
     kubeconfig.setCurrentContext(context.name);
 
     const k8sApi = kubeconfig.makeApiClient(k8s.CoreV1Api);
+
     k8sApi
         .listNamespacedPod('fleet')
         .then((r) => {

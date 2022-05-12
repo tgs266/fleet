@@ -102,10 +102,6 @@ func (request LoginRequest) GetAuthInfo() (*api.AuthInfo, error) {
 			userData.User.Token = userData.User.AuthProvider.Config.AccessToken
 		}
 
-		if userData.User.Username == "" {
-			userData.User.Username = userData.Name
-		}
-
 		return &api.AuthInfo{
 			Username: userData.User.Username,
 			Password: userData.User.Password,
