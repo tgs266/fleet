@@ -1,8 +1,6 @@
 package auth
 
 import (
-	"fmt"
-
 	"github.com/tgs266/fleet/lib/errors"
 	"k8s.io/client-go/tools/clientcmd/api"
 
@@ -104,11 +102,9 @@ func (request LoginRequest) GetAuthInfo() (*api.AuthInfo, error) {
 			userData.User.Token = userData.User.AuthProvider.Config.AccessToken
 		}
 
-		fmt.Println(&api.AuthInfo{
-			Username: userData.User.Username,
-			Password: userData.User.Password,
-			Token:    userData.User.Token,
-		})
+		if userData.User.Username == "" {
+			userData.User.Username = userData.Name
+		}
 
 		return &api.AuthInfo{
 			Username: userData.User.Username,
