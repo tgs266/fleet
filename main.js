@@ -4,6 +4,8 @@ const { app, BrowserWindow } = require('electron');
 require('./electron/server');
 // const path = require('path')
 
+process.env.SERVER_PREFIX = 'http://localhost:9095';
+
 function createWindow() {
     // Create the browser window.
     const mainWindow = new BrowserWindow({
@@ -11,7 +13,7 @@ function createWindow() {
         height: 600,
     });
 
-    mainWindow.setMenu(null);
+    // mainWindow.setMenu(null);
 
     // and load the index.html of the app.
     mainWindow.loadFile('build/index.html');

@@ -5,9 +5,10 @@ import { Filter, PaginationResponse } from '../../models/base';
 import { NamespaceMeta as NS } from '../../models/namespace.model';
 import getSortBy, { parseFilters } from '../../utils/sort';
 import api from '../axios.service';
+import Electron from '../electron.service';
 
 export default class Namespaces {
-    static base = '/api/v1/namespaces';
+    static base = `${Electron.isElectron ? 'http://localhost:9095' : ''}/api/v1/namespaces`;
 
     static getNamespaces(
         sort?: TableSort,

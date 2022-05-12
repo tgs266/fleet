@@ -1,8 +1,14 @@
 import { AxiosResponse } from 'axios';
 import api from '../axios.service';
 
+const userAgent = navigator.userAgent.toLowerCase();
+let isElectron = false;
+if (userAgent.indexOf(' electron/') > -1) {
+    isElectron = true;
+}
+
 export default class Cluster {
-    static base = '/api/v1/cluster';
+    static base = `${isElectron ? 'http://localhost:9095' : ''}/api/v1/cluster`;
 
     static getCurrentClusterName(): Promise<AxiosResponse<string>> {
         if (process.env.TEST_ENV) {

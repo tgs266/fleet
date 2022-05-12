@@ -4,8 +4,18 @@ import axios, { AxiosResponse } from 'axios';
 import urlJoin from '../utils/urljoin';
 import api from './axios.service';
 
+const userAgent = navigator.userAgent.toLowerCase();
+let isElectron = false;
+if (userAgent.indexOf(' electron/') > -1) {
+    isElectron = true;
+}
+
 export default class Auth {
-    static base = urlJoin(window.location.href.replace(window.location.hash, ''), '/api/v1/auth');
+    static base = `${
+        isElectron
+            ? 'http://localhost:9095/api/v1/auth'
+            : urlJoin(window.location.href.replace(window.location.hash, ''), '/api/v1/auth')
+    }`;
 
     static using(): Promise<AxiosResponse<{ usingAuth: boolean }>> {
         if (process.env.TEST_ENV) {

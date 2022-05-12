@@ -7,6 +7,7 @@ import { Alert, Intent } from '@blueprintjs/core';
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { FleetError } from '../models/base';
 import Toaster from './toast.service';
+import Electron from './electron.service';
 import urlJoin from '../utils/urljoin';
 import AuthDialog from '../auth/AuthDialog';
 
@@ -57,7 +58,11 @@ api.interceptors.response.use(
         if (error.config.url.includes('metrics')) {
             return;
         }
-        if (error.response.data.status === 'KUBERNETES_CONFIG') {
+        // no server running - indicates electron
+        if (!error.response && Electron.isElectron) {
+            console.log(window.location.pathname);
+            window.location.href = `${window.location.pathname}#/clusters`;
+        } else if (error.response.data.status === 'KUBERNETES_CONFIG') {
             const containerElement = document.createElement('div');
             document.body.appendChild(containerElement);
             ReactDOM.render(
@@ -78,8 +83,9 @@ api.interceptors.response.use(
                 containerElement
             );
         } else if (
-            error.response.data.status === 'UNAUTHORIZED' ||
-            error.response.data.status === 'UNAUTHORIZED_EXPIRED'
+            (error.response.data.status === 'UNAUTHORIZED' ||
+                error.response.data.status === 'UNAUTHORIZED_EXPIRED') &&
+            !Electron.isElectron
         ) {
             localStorage.removeItem('jwe');
             if (!dialog) {
@@ -97,6 +103,12 @@ api.interceptors.response.use(
                     dialog
                 );
             }
+        } else if (
+            (error.response.data.status === 'UNAUTHORIZED' ||
+                error.response.data.status === 'UNAUTHORIZED_EXPIRED') &&
+            Electron.isElectron
+        ) {
+            window.location.href = `${window.location.pathname}#/clusters`;
         } else {
             Toaster.show({ message: error.response.data.message, intent: Intent.DANGER });
         }
