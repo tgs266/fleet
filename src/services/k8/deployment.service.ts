@@ -7,10 +7,11 @@ import { CreateDeployment, Deployment, DeploymentMeta } from '../../models/deplo
 import { JSONObject } from '../../models/json.model';
 import getSortBy, { parseFilters } from '../../utils/sort';
 import api, { getWSUrl } from '../axios.service';
+import Electron from '../electron.service';
 import getWebsocket from '../websocket';
 
 export default class Deployments {
-    static base = `/api/v1/deployments`;
+    static base = `${Electron.isElectron ? 'http://localhost:9095' : ''}/api/v1/deployments`;
 
     static getDeployments(
         namespace?: string,

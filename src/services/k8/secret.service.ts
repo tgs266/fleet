@@ -4,9 +4,10 @@ import { Filter, PaginationResponse } from '../../models/base';
 import { Secret, SecretMeta } from '../../models/secret.model';
 import getSortBy, { parseFilters } from '../../utils/sort';
 import api from '../axios.service';
+import Electron from '../electron.service';
 
 export default class Secrets {
-    static base = '/api/v1/secrets';
+    static base = `${Electron.isElectron ? 'http://localhost:9095' : ''}/api/v1/secrets`;
 
     static getSecret(secretName: string, namespace?: string): Promise<AxiosResponse<Secret>> {
         return api.get(`${Secrets.base}/${namespace}/${secretName}`);

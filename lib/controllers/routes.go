@@ -96,7 +96,7 @@ func initializeOtherRoutes(app *api.API) {
 
 	app.Get("/api/v1/filters/properties", GetFilters)
 
-	app.Get("/api/v1/cluster/name", GetCurrentClusterName)
+	// app.Get("/api/v1/cluster/name", GetCurrentClusterName)
 }
 
 func InitializeRoutes(app *api.API) {

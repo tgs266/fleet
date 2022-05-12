@@ -5,6 +5,7 @@ import FillErrorBoundary from '../../components/FillErrorBoundary';
 import RangeQueryLineChart from '../../components/MetricCharts/RangeQueryLineChart';
 import NoMetrics from '../../components/NoMetrics';
 import { useNavContext } from '../../layouts/Navigation';
+import Electron from '../../services/electron.service';
 import K8 from '../../services/k8.service';
 import Prometheus from '../../services/prometheus.service';
 import ResourceCard from './ResourceCard';
@@ -93,17 +94,19 @@ export default function Home() {
     }, [masterNodeName]);
 
     React.useEffect(() => {
-        K8.cluster.getCurrentClusterName().then((r) => {
-            setState({
-                breadcrumbs: [
-                    {
-                        text: `Home`,
-                    },
-                ],
-                menu: null,
-                buttons: [<div>Cluster: {r.data}</div>],
+        if (Electron.isElectron) {
+            Electron.getCurrentCluster().then((r) => {
+                setState({
+                    breadcrumbs: [
+                        {
+                            text: `Home`,
+                        },
+                    ],
+                    menu: null,
+                    buttons: [<div>{Electron.isElectron ? `Cluster: ${r.data}` : ''}</div>],
+                });
             });
-        });
+        }
     }, []);
 
     if (!metrics) {

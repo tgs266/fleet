@@ -13,7 +13,11 @@ export default class Electron {
     }
 
     static getClusters(): Promise<AxiosResponse<ElectronCluster[]>> {
-        return api.get('http://localhost:9096/api/v1/electron/detect');
+        return api.get('http://localhost:9096/api/v1/electron/clusters');
+    }
+
+    static getCurrentCluster(): Promise<AxiosResponse<string>> {
+        return api.get('http://localhost:9096/api/v1/electron/current');
     }
 
     static connectToCluster(cluster: any) {

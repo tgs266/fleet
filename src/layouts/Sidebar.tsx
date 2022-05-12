@@ -4,7 +4,7 @@ import { Intent, Tag } from '@blueprintjs/core';
 import { useSpring, animated, config } from '@react-spring/web';
 import SidebarItem, { SidebarItemProps } from './SidebarItem';
 import Auth from '../services/auth.service';
-import K8 from '../services/k8.service';
+import Electron from '../services/electron.service';
 
 const SIDEBAR_ITEM_PROPS: SidebarItemProps[] = [
     {
@@ -128,9 +128,11 @@ export default function Sidebar() {
         Auth.using().then((r) => {
             setUsingAuth(r.data.usingAuth);
         });
-        K8.cluster.getCurrentClusterName().then((r) => {
-            setClusterName(r.data);
-        });
+        if (Electron.isElectron) {
+            Electron.getCurrentCluster().then((r) => {
+                setClusterName(r.data);
+            });
+        }
     }, []);
     api.start({ width: open ? '15em' : '3em', treeOpacity: open ? 1 : 0 });
     return (
@@ -146,15 +148,17 @@ export default function Sidebar() {
                     zIndex: 1000,
                 }}
             >
-                <SidebarItem
-                    id="cluster"
-                    type="button"
-                    icon="desktop"
-                    opacity={styles.treeOpacity}
-                    isExpanded={open}
-                    title={clusterName}
-                    sideIcon="exchange"
-                />
+                {Electron.isElectron && (
+                    <SidebarItem
+                        id="cluster"
+                        type="button"
+                        icon="desktop"
+                        opacity={styles.treeOpacity}
+                        isExpanded={open}
+                        title={clusterName}
+                        sideIcon="exchange"
+                    />
+                )}
                 {SIDEBAR_ITEM_PROPS.map((sp) => (
                     <SidebarItem
                         key={sp.id}

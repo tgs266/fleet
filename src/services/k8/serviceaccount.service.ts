@@ -4,9 +4,10 @@ import { Filter, PaginationResponse } from '../../models/base';
 import { BindRequest, ServiceAccount, ServiceAccountMeta } from '../../models/serviceaccount.model';
 import getSortBy, { parseFilters } from '../../utils/sort';
 import api from '../axios.service';
+import Electron from '../electron.service';
 
 export default class ServiceAccounts {
-    static base = '/api/v1/serviceaccounts';
+    static base = `${Electron.isElectron ? 'http://localhost:9095' : ''}/api/v1/serviceaccounts`;
 
     static getServiceAccount(
         name: string,

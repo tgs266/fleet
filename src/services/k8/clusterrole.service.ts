@@ -4,9 +4,10 @@ import { Filter, PaginationResponse } from '../../models/base';
 import { ClusterRole, ClusterRoleMeta } from '../../models/clusterrole.model';
 import getSortBy, { parseFilters } from '../../utils/sort';
 import api from '../axios.service';
+import Electron from '../electron.service';
 
 export default class ClusterRoles {
-    static base = '/api/v1/clusterroles';
+    static base = `${Electron.isElectron ? 'http://localhost:9095' : ''}/api/v1/clusterroles`;
 
     static getClusterRole(name: string): Promise<AxiosResponse<ClusterRole>> {
         return api.get(`${ClusterRoles.base}/${name}`);

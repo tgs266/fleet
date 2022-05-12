@@ -2,10 +2,11 @@
 import { AxiosResponse } from 'axios';
 import { Container } from '../../models/container.model';
 import api, { getWSUrl } from '../axios.service';
+import Electron from '../electron.service';
 import getWebsocket from '../websocket';
 
 export default class Containers {
-    static base = '/api/v1';
+    static base = `${Electron.isElectron ? 'http://localhost:9095' : ''}/api/v1`;
 
     static getContainer(
         podName: string,

@@ -4,9 +4,10 @@ import { Filter, PaginationResponse } from '../../models/base';
 import { Role, RoleMeta } from '../../models/role.model';
 import getSortBy, { parseFilters } from '../../utils/sort';
 import api from '../axios.service';
+import Electron from '../electron.service';
 
 export default class Roles {
-    static base = '/api/v1/roles';
+    static base = `${Electron.isElectron ? 'http://localhost:9095' : ''}/api/v1/roles`;
 
     static getRole(name: string, namespace?: string): Promise<AxiosResponse<Role>> {
         return api.get(`${Roles.base}/${namespace}/${name}`);
