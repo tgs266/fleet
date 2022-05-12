@@ -13,7 +13,7 @@ if (userAgent.indexOf(' electron/') > -1) {
 export default class Auth {
     static base = `${
         isElectron
-            ? 'http://localhost:9095/api/v1/auth'
+            ? `http://localhost:9095/proxy/api/v1/auth`
             : urlJoin(window.location.href.replace(window.location.hash, ''), '/api/v1/auth')
     }`;
 

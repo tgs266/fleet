@@ -12,8 +12,12 @@ import urlJoin from '../utils/urljoin';
 import AuthDialog from '../auth/AuthDialog';
 
 export function getWSUrl(path: string): string {
-    const currentBase = `${window.location.href.replace(window.location.hash, '')}`;
-    return urlJoin(currentBase.replace(window.location.protocol, 'ws:'), path);
+    if (!Electron.isElectron) {
+        const currentBase = `${window.location.href.replace(window.location.hash, '')}`;
+        return urlJoin(currentBase.replace(window.location.protocol, 'ws:'), path);
+    }
+    const base = `http://localhost:9095`;
+    return urlJoin(base, path);
 }
 
 const api = axios.create();

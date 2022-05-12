@@ -8,7 +8,7 @@ import Electron from '../electron.service';
 
 export default class ClusterRoleBindings {
     static base = `${
-        Electron.isElectron ? 'http://localhost:9095' : ''
+        Electron.isElectron ? `http://localhost:9095` : ''
     }/api/v1/clusterrolebindings`;
 
     static getClusterRoleBinding(name: string): Promise<AxiosResponse<ClusterRoleBinding>> {

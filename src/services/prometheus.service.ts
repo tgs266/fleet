@@ -14,7 +14,7 @@ import Electron from './electron.service';
 import K8 from './k8.service';
 
 export default class Prometheus {
-    static base = `${Electron.isElectron ? 'http://localhost:9095' : ''}/api/v1/metrics`;
+    static base = `${Electron.isElectron ? `http://localhost:9095/proxy` : ''}/api/v1/metrics`;
 
     static accuracy: string = '1m';
 

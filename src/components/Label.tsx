@@ -1,5 +1,6 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable indent */
-import { Alignment, Colors } from '@blueprintjs/core';
+import { Alignment } from '@blueprintjs/core';
 import * as React from 'react';
 import Text from './Text/Text';
 
@@ -21,11 +22,16 @@ export default function Label(props: {
     style?: React.CSSProperties;
     children: React.ReactNode;
     label: string;
+    small?: boolean;
+    muted?: boolean;
 }) {
+    if (props.small === null || props.small === undefined) {
+        props.small = true;
+    }
     const alignItems = getFlexAlignment(props.alignment);
     return (
         <div style={{ ...props.style, display: 'flex', flexDirection: 'column', alignItems }}>
-            <Text small style={{ color: Colors.GRAY2 }}>
+            <Text small={props.small} muted={props.muted}>
                 {props.label}
             </Text>
             {props.children}

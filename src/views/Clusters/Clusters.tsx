@@ -1,14 +1,17 @@
 /* eslint-disable react/no-unstable-nested-components */
 import * as React from 'react';
 import { useNavigate } from 'react-router';
-import { Alignment, Button, Card } from '@blueprintjs/core';
+import { Alignment, Button, Card, Intent, Tag } from '@blueprintjs/core';
 import { useNavContext } from '../../layouts/Navigation';
 import Electron from '../../services/electron.service';
 import { ElectronCluster } from '../../models/cluster.model';
-import TitledCard from '../../components/Cards/TitledCard';
 import ResourceTable from '../../components/ResourceTable';
+import Toaster from '../../services/toast.service';
+import ClusterConfigureDialog from './ClusterConfigureDialog';
 
 export default function Clusters() {
+    const [isDialogOpen, setIsDialogOpen] = React.useState(false);
+
     const [, setState] = useNavContext();
     React.useEffect(
         () =>
@@ -18,7 +21,11 @@ export default function Clusters() {
                         text: 'clusters',
                     },
                 ],
-                buttons: [],
+                buttons: [
+                    <Button onClick={() => setIsDialogOpen(true)} intent={Intent.PRIMARY}>
+                        Configure New Cluster
+                    </Button>,
+                ],
                 menu: null,
             }),
         []
@@ -33,13 +40,21 @@ export default function Clusters() {
 
     React.useEffect(() => {
         Electron.getClusters().then((r) => {
+            if (r.data.length === 0) {
+                Toaster.show({
+                    intent: Intent.WARNING,
+                    message:
+                        'Could not detect any kubernetes clusters in your kubeconfig file. Please add one',
+                });
+            }
             setClusters(r.data);
         });
     }, []);
 
     return (
-        <TitledCard title="Clusters" style={{ margin: '1em' }}>
-            <Card style={{ padding: 0 }}>
+        <>
+            <ClusterConfigureDialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)} />
+            <Card style={{ padding: 0, margin: '1em' }}>
                 <ResourceTable<ElectronCluster>
                     data={clusters}
                     keyPath="cluster"
@@ -47,17 +62,30 @@ export default function Clusters() {
                         {
                             columnName: 'Cluster',
                             key: 'cluster',
-                            columnFunction: (row: ElectronCluster) => row.cluster,
+                            columnFunction: (row: ElectronCluster) => row.name,
                         },
                         {
-                            columnName: 'User',
-                            key: 'user',
-                            columnFunction: (row: ElectronCluster) => row.user,
+                            columnName: 'Source',
+                            key: 'source',
+                            columnFunction: (row: ElectronCluster) => row.source,
                         },
                         {
-                            columnName: 'Namespace',
-                            key: 'namespace',
-                            columnFunction: (row: ElectronCluster) => row.namespace,
+                            columnName: 'Connected',
+                            key: 'isConnected',
+                            columnFunction: (row: ElectronCluster) => {
+                                if (row.isConnected) {
+                                    return (
+                                        <Tag round intent={Intent.SUCCESS}>
+                                            True
+                                        </Tag>
+                                    );
+                                }
+                                return (
+                                    <Tag round intent={Intent.DANGER}>
+                                        False
+                                    </Tag>
+                                );
+                            },
                         },
                         {
                             columnName: '',
@@ -78,6 +106,6 @@ export default function Clusters() {
                     ]}
                 />
             </Card>
-        </TitledCard>
+        </>
     );
 }

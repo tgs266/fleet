@@ -21,7 +21,7 @@ export default function Metrics(props: {
                 <TitledCard
                     titleMarginBottom="0"
                     title="CPU Usage"
-                    style={{ width: 'calc(50% - 0.5em)', marginLeft: '0.5em' }}
+                    style={{ width: 'calc(50% - 0.5em)', marginRight: '0.5em' }}
                 >
                     <RangeQueryLineChart
                         data={{
@@ -34,7 +34,7 @@ export default function Metrics(props: {
                 <TitledCard
                     titleMarginBottom="0"
                     title="Memory Usage"
-                    style={{ width: 'calc(50% - 0.5em)', marginRight: '0.5em' }}
+                    style={{ width: 'calc(50% - 0.5em)', marginLeft: '0.5em' }}
                 >
                     <RangeQueryLineChart
                         data={{

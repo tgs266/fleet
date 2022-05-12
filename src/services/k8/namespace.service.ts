@@ -8,7 +8,7 @@ import api from '../axios.service';
 import Electron from '../electron.service';
 
 export default class Namespaces {
-    static base = `${Electron.isElectron ? 'http://localhost:9095' : ''}/api/v1/namespaces`;
+    static base = `${Electron.isElectron ? `http://localhost:9095/proxy` : ''}/api/v1/namespaces`;
 
     static getNamespaces(
         sort?: TableSort,

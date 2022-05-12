@@ -7,7 +7,7 @@ import api from '../axios.service';
 import Electron from '../electron.service';
 
 export default class Nodes {
-    static base = `${Electron.isElectron ? 'http://localhost:9095' : ''}/api/v1/nodes`;
+    static base = `${Electron.isElectron ? `http://localhost:9095/proxy` : ''}/api/v1/nodes`;
 
     static getNodes(): Promise<AxiosResponse<NodeMeta[]>> {
         if (process.env.TEST_ENV) {

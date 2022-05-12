@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-loop-func */
+/* eslint-disable guard-for-in */
 /* eslint-disable no-restricted-syntax */
 const express = require('express');
 const fs = require('fs');
@@ -8,21 +10,57 @@ const homedir = require('os').homedir();
 const bodyParser = require('body-parser');
 const k8s = require('@kubernetes/client-node');
 const { default: axios } = require('axios');
+const proxy = require('http-proxy-middleware');
+const { ClusterManager } = require('./clustermanager');
 
 const app = express();
 
-let server = null;
+const clusters = new ClusterManager();
+
+app.use(
+    '/proxy',
+    proxy.createProxyMiddleware({
+        target: 'http://localhost:9095',
+        changeOrigin: true,
+        pathRewrite: { '^/proxy/': '' },
+        secure: true,
+        router() {
+            if (clusters.current) {
+                return `http://localhost:${clusters.current.port}/`;
+            }
+            return 'http://localhost:9095/proxyFail';
+        },
+    })
+);
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(bodyParser.raw());
+
+app.use('/proxyFail/*', (req, res) => {
+    res.status(500).json({
+        status: 'NO_CLUSTER_SELECTED',
+        code: 500,
+        message: 'no cluster selected',
+    });
+});
 
 app.get('/api/v1/electron/clusters', (req, res) => {
     try {
         const rawYaml = fs.readFileSync(path.join(homedir, '.kube', 'config'));
         const kubeconfig = new k8s.KubeConfig();
         kubeconfig.loadFromString(rawYaml.toString());
-        res.status(200).json(kubeconfig.contexts);
+        for (const context of kubeconfig.contexts) {
+            const cl = {
+                name: context.name,
+                isConnected: false,
+                source: path.join(homedir, '.kube', 'config'),
+                port: null,
+                server: null,
+            };
+            clusters.addIfNotPresent(cl);
+        }
+        res.status(200).json(clusters.clusters);
     } catch {
         res.status(404).json({
             status: 'NO_FILE_FOUND',
@@ -73,10 +111,7 @@ app.post('/api/v1/electron/connect', (req, res) => {
             for (const pod of r.body.items) {
                 if (pod.metadata.name.includes('fleet')) {
                     const forward = new k8s.PortForward(kubeconfig);
-                    if (server) {
-                        server.close();
-                    }
-                    server = net.createServer((socket) => {
+                    const server = net.createServer((socket) => {
                         forward.portForward(
                             'fleet',
                             pod.metadata.name,
@@ -86,13 +121,23 @@ app.post('/api/v1/electron/connect', (req, res) => {
                             socket
                         );
                     });
-                    server.listen(9095, '127.0.0.1');
+                    server.listen(0);
+                    clusters.updateOrAdd({
+                        name: context.name,
+                        isConnected: true,
+                        port: server.address().port,
+                        server,
+                    });
+                    clusters.setCurrent(context.name, app);
                     axios
-                        .post('http://127.0.0.1:9095/api/v1/auth/login', {
+                        .post(`http://127.0.0.1:${server.address().port}/api/v1/auth/login`, {
                             configFile: YAML.stringify(JSON.parse(kubeconfig.exportConfig())),
                         })
                         .then((r2) => {
-                            res.json(r2.data);
+                            res.json({
+                                token: r2.data.token,
+                                cluster: clusters.getCluster(context.name),
+                            });
                         })
                         .catch((r3) => {
                             res.json(r3);
@@ -115,4 +160,4 @@ app.post('/api/v1/electron/connect', (req, res) => {
         });
 });
 
-app.listen(9096);
+app.listen(9095);

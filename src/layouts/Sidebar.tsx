@@ -153,10 +153,10 @@ export default function Sidebar() {
                         id="cluster"
                         type="button"
                         icon="desktop"
+                        target="/clusters"
                         opacity={styles.treeOpacity}
                         isExpanded={open}
                         title={clusterName}
-                        sideIcon="exchange"
                     />
                 )}
                 {SIDEBAR_ITEM_PROPS.map((sp) => (

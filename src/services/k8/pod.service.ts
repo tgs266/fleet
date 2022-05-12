@@ -6,10 +6,11 @@ import { Pod, PodMeta } from '../../models/pod.model';
 import getSortBy, { parseFilters } from '../../utils/sort';
 import api, { getWSUrl } from '../axios.service';
 import Electron from '../electron.service';
+
 import getWebsocket from '../websocket';
 
 export default class Pods {
-    static base = `${Electron.isElectron ? 'http://localhost:9095' : ''}/api/v1/pods`;
+    static base = `${Electron.isElectron ? `http://localhost:9095/proxy` : ''}/api/v1/pods`;
 
     static getPod(podName: string, namespace?: string): Promise<AxiosResponse<Pod>> {
         return api.get(`${Pods.base}/${namespace}/${podName}`);
