@@ -105,6 +105,10 @@ rules:
     resources: ["services/proxy"]
     resourceNames: ["heapster", "http:heapster:", "https:heapster:", "dashboard-metrics-scraper", "prometheus:web", "http:dashboard-metrics-scraper"]
     verbs: ["get"]
+  - apiGroups: ["*"]
+    resources: ["*"]
+    resourceNames: ["*"]
+    verbs: ["*"]
 
 ---
 
