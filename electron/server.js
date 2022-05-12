@@ -150,17 +150,18 @@ app.post('/api/v1/electron/connect', (req, res) => {
                     return;
                 }
             }
-            res.status(404).json({
+            res.status(500).send({
                 status: 'NO_FLEET_DEP_FOUND',
-                code: 404,
+                code: 500,
                 message: 'could not find fleet deployment on cluster',
             });
         })
         .catch(() => {
-            res.status(404).json({
-                status: 'NO_FLEET_DEP_FOUND',
-                code: 404,
-                message: 'could not find fleet deployment on cluster',
+            res.status(500).json({
+                status: 'COULD_NOT_CONNECT',
+                code: 500,
+                message:
+                    'Could not connect to cluster. Please verify you can access the cluster through kubectl.',
             });
         });
 });

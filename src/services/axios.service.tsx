@@ -10,6 +10,7 @@ import Toaster from './toast.service';
 import Electron from './electron.service';
 import urlJoin from '../utils/urljoin';
 import AuthDialog from '../auth/AuthDialog';
+import ClusterConfigureDialog from '../views/Clusters/ClusterConfigureDialog';
 
 export function getWSUrl(path: string): string {
     if (!Electron.isElectron) {
@@ -52,6 +53,21 @@ function isPromise(p: any) {
 
 export function handleError(error: AxiosError<FleetError>) {
     if (error.config.url.includes('metrics')) {
+        return;
+    }
+    if (error.response.data.status === 'NO_FLEET_DEP_FOUND') {
+        let d = document.createElement('div');
+        document.body.appendChild(d);
+        ReactDOM.render(
+            React.createElement(ClusterConfigureDialog, {
+                open: true,
+                onClose: () => {
+                    ReactDOM.unmountComponentAtNode(d);
+                    d = null;
+                },
+            }),
+            d
+        );
         return;
     }
     // no server running - indicates electron
