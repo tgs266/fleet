@@ -71,6 +71,7 @@ func (self *AuthManager) Login(request LoginRequest) (*LoginResponse, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	return self.Encode(authInfo)
 }
 
@@ -80,7 +81,8 @@ func (self *AuthManager) Encode(authInfo *api.AuthInfo) (*LoginResponse, error) 
 		return nil, err
 	}
 	return &LoginResponse{
-		Token: token,
+		AuthInfo: authInfo,
+		Token:    token,
 	}, nil
 }
 

@@ -9,16 +9,18 @@ import {
     PrometheusResponse,
     PrometheusQueryResponse,
 } from '../models/prometheus.model';
-import api from './axios.service';
+import api, { getBackendApiUrl } from './axios.service';
 import K8 from './k8.service';
 
 export default class Prometheus {
+    static base = '/api/v1/metrics';
+
     static accuracy: string = '1m';
 
     static queryRange(
         query: JSONObjectType<PrometheusRangeQuery>
     ): Promise<AxiosResponse<JSONObjectType<PrometheusResponse<PrometheusRangeQueryResponse>>>> {
-        return api.post('/api/v1/metrics/query/range', query);
+        return api.post(`${getBackendApiUrl(Prometheus.base)}/query/range`, query);
     }
 
     static pollQueryRange(
@@ -42,7 +44,7 @@ export default class Prometheus {
     static query(
         query: JSONObjectType<PrometheusRangeQuery>
     ): Promise<AxiosResponse<JSONObjectType<PrometheusResponse<PrometheusQueryResponse>>>> {
-        return api.post('/api/v1/metrics/query', query);
+        return api.post(`${getBackendApiUrl(Prometheus.base)}/query`, query);
     }
 
     static pollQuery(

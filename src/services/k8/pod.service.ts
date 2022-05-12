@@ -4,14 +4,14 @@ import { Filter, PaginationResponse } from '../../models/base';
 import { JSONObject } from '../../models/json.model';
 import { Pod, PodMeta } from '../../models/pod.model';
 import getSortBy, { parseFilters } from '../../utils/sort';
-import api, { getWSUrl } from '../axios.service';
+import api, { getBackendApiUrl, getWSUrl } from '../axios.service';
 import getWebsocket from '../websocket';
 
 export default class Pods {
-    static base = '/api/v1/pods';
+    static base = `/api/v1/pods`;
 
     static getPod(podName: string, namespace?: string): Promise<AxiosResponse<Pod>> {
-        return api.get(`${Pods.base}/${namespace}/${podName}`);
+        return api.get(`${getBackendApiUrl(Pods.base)}/${namespace}/${podName}`);
     }
 
     static getPods(
@@ -21,17 +21,17 @@ export default class Pods {
         pageSize?: number,
         filters?: Filter[]
     ): Promise<AxiosResponse<PaginationResponse<PodMeta>>> {
-        return api.get(`${Pods.base}/${namespace || '_all_'}`, {
+        return api.get(`${getBackendApiUrl(Pods.base)}/${namespace || '_all_'}`, {
             params: { sortBy: getSortBy(sort), offset, pageSize, filterBy: parseFilters(filters) },
         });
     }
 
     static restartPod(podName: string, namespace?: string): Promise<AxiosResponse<any>> {
-        return api.post(`${Pods.base}/${namespace}/${podName}/restart`);
+        return api.post(`${getBackendApiUrl(Pods.base)}/${namespace}/${podName}/restart`);
     }
 
     static deletePod(pod: string, namespace: string): Promise<AxiosResponse<any>> {
-        return api.delete(`${Pods.base}/${namespace}/${pod}/`);
+        return api.delete(`${getBackendApiUrl(Pods.base)}/${namespace}/${pod}/`);
     }
 
     static openEventWebsocket(

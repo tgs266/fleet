@@ -25,11 +25,11 @@ export interface IResourceTableProps<T> {
     data: T[];
     title?: string;
     keyPath: string;
-    sort: TableSort;
-    onSortChange: (sort: TableSort) => void;
+    sort?: TableSort;
+    onSortChange?: (sort: TableSort) => void;
     onFiltersChange?: (filters: Filter[]) => void;
     filters?: Filter[];
-    paginationProps: PaginationProps;
+    paginationProps?: PaginationProps;
 }
 
 export const DEFAULT_SORTABLE_ID = 'name';
