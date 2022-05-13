@@ -8,7 +8,7 @@ cd fleet-temp
 
 curl -L https://api.github.com/repos/tgs266/fleet/tarball | tar xzv -C fleet-temp --strip-components 1
 
-cd fleet 
+cd fleet-temp/fleet
 cd deploy 
 kubectl apply -f aio.yaml
 kubectl apply -f prometheus/
