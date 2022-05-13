@@ -58,6 +58,14 @@ func initializeRoleBindingRoutes(app *api.API) {
 	app.Get("/api/v1/clusterrolebindings/:name", GetClusterRoleBinding)
 }
 
+func initializePromRoutes(app *api.API) {
+	app.Get("/api/v1/metrics/query", PrometheusQuery)
+	app.Post("/api/v1/metrics/query", PrometheusQuery)
+	app.Get("/api/v1/metrics/query/range", PrometheusQueryRange)
+	app.Post("/api/v1/metrics/query/range", PrometheusQueryRange)
+	app.Get("/api/v1/metrics/alerts", PrometheusAlert)
+}
+
 func initializeSecretRoutes(app *api.API) {
 	app.Get("/api/v1/secrets/:namespace/", GetSecrets)
 	app.Get("/api/v1/secrets/:namespace/:name", GetSecret)
@@ -66,6 +74,7 @@ func initializeSecretRoutes(app *api.API) {
 func initializeOtherRoutes(app *api.API) {
 	app.Get("/api/v1/auth/", UsingAuth)
 	app.Get("/api/v1/auth/cani", CanI)
+	app.Get("/api/v1/auth/whoami", WhoAmI)
 	app.Post("/api/v1/auth/login", Login)
 	app.Post("/api/v1/auth/refresh", Refresh)
 	app.Get("/api/v1/images", GetAllImages)
@@ -87,6 +96,8 @@ func initializeOtherRoutes(app *api.API) {
 	app.Delete(rawBase+"/:name", RawDelete)
 
 	app.Get("/api/v1/filters/properties", GetFilters)
+
+	// app.Get("/api/v1/cluster/name", GetCurrentClusterName)
 }
 
 func InitializeRoutes(app *api.API) {
@@ -99,4 +110,5 @@ func InitializeRoutes(app *api.API) {
 	initializeRoleBindingRoutes(app)
 	initializeSecretRoutes(app)
 	initializeOtherRoutes(app)
+	initializePromRoutes(app)
 }

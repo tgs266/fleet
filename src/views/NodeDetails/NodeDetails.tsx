@@ -1,30 +1,32 @@
 /* eslint-disable react/static-property-placement */
 import * as React from 'react';
 import { AxiosResponse } from 'axios';
-import { Card, Intent, Tag } from '@blueprintjs/core';
 import { IWithRouterProps, withRouter } from '../../utils/withRouter';
 import K8 from '../../services/k8.service';
-import TitledCard from '../../components/TitledCard';
 import { IBreadcrumb, NavContext } from '../../layouts/Navigation';
-import InfoCard from '../../components/InfoCard';
 import LabeledText from '../../components/LabeledText';
-import Label from '../../components/Label';
-import Text from '../../components/Text/Text';
 import AgeText from '../../components/AgeText';
 import { Node } from '../../models/node.model';
-import TagList from '../../components/TagList';
-import NodeResourceInformation from './NodeResourceInformation';
-import PodTable from '../../components/PodTable';
 import { TableSort } from '../../components/SortableTableHeaderCell';
 import { Pagination } from '../../models/component.model';
-import AnnotationsTagList from '../../components/AnnotationsTagList';
+import { PrometheusRangeQueryResponse, PrometheusResponse } from '../../models/prometheus.model';
 import LabelsTagList from '../../components/LabelsTagList';
+import AnnotationsTagList from '../../components/AnnotationsTagList';
+import { JSONObjectType } from '../../models/json.model';
+import Prometheus from '../../services/prometheus.service';
+import InfoCard from '../../components/Cards/InfoCard';
+import TabControlBar from '../../components/TabControlBar';
+import Details from './Tabs/Details';
+import Metrics from './Tabs/Metrics';
 
 interface INodeDetailsState {
     node: Node;
     sort: TableSort;
     pagination: Pagination;
     pollId: NodeJS.Timer;
+    metricsPollId: NodeJS.Timer;
+    metricsData: JSONObjectType<PrometheusResponse<PrometheusRangeQueryResponse>>;
+    selectedTab: string;
 }
 
 class NodeDetails extends React.Component<IWithRouterProps, INodeDetailsState> {
@@ -33,8 +35,11 @@ class NodeDetails extends React.Component<IWithRouterProps, INodeDetailsState> {
     constructor(props: IWithRouterProps) {
         super(props);
         this.state = {
+            selectedTab: 'Details',
             node: null,
             pollId: null,
+            metricsPollId: null,
+            metricsData: null,
             sort: { sortableId: 'name', ascending: false },
             pagination: { total: null, page: 0, pageSize: 10 },
         };
@@ -55,6 +60,30 @@ class NodeDetails extends React.Component<IWithRouterProps, INodeDetailsState> {
             buttons: [],
             menu: null,
         });
+        Prometheus.pollQueryRange(
+            {
+                memoryUsage: Prometheus.buildQuery('memoryUsage', {
+                    resource: 'node',
+                    name: this.props.params.nodeName,
+                }),
+                cpuUsage: Prometheus.buildQuery('cpuUsage', {
+                    resource: 'node',
+                    name: this.props.params.nodeName,
+                }),
+                networkTransmitted: Prometheus.buildQuery('networkTransmitted', {
+                    resource: 'node',
+                    name: this.props.params.nodeName,
+                }),
+                networkRecieved: Prometheus.buildQuery('networkRecieved', {
+                    resource: 'node',
+                    name: this.props.params.nodeName,
+                }),
+            },
+            (resp) => {
+                this.setState({ metricsData: resp.data });
+            },
+            (t) => this.setState({ metricsPollId: t })
+        );
         K8.nodes
             .getNode(
                 this.props.params.nodeName,
@@ -84,6 +113,7 @@ class NodeDetails extends React.Component<IWithRouterProps, INodeDetailsState> {
 
     componentWillUnmount() {
         clearInterval(this.state.pollId);
+        clearInterval(this.state.metricsPollId);
     }
 
     getPodOffset = () => {
@@ -121,6 +151,10 @@ class NodeDetails extends React.Component<IWithRouterProps, INodeDetailsState> {
         this.setState({ ...this.state, pagination: { ...this.state.pagination, page } }, this.pull);
     };
 
+    setSelectedTab = (tab: string) => {
+        this.setState({ selectedTab: tab });
+    };
+
     render() {
         if (!this.state.node) {
             return null;
@@ -130,7 +164,7 @@ class NodeDetails extends React.Component<IWithRouterProps, INodeDetailsState> {
             <div>
                 <div style={{ margin: '1em', marginBottom: 0 }}>
                     <div style={{ marginBottom: '1em' }}>
-                        <InfoCard title={node.name}>
+                        <InfoCard object={node} title={node.name}>
                             <div style={{ display: 'flex' }}>
                                 <LabeledText label="AGE">
                                     <AgeText value={node.createdAt} hr />
@@ -151,78 +185,26 @@ class NodeDetails extends React.Component<IWithRouterProps, INodeDetailsState> {
                         </InfoCard>
                     </div>
 
-                    <TitledCard style={{ marginBottom: '1em' }} title="Node Info">
-                        <div style={{ display: 'flex' }}>
-                            <LabeledText label="MACHINE ID">{node.nodeInfo.machineID}</LabeledText>
-                            <LabeledText style={{ marginLeft: '2em' }} label="SYSTEM UUID">
-                                {node.nodeInfo.systemUUID}
-                            </LabeledText>
-                            <LabeledText style={{ marginLeft: '2em' }} label="BOOT ID">
-                                {node.nodeInfo.bootID}
-                            </LabeledText>
-                        </div>
-                        <div style={{ display: 'flex', marginTop: '0.25em' }}>
-                            <LabeledText label="OS IMAGE">{node.nodeInfo.osImage}</LabeledText>
-                            <LabeledText style={{ marginLeft: '2em' }} label="OPERATING SYSTEM">
-                                {node.nodeInfo.operatingSystem}
-                            </LabeledText>
-                            <LabeledText style={{ marginLeft: '2em' }} label="KERNEL VERSION">
-                                {node.nodeInfo.kernelVersion}
-                            </LabeledText>
-                            <LabeledText style={{ marginLeft: '2em' }} label="ARCHITECTURE">
-                                {node.nodeInfo.architecture}
-                            </LabeledText>
-                            <LabeledText
-                                style={{ marginLeft: '2em' }}
-                                label="CONTAINER RUNTIME VERSION"
-                            >
-                                {node.nodeInfo.containerRuntimeVersion}
-                            </LabeledText>
-                            <LabeledText style={{ marginLeft: '2em' }} label="KUBELET VERSION">
-                                {node.nodeInfo.kubeletVersion}
-                            </LabeledText>
-                            <LabeledText style={{ marginLeft: '2em' }} label="KUBE-PROXY VERSION">
-                                {node.nodeInfo.kubeProxyVersion}
-                            </LabeledText>
-                        </div>
-                    </TitledCard>
+                    <TabControlBar
+                        tabs={['Details', 'Metrics']}
+                        selectedTab={this.state.selectedTab}
+                        setSelectedTab={this.setSelectedTab}
+                        style={{ marginBottom: '1em' }}
+                    />
 
-                    <TitledCard style={{ marginBottom: '1em' }} title="Network Info">
-                        <div style={{ display: 'flex' }}>
-                            <LabeledText label="POD CIDR">{node.podCIDR}</LabeledText>
-                        </div>
-                        <div style={{ display: 'flex', marginTop: '0.25em' }}>
-                            {node.addresses && (
-                                <Label label="ADDRESSES">
-                                    <TagList spacing="0.25em">
-                                        {node.addresses.map((addr) => (
-                                            <Tag intent={Intent.NONE} round>
-                                                <Text small>
-                                                    {addr.type}: {addr.address}
-                                                </Text>
-                                            </Tag>
-                                        ))}
-                                    </TagList>
-                                </Label>
-                            )}
-                        </div>
-                    </TitledCard>
+                    {this.state.selectedTab === 'Details' && (
+                        <Details
+                            node={this.state.node}
+                            sort={this.state.sort}
+                            pagination={this.state.pagination}
+                            setSort={this.setSort}
+                            setPage={this.setPage}
+                        />
+                    )}
 
-                    <NodeResourceInformation style={{ marginBottom: '1em' }} nodeMeta={node} />
-
-                    <TitledCard style={{ marginBottom: '1em' }} title="Pods">
-                        <Card style={{ padding: 0 }}>
-                            <PodTable
-                                pods={node.pods.items}
-                                sort={this.state.sort}
-                                onSortChange={this.setSort}
-                                paginationProps={{
-                                    ...this.state.pagination,
-                                    onPageChange: this.setPage,
-                                }}
-                            />
-                        </Card>
-                    </TitledCard>
+                    {this.state.selectedTab === 'Metrics' && (
+                        <Metrics metricsData={this.state.metricsData} />
+                    )}
                 </div>
             </div>
         );

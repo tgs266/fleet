@@ -1,25 +1,27 @@
 import { AxiosResponse } from 'axios';
 import { TableSort } from '../../components/SortableTableHeaderCell';
-import { PaginationResponse } from '../../models/base';
+import { Filter, PaginationResponse } from '../../models/base';
 import { Service, ServiceMeta } from '../../models/service.model';
-import getSortBy from '../../utils/sort';
-import api from '../axios.service';
+import getSortBy, { parseFilters } from '../../utils/sort';
+import api, { getBackendApiUrl } from '../axios.service';
 
 export default class Services {
-    static base = '/api/v1/services';
+    static base = `/api/v1/services`;
 
     static getService(serviceName: string, namespace?: string): Promise<AxiosResponse<Service>> {
-        return api.get(`${Services.base}/${namespace}/${serviceName}`);
+        return api.get(`${getBackendApiUrl(Services.base)}/${namespace}/${serviceName}`);
     }
 
     static getServices(
         namespace?: string,
         sort?: TableSort,
         offset?: number,
-        pageSize?: number
+        pageSize?: number,
+        filters?: Filter[]
     ): Promise<AxiosResponse<PaginationResponse<ServiceMeta>>> {
-        return api.get(`${Services.base}/${namespace || '_all_'}/`, {
-            params: { sortBy: getSortBy(sort), offset, pageSize },
+        const filterBy = parseFilters(filters);
+        return api.get(`${getBackendApiUrl(Services.base)}/${namespace || '_all_'}/`, {
+            params: { sortBy: getSortBy(sort), offset, pageSize, filterBy },
         });
     }
 }

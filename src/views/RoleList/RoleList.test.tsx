@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { MemoryRouter, Route, Routes } from 'react-router';
-import { render, fireEvent } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import '@testing-library/jest-dom';
@@ -34,7 +34,7 @@ const server = setupServer(
             })
         );
     }),
-    rest.get(`${ClusterRoles.base}/*`, (req, res, ctx) => {
+    rest.get(`${ClusterRoles.base}`, (req, res, ctx) => {
         const count = 50;
         const items = [];
         for (let i = 0; i < count; i += 1) {
@@ -64,25 +64,4 @@ test('renders without crashing', async () => {
         </MemoryRouter>
     );
     await delay(500);
-});
-
-test('can go forwards and backwards in table', async () => {
-    const wrapper = render(
-        <MemoryRouter initialEntries={['/']}>
-            <Routes>
-                <Route path="/" element={<Layout />}>
-                    <Route path="" element={<RoleList />} />
-                </Route>
-            </Routes>
-        </MemoryRouter>
-    );
-
-    await delay(1000).then(async () => {
-        const forwardBtn = wrapper.getAllByTestId('next-page')[0];
-        fireEvent.click(forwardBtn);
-        await delay(1000).then(() => {
-            const backwardBtn = wrapper.getAllByTestId('prev-page')[0];
-            fireEvent.click(backwardBtn);
-        });
-    });
 });

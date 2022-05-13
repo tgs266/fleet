@@ -20,6 +20,8 @@ func GetPodMetaList(c *fiber.Ctx, client *client.ClientManager) error {
 		return err
 	}
 
+	// K8.K8.Rest
+
 	namespace := shared.GetNamespace(c.Params("namespace"))
 
 	dataSelector := types.BuildDataRequest(c).BuildDataSelector().AddIgnoreSystemNamespace()

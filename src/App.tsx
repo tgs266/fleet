@@ -29,6 +29,8 @@ import ClusterRoleBindingDetails from './views/ClusterRoleBindingDetails/Cluster
 import SecretList from './views/SecretList/SecretList';
 import SecretDetails from './views/SecretDetails/SecretDetails';
 import Shell from './views/Shell/Shell';
+import FleetView from './views/Fleet/FleetView';
+import Clusters from './views/Clusters/Clusters';
 
 function getCookie(name: string) {
     const value = `; ${document.cookie}`;
@@ -52,6 +54,8 @@ function App() {
         <Routes>
             <Route path="/" element={<Layout />}>
                 <Route path="" element={<Home />} />
+                <Route path="clusters" element={<Clusters />} />
+                <Route path="fleet" element={<FleetView />} />
                 <Route path="deployments" element={<DeploymentList />} />
                 <Route path="nodes" element={<NodeList />} />
                 <Route path="create-deployment" element={<CreateDeployment />} />

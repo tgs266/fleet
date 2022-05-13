@@ -12,6 +12,7 @@ type ComparableType interface {
 }
 
 type Comparable interface {
+	Contains(Comparable) bool
 	Compare(Comparable) int
 	GTE(Comparable) bool
 	LTE(Comparable) bool
@@ -51,6 +52,11 @@ func (c ComparableString) LTE(other Comparable) bool {
 	return string(c) <= string(o)
 }
 
+func (c ComparableString) Contains(other Comparable) bool {
+	o := other.(ComparableString)
+	return strings.Contains(string(c), string(o))
+}
+
 func (c ComparableInt64) Compare(other Comparable) int {
 	o := other.(ComparableInt64)
 	if int64(c) < int64(o) {
@@ -70,6 +76,10 @@ func (c ComparableInt64) GTE(other Comparable) bool {
 func (c ComparableInt64) LTE(other Comparable) bool {
 	o := other.(ComparableInt64)
 	return int64(c) <= int64(o)
+}
+
+func (c ComparableInt64) Contains(other Comparable) bool {
+	return false
 }
 
 type SortBy struct {

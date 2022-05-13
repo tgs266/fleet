@@ -23,13 +23,22 @@ input::-webkit-inner-spin-button {
   margin: 0;
 }
 
+.block {
+    display: block !important
+}
+
 /* Firefox */
 input[type=number] {
   -moz-appearance: textfield;
 }
 
 html {
-    background: @gray4;
+    background: @light-gray5;
+    min-height: 100vh;
+}
+
+body {
+    min-height: 100vh;
 }
 
 .bp4-overlay {
@@ -66,7 +75,7 @@ html {
 
 .fleet.fleet-blueprint-theme {
     background: @light-gray5;
-    height: 100%;
+    // min-height: 100vh;
     
 
     .fleet-container {
@@ -143,14 +152,39 @@ html {
 
     .sidebar {
         background-color: @dark-gray5;
-        width: 4em !important;
-        height: 100vh;
         position: sticky;
         top: 0;
         display: flex;
         flex-flow: column;
-        align-items: center;
         z-index: 101;
+        height: 100vh;
+
+        .sidebar-hover {
+            user-select: none;
+            -webkit-user-select: none;
+            cursor: pointer;
+            color: @light-gray5
+        }
+
+        .sidebar-hover.sidebar-disabled {
+            cursor: default;
+        }
+
+        .sidebar-hover:hover {
+            background-color: @dark-gray3;
+        }
+
+        .sidebar-parent-active {
+            background-color: @dark-gray3;
+        }
+
+        .sidebar-child {
+            color: @gray3
+        }
+
+        .sidebar-child.active {
+            color: @light-gray5
+        }
 
         .sidebar-icon-logo {
             color: white;

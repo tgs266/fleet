@@ -1,0 +1,287 @@
+# modified from https://github.com/kubernetes/dashboard/blob/0443079d7b23816c8e484a6ee49c5b587fc664a3/aio/deploy/recommended.yaml
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: fleet
+
+---
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app.kubernetes.io/name: fleet
+  name: fleet
+  namespace: fleet
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    app.kubernetes.io/name: fleet
+  name: fleet
+  namespace: fleet
+spec:
+  ports:
+    - port: 80
+      targetPort: 9095
+  selector:
+    app.kubernetes.io/name: fleet
+
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  labels:
+    app.kubernetes.io/name: fleet
+  name: fleet-certs
+  namespace: fleet
+type: Opaque
+
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  labels:
+    app.kubernetes.io/name: fleet
+  name: fleet-csrf
+  namespace: fleet
+type: Opaque
+data:
+  csrf: ""
+
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  labels:
+    app.kubernetes.io/name: fleet
+  name: fleet-key-holder
+  namespace: fleet
+type: Opaque
+
+---
+
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  labels:
+    app.kubernetes.io/name: fleet
+  name: fleet-settings
+  namespace: fleet
+
+---
+
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  labels:
+    app.kubernetes.io/name: fleet
+  name: fleet
+  namespace: fleet
+rules:
+  # Allow Dashboard to get, update and delete Dashboard exclusive secrets.
+  - apiGroups: [""]
+    resources: ["secrets"]
+    resourceNames: ["fleet-key-holder", "fleet-certs", "fleet-csrf"]
+    verbs: ["get", "update", "delete"]
+    # Allow Dashboard to get and update 'kubernetes-dashboard-settings' config map.
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    resourceNames: ["fleet-settings"]
+    verbs: ["get", "update"]
+    # Allow Dashboard to get metrics.
+  - apiGroups: [""]
+    resources: ["services"]
+    resourceNames: ["heapster", "dashboard-metrics-scraper", "prometheus:web"]
+    verbs: ["proxy"]
+  - apiGroups: [""]
+    resources: ["services/proxy"]
+    resourceNames: ["heapster", "http:heapster:", "https:heapster:", "dashboard-metrics-scraper", "prometheus:web", "http:dashboard-metrics-scraper"]
+    verbs: ["get"]
+  - apiGroups: ["*"]
+    resources: ["*"]
+    resourceNames: ["*"]
+    verbs: ["*"]
+
+---
+
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  labels:
+    app.kubernetes.io/name: fleet
+  name: fleet
+rules:
+  # Allow Metrics Scraper to get metrics from the Metrics server
+  - apiGroups: ["metrics.k8s.io"]
+    resources: ["pods", "nodes"]
+    verbs: ["get", "list", "watch"]
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/name: fleet
+  name: fleet
+  namespace: fleet
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: fleet
+subjects:
+  - kind: ServiceAccount
+    name: fleet
+    namespace: fleet
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: fleet
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: fleet
+subjects:
+  - kind: ServiceAccount
+    name: fleet
+    namespace: fleet
+
+---
+
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  labels:
+    app.kubernetes.io/name: fleet
+  name: fleet
+  namespace: fleet
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: fleet
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: fleet
+    spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: fleet
+          image: tgs266/fleet-internal:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 9095
+              protocol: TCP
+          args:
+            - -useAuth
+            - -tokenTTL=900
+          volumeMounts:
+            - name: fleet-certs
+              mountPath: /certs
+              # Create on-disk volume to store exec logs
+            - mountPath: /tmp
+              name: tmp-volume
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsUser: 1001
+            runAsGroup: 2001
+      volumes:
+        - name: fleet-certs
+          secret:
+            secretName: fleet-certs
+        - name: tmp-volume
+          emptyDir: {}
+      serviceAccountName: fleet
+      nodeSelector:
+        "kubernetes.io/os": linux
+      # Comment the following tolerations if fleet must not be deployed on master
+      tolerations:
+        - key: node-role.kubernetes.io/master
+          effect: NoSchedule
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    app.kubernetes.io/name: dashboard-metrics-scraper
+  name: dashboard-metrics-scraper
+  namespace: fleet
+spec:
+  ports:
+    - port: 8000
+      targetPort: 8000
+  selector:
+    app.kubernetes.io/name: dashboard-metrics-scraper
+
+---
+
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  labels:
+    app.kubernetes.io/name: dashboard-metrics-scraper
+  name: dashboard-metrics-scraper
+  namespace: fleet
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: dashboard-metrics-scraper
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: dashboard-metrics-scraper
+    spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: dashboard-metrics-scraper
+          image: kubernetesui/metrics-scraper:v1.0.7
+          ports:
+            - containerPort: 8000
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              scheme: HTTP
+              path: /
+              port: 8000
+            initialDelaySeconds: 30
+            timeoutSeconds: 30
+          volumeMounts:
+          - mountPath: /tmp
+            name: tmp-volume
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsUser: 1001
+            runAsGroup: 2001
+      serviceAccountName: fleet
+      nodeSelector:
+        "kubernetes.io/os": linux
+      # Comment the following tolerations if Dashboard must not be deployed on master
+      tolerations:
+        - key: node-role.kubernetes.io/master
+          effect: NoSchedule
+      volumes:
+        - name: tmp-volume
+          emptyDir: {}

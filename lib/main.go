@@ -34,6 +34,7 @@ type Flags struct {
 	oidcClientId     *string
 	oidcClientSecret *string
 	host             *string
+	proxyPort        *string
 }
 
 func parseFlags() Flags {
@@ -44,6 +45,7 @@ func parseFlags() Flags {
 	oidcClientId := flag.String("oidc-client-id", "", "used for oidc authentication")
 	oidcClientSecret := flag.String("oidc-client-secret", "", "used for oidc authentication")
 	host := flag.String("host", "", "")
+	proxyPort := flag.String("proxyPort", "", "")
 
 	flag.Parse()
 	return Flags{
@@ -54,6 +56,7 @@ func parseFlags() Flags {
 		oidcClientId:     oidcClientId,
 		oidcClientSecret: oidcClientSecret,
 		host:             host,
+		proxyPort:        proxyPort,
 	}
 }
 

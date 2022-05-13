@@ -69,6 +69,7 @@ func BuildDeployment(dep *v1.Deployment, svcs *v1c.ServiceList, pods *v1c.PodLis
 	decodedPods := []pod.Pod{}
 	decodedSpecs := []container.ContainerSpec{}
 	decodedSvcs := []service.ServiceMeta{}
+
 	for _, p := range pods.Items {
 		decodedPods = append(decodedPods, *pod.BuildPod(&p, extractedPodMets[p.Name]))
 	}

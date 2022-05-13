@@ -2,15 +2,20 @@ package kubernetes
 
 import (
 	"github.com/tgs266/fleet/lib/kubernetes/test/mock"
+	"github.com/tgs266/fleet/lib/logging"
+	"github.com/tgs266/fleet/lib/prometheus"
 	"github.com/tgs266/fleet/lib/shared"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/kubernetes/fake"
+	rest_fake "k8s.io/client-go/rest/fake"
 )
 
 func GetTestClient() *K8Client {
+
+	logging.Init(logging.LVL_INFO)
 
 	pods := []runtime.Object{
 		mock.GeneratePod(mock.PodMock{
@@ -87,7 +92,9 @@ func GetTestClient() *K8Client {
 	objs = append(objs, serviceAccounts...)
 
 	client := fake.NewSimpleClientset(objs...)
+	prom := prometheus.New(&rest_fake.RESTClient{})
 	return &K8Client{
-		K8: client,
+		K8:         client,
+		Prometheus: prom,
 	}
 }

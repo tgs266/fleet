@@ -18,7 +18,7 @@ func TestGetClusterRole(t *testing.T) {
 	app := setupApp()
 	app.Get("/:name", GetClusterRole)
 
-	req := httptest.NewRequest("GET", "/asdf/asdf?sortBy=name,a", nil)
+	req := httptest.NewRequest("GET", "/asdf?sortBy=name,a", nil)
 
 	app.Test(req)
 }

@@ -1,6 +1,6 @@
 /* eslint-disable indent */
 import * as React from 'react';
-import TitledCard from '../../components/TitledCard';
+import TitledCard from '../../components/Cards/TitledCard';
 import { ContainerSpec } from '../../models/container.model';
 import LabeledText from '../../components/LabeledText';
 

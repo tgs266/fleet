@@ -7,7 +7,7 @@ import TableRow from '../../components/TableRow';
 import TableCell from '../../components/TableCell';
 import Table from '../../components/Table';
 import TableHeader from '../../components/TableHeader';
-import TitledCard from '../../components/TitledCard';
+import TitledCard from '../../components/Cards/TitledCard';
 
 function EndpointTableRow(props: { endpoint: Endpoint }) {
     const [isOpen, setIsOpen] = React.useState(false);

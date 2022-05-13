@@ -1,12 +1,12 @@
 /* eslint-disable object-shorthand */
 import { AxiosResponse } from 'axios';
 import { TableSort } from '../../components/SortableTableHeaderCell';
-import { PaginationResponse } from '../../models/base';
+import { Filter, PaginationResponse } from '../../models/base';
 import { ContainerSpec } from '../../models/container.model';
 import { CreateDeployment, Deployment, DeploymentMeta } from '../../models/deployment.model';
 import { JSONObject } from '../../models/json.model';
-import getSortBy from '../../utils/sort';
-import api, { getWSUrl } from '../axios.service';
+import getSortBy, { parseFilters } from '../../utils/sort';
+import api, { getBackendApiUrl, getWSUrl } from '../axios.service';
 import getWebsocket from '../websocket';
 
 export default class Deployments {
@@ -16,10 +16,11 @@ export default class Deployments {
         namespace?: string,
         sort?: TableSort,
         offset?: number,
-        pageSize?: number
+        pageSize?: number,
+        filters?: Filter[]
     ): Promise<AxiosResponse<PaginationResponse<DeploymentMeta>>> {
-        return api.get(`${Deployments.base}/${namespace || '_all_'}`, {
-            params: { sortBy: getSortBy(sort), offset, pageSize },
+        return api.get(`${getBackendApiUrl(Deployments.base)}/${namespace || '_all_'}`, {
+            params: { sortBy: getSortBy(sort), offset, pageSize, filterBy: parseFilters(filters) },
         });
     }
 
@@ -27,7 +28,7 @@ export default class Deployments {
         deployment: string,
         namespace: string
     ): Promise<AxiosResponse<Deployment>> {
-        return api.get(`${Deployments.base}/${namespace}/${deployment}`);
+        return api.get(`${getBackendApiUrl(Deployments.base)}/${namespace}/${deployment}`);
     }
 
     static getRawDeployment(
@@ -46,7 +47,7 @@ export default class Deployments {
     }
 
     static restartApp(deployment: string, namespace: string): Promise<AxiosResponse<any>> {
-        return api.put(`${Deployments.base}/${namespace}/${deployment}/restart`);
+        return api.put(`${getBackendApiUrl(Deployments.base)}/${namespace}/${deployment}/restart`);
     }
 
     static updateContainerSpec(
@@ -56,13 +57,15 @@ export default class Deployments {
         newSpec: ContainerSpec
     ): Promise<AxiosResponse<any>> {
         return api.put(
-            `${Deployments.base}/${namespace}/${deployment}/container-specs/${oldSpecName}`,
+            `${getBackendApiUrl(
+                Deployments.base
+            )}/${namespace}/${deployment}/container-specs/${oldSpecName}`,
             newSpec
         );
     }
 
     static createDeployment(dep: CreateDeployment): Promise<AxiosResponse<any>> {
-        return api.post(`${Deployments.base}/`, {
+        return api.post(`${getBackendApiUrl(Deployments.base)}/`, {
             namespace: dep.namespace,
             name: dep.name,
             containerSpecs: dep.containerSpecs,
@@ -71,7 +74,7 @@ export default class Deployments {
     }
 
     static deleteDeployment(deployment: string, namespace: string): Promise<AxiosResponse<any>> {
-        return api.delete(`${Deployments.base}/${namespace}/${deployment}`);
+        return api.delete(`${getBackendApiUrl(Deployments.base)}/${namespace}/${deployment}`);
     }
 
     static scale(
@@ -79,7 +82,7 @@ export default class Deployments {
         namespace: string,
         replicas: number
     ): Promise<AxiosResponse<any>> {
-        return api.put(`${Deployments.base}/${namespace}/${deployment}/scale`, {
+        return api.put(`${getBackendApiUrl(Deployments.base)}/${namespace}/${deployment}/scale`, {
             replicas,
         });
     }

@@ -6,23 +6,27 @@ import { IWithRouterProps, withRouter } from '../../utils/withRouter';
 import K8 from '../../services/k8.service';
 import { Pod } from '../../models/pod.model';
 import { getStatusColor } from '../../utils/pods';
-import PodContainerTable from '../../components/PodContainerTable';
-import TitledCard from '../../components/TitledCard';
 import { IBreadcrumb, NavContext } from '../../layouts/Navigation';
-import InfoCard from '../../components/InfoCard';
+import InfoCard from '../../components/Cards/InfoCard';
 import LabeledText from '../../components/LabeledText';
 import AgeText from '../../components/AgeText';
-import PodEvents from './PodEvents';
-import PodResourceInformation from './PodResourceInformation';
-import ConditionTable from '../../components/ConditionTable';
 import { buildLinkToNode } from '../../utils/routing';
 import AnnotationsTagList from '../../components/AnnotationsTagList';
 import LabelsTagList from '../../components/LabelsTagList';
 import EditableResource from '../../components/EditableResource';
+import TabControlBar from '../../components/TabControlBar';
+import Details from './Tabs/Details';
+import Prometheus from '../../services/prometheus.service';
+import { JSONObjectType } from '../../models/json.model';
+import { PrometheusRangeQueryResponse, PrometheusResponse } from '../../models/prometheus.model';
+import Metrics from './Tabs/Metrics';
 
 interface IPodDetailsState {
     pod: Pod;
     pollId: NodeJS.Timer;
+    metricsPollId: NodeJS.Timer;
+    selectedTab: string;
+    metricsData: JSONObjectType<PrometheusResponse<PrometheusRangeQueryResponse>>;
 }
 
 class PodDetails extends React.Component<IWithRouterProps, IPodDetailsState> {
@@ -33,6 +37,9 @@ class PodDetails extends React.Component<IWithRouterProps, IPodDetailsState> {
         this.state = {
             pod: null,
             pollId: null,
+            metricsData: null,
+            metricsPollId: null,
+            selectedTab: 'Details',
         };
     }
 
@@ -52,6 +59,34 @@ class PodDetails extends React.Component<IWithRouterProps, IPodDetailsState> {
                 <Button key="refresh" data-testid="refresh" icon="refresh" onClick={this.pull} />,
             ],
         });
+        Prometheus.pollQueryRange(
+            {
+                memoryUsage: Prometheus.buildQuery('memoryUsage', {
+                    resource: 'pod',
+                    name: this.props.params.podName,
+                    namespace: this.props.params.namespace,
+                }),
+                cpuUsage: Prometheus.buildQuery('cpuUsage', {
+                    resource: 'pod',
+                    name: this.props.params.podName,
+                    namespace: this.props.params.namespace,
+                }),
+                networkTransmitted: Prometheus.buildQuery('networkTransmitted', {
+                    resource: 'pod',
+                    name: this.props.params.podName,
+                    namespace: this.props.params.namespace,
+                }),
+                networkRecieved: Prometheus.buildQuery('networkRecieved', {
+                    resource: 'pod',
+                    name: this.props.params.podName,
+                    namespace: this.props.params.namespace,
+                }),
+            },
+            (resp) => {
+                this.setState({ metricsData: resp.data });
+            },
+            (t) => this.setState({ metricsPollId: t })
+        );
         K8.pods.getPod(this.props.params.podName, this.props.params.namespace).then((response) => {
             this.setState({
                 pod: response.data,
@@ -70,12 +105,17 @@ class PodDetails extends React.Component<IWithRouterProps, IPodDetailsState> {
 
     componentWillUnmount() {
         clearInterval(this.state.pollId);
+        clearInterval(this.state.metricsPollId);
     }
 
     pull = () => {
         K8.pods.getPod(this.props.params.podName, this.props.params.namespace).then((response) => {
             this.setState({ pod: response.data });
         });
+    };
+
+    setSelectedTab = (selectedTab: string) => {
+        this.setState({ selectedTab });
     };
 
     render() {
@@ -127,23 +167,18 @@ class PodDetails extends React.Component<IWithRouterProps, IPodDetailsState> {
                         </InfoCard>
                     </div>
 
-                    <div style={{ marginBottom: '1em' }}>
-                        <PodResourceInformation podResources={pod.resources} />
-                    </div>
+                    <TabControlBar
+                        tabs={['Details', 'Metrics']}
+                        selectedTab={this.state.selectedTab}
+                        setSelectedTab={this.setSelectedTab}
+                        style={{ marginBottom: '1em' }}
+                    />
 
-                    <div style={{ marginBottom: '1em' }}>
-                        <ConditionTable conditions={pod.conditions} />
-                    </div>
+                    {this.state.selectedTab === 'Details' && <Details pod={pod} />}
 
-                    <div style={{ marginBottom: '1em' }}>
-                        <TitledCard title="Containers">
-                            <PodContainerTable pod={pod} />
-                        </TitledCard>
-                    </div>
-
-                    <div style={{ marginBottom: '1em' }}>
-                        <PodEvents podName={pod.name} namespace={pod.namespace} />
-                    </div>
+                    {this.state.selectedTab === 'Metrics' && (
+                        <Metrics metricsData={this.state.metricsData} />
+                    )}
                 </div>
             </div>
         );

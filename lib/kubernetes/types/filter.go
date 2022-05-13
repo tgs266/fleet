@@ -10,6 +10,7 @@ type Operator string
 type Filters []Filter
 
 const (
+	ContainsOperation          = "in"
 	EqualOperator              = "eq"
 	NotEqualOperator           = "neq"
 	GreaterThanOperator        = "gt"
@@ -32,6 +33,8 @@ func getOperator(op string) Operator {
 		return GreaterThanOrEqualOperator
 	case LessThanOrEqualOperator:
 		return LessThanOrEqualOperator
+	case ContainsOperation:
+		return ContainsOperation
 	}
 	panic(errors.NewOperatorNotSupportedError(op))
 }
@@ -43,6 +46,10 @@ func (o Operator) Test(v1 Comparable, v2 Comparable) bool {
 
 	if v1Type.Name() != v2Type.Name() {
 		panic(errors.NewOperatorTypeMismatchError(string(o), v1Type.Name(), v2Type.Name()))
+	}
+
+	if o == ContainsOperation {
+		return v1.Contains(v2)
 	}
 
 	compV := v1.Compare(v2)
@@ -78,7 +85,7 @@ var SystemNamespaceFilter = Filter{
 }
 
 func (f Filter) Match(other Comparable) bool {
-	return f.Operator.Test(f.By, other)
+	return f.Operator.Test(other, f.By)
 }
 
 func (f Filters) Execute(list []ComparableType) []ComparableType {

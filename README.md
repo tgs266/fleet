@@ -19,9 +19,11 @@ Fleet is a Kubernetes fleet management tool built for any workload size, from si
 - Version control
 - And more 
 
-## Install and Run Fleet
+## Run Fleet
 
-### In Kubernetes
+There are two supported ways to run fleet (outside of in development). These methods depend on if the cluster is [local]() or [remote]()
+
+### Local Cluster
 
 All you have to do is apply the fleet kubernetes configuration
 ```
@@ -41,41 +43,13 @@ kubectl port-forward POD 9095:9095 -n fleet
 ```
 And go to <http://localhost:9095/#/>
 
-### From source
+### Remote cluster
 
-Running from source requires you to have a config file in `$HOME/.kube/config`
-
-Clone the project
-
-```bash
-  git clone https://github.com/tgs266/fleet
+We are going to install fleet the same way
+```
+kubectl apply -f https://raw.githubusercontent.com/tgs266/fleet/main/deploy/aio.yaml
 ```
 
-Go to the project directory
-
-```bash
-  cd fleet
-```
-
-Install dependencies
-
-```bash
-  yarn install
-```
-
-Start webpack watch
-
-```bash
-  yarn start
-```
-
-Start the server
-
-```bash
-  cd lib && go run main.go --src=../build
-```
-
-Then navigate to <http://localhost:9095>
-
+Then, install the Electron app for fleet (TODO: provide link), run the app and configure your connection to the cluster
 
 <!-- Testing: go test ./... -covermode=count -coverprofile=coverage.out -coverpkg=./..., go tool cover -html=coverage.out -->

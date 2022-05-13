@@ -140,11 +140,18 @@ func BuildContainer(c v1.Container, met *v1beta1.ContainerMetrics, containerStat
 }
 
 func BuildContainerSpec(c v1.Container) ContainerSpec {
+	imgSplit := strings.Split(c.Image, ":")
+	imgName := imgSplit[0]
+	tag := ""
+	if len(imgSplit) == 2 {
+		tag = imgSplit[1]
+	}
+
 	return ContainerSpec{
 		Name: c.Name,
 		Image: image.Image{
-			Name: strings.Split(c.Image, ":")[0],
-			Tag:  strings.Split(c.Image, ":")[1],
+			Name: imgName,
+			Tag:  tag,
 		},
 		ImagePullPolicy: GetPullPolicy(c),
 		Ports:           BuildPortArray(c),

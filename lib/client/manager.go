@@ -5,6 +5,7 @@ import (
 	errs "errors"
 	"os"
 	"path/filepath"
+	"regexp"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/tgs266/fleet/lib/auth"
@@ -36,6 +37,24 @@ type ClientManager struct {
 
 	authManager *auth.AuthManager
 	oidcManager *oidc.OIDCManager
+}
+
+func usernameFromError(err error) string {
+	re := regexp.MustCompile(`^.* User "(.*)" cannot .*$`)
+	return re.ReplaceAllString(err.Error(), "$1")
+}
+
+func usernameFromSA(name string) string {
+	const groups = 5
+	const nameGroupIdx = 4
+	re := regexp.MustCompile(`(?P<ignore>[\w-]+):(?P<type>[\w-]+):(?P<namespace>[\w-_]+):(?P<name>[\w-]+)`)
+	match := re.FindStringSubmatch(name)
+
+	if match == nil || len(match) != groups {
+		return name
+	}
+
+	return match[nameGroupIdx]
 }
 
 func NewClientManager(useAuth bool) *ClientManager {
@@ -93,6 +112,21 @@ func (client *ClientManager) initClusterConfig() {
 
 }
 
+func (client *ClientManager) UsingInCluster() bool {
+	if client.clusterConfig != nil {
+		return true
+	}
+	return false
+}
+
+func (client *ClientManager) GetClusterName() (string, error) {
+	if client.UsingInCluster() {
+		return client.clusterConfig.Host, nil
+	}
+	kubeCfg, _ := parseKubeConfig(client.kubeConfigPath)
+	return kubeCfg.CurrentContext, nil
+}
+
 func (client *ClientManager) getK8Client(c *fiber.Ctx) (*kubernetes.K8Client, error) {
 
 	if client.TestMode {
@@ -116,13 +150,27 @@ func (client *ClientManager) getK8Client(c *fiber.Ctx) (*kubernetes.K8Client, er
 			return nil, err
 		}
 
-		err = client.ValidateAuthInfo(cfg, authInfo)
+		username, err := client.ValidateAuthInfo(cfg, authInfo)
+		c.Response().Header.Add("Username", username)
 		if err != nil && !client.TestAuthMode {
 			return nil, errors.NewInvalidKubernetesCredentials()
 		}
+	} else if client.clusterConfig == nil {
+		client.parseUsernameFromConfig(c)
 	}
 
-	return k8client, k8client.Connect(cfg)
+	return k8client, k8client.Connect(cfg, client.UsingInCluster())
+}
+
+func (client *ClientManager) parseUsernameFromConfig(c *fiber.Ctx) {
+	kubeCfg, _ := parseKubeConfig(client.kubeConfigPath)
+	username := ""
+	for _, context := range kubeCfg.Contexts {
+		if context.Name == kubeCfg.CurrentContext {
+			username = context.Context.User
+		}
+	}
+	c.Response().Header.Add("Username", username)
 }
 
 func (client *ClientManager) getAuthInfo(c *fiber.Ctx) (*api.AuthInfo, error) {
@@ -223,16 +271,17 @@ func (client *ClientManager) RawClient(c *fiber.Ctx) (*raw.Client, error) {
 	), nil
 }
 
-func (self *ClientManager) ValidateAuthInfo(cfg *rest.Config, authInfo *api.AuthInfo) error {
+func (self *ClientManager) ValidateAuthInfo(cfg *rest.Config, authInfo *api.AuthInfo) (string, error) {
 	k8client := new(kubernetes.K8Client)
 
-	err := k8client.Connect(cfg)
+	err := k8client.Connect(cfg, self.UsingInCluster())
 	if err != nil && !self.TestAuthMode {
-		return err
+		return "", err
 	}
 
+	var result *authv1.TokenReview
 	if !self.TestAuthMode {
-		_, err = k8client.K8.AuthenticationV1().TokenReviews().Create(context.TODO(), &authv1.TokenReview{
+		result, err = k8client.K8.AuthenticationV1().TokenReviews().Create(context.TODO(), &authv1.TokenReview{
 			Spec: authv1.TokenReviewSpec{
 				Token: authInfo.Token,
 			},
@@ -244,10 +293,10 @@ func (self *ClientManager) ValidateAuthInfo(cfg *rest.Config, authInfo *api.Auth
 	if err != nil {
 		// valid token, but you cant access anything
 		if k8errors.IsForbidden(err) {
-			return nil
+			return usernameFromError(err), nil
 		}
 
-		return err
+		return "", err
 	}
-	return nil
+	return usernameFromSA(result.Status.User.Username), nil
 }

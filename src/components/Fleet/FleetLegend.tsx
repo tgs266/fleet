@@ -3,7 +3,7 @@
 import { Button } from '@blueprintjs/core';
 import React from 'react';
 import Text from '../Text/Text';
-import TitledCard from '../TitledCard';
+import TitledCard from '../Cards/TitledCard';
 import FleetManager from './FleetManager';
 
 interface IFleetLegendProps {
