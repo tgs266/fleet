@@ -33,5 +33,13 @@ cp nightly.yaml.template nightly.yaml
 sed -i "s/FILL_THIS/${TAG}/g" nightly.yaml
 
 kubectl delete all --all -n fleet 
+kubectl delete all --all -n fleet-metrics
+
+kubectl create namespace fleet
+kubectl create namespace fleet-metrics
+
 kubectl apply -f nightly.yaml 
+kubectl apply -f kube-state-metrics/
+kubectl apply -f node-exporter/
+kubectl apply -f prometheus/
 rm -rf nightly.yaml
