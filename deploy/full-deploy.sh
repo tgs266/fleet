@@ -3,16 +3,15 @@
 kubectl create namespace fleet
 kubectl create namespace fleet-metrics
 
-mkdir fleet-temp 
-cd fleet-temp 
+mkdir fleet-temp
 
 curl -L https://api.github.com/repos/tgs266/fleet/tarball | tar xzv -C fleet-temp --strip-components 1
 
-cd fleet-temp/fleet
-cd deploy 
+cd fleet-temp/
+cd deploy
 kubectl apply -f aio.yaml
 kubectl apply -f prometheus/
 kubectl apply -f node-exporter/
 kubectl apply -f kube-state-metrics/
-cd ../../..
+cd ../..
 rm -rf fleet-temp
