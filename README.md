@@ -15,8 +15,8 @@ Fleet is a Kubernetes fleet management tool built for any workload size, from si
 ## Roadmap
 
 - Graphical deployment creator
-- User authentication
 - User settings store
+- Version control
 - And more 
 
 ## Run Fleet

@@ -11,9 +11,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    -
-      name: Prepare
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        ref: "develop"
+        
+    - name: Prepare
       id: prep
       run: |
         TAG="tgs266/fleet:nightly-$(date +%Y-%m-%d)"
