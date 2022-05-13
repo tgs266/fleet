@@ -20,11 +20,11 @@ jobs:
     - name: Build web
       run: |
         yarn install
-        yarn run build:web
+        yarn run "build:web"
 
     - name: Build executable
       run: | 
-        yarn run release:electron
+        yarn run "release:electron"
 
     - name: Archive production artifacts
       uses: actions/upload-artifact@v3
