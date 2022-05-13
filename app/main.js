@@ -1,10 +1,9 @@
 // Modules to control application life and create native browser window
 // eslint-disable-next-line import/no-extraneous-dependencies
 const { app, BrowserWindow } = require('electron');
-require('./electron/server');
+const path = require('path');
+require('./server');
 // const path = require('path')
-
-process.env.SERVER_PREFIX = 'http://localhost:9095';
 
 function createWindow() {
     // Create the browser window.
@@ -12,11 +11,10 @@ function createWindow() {
         width: 800,
         height: 600,
     });
-
     // mainWindow.setMenu(null);
 
     // and load the index.html of the app.
-    mainWindow.loadFile('build/index.html');
+    mainWindow.loadFile(path.join(__dirname, '../build/index.html'));
     // Open the DevTools.
     // mainWindow.webContents.openDevTools()
 }

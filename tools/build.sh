@@ -8,7 +8,7 @@ function build::frontend {
     echo "building frontend"
     cd $ROOT_DIR
     yarn install
-    yarn run build
+    yarn run build:web
 }
 
 function build::backend {
