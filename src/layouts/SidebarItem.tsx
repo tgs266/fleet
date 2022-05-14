@@ -18,7 +18,7 @@ export interface SidebarItemProps {
     id: string;
     items?: SidebarItemChildProps[];
     type: 'button' | 'menu' | 'component';
-    icon?: IconName;
+    icon?: IconName | JSX.Element;
     title?: string;
     opacity?: SpringValue<number>;
     isExpanded?: boolean;
@@ -74,13 +74,25 @@ export default function SidebarItem(props: SidebarItemProps) {
                 }}
                 onClick={handleClick}
             >
-                {props.icon && (
+                {props.icon && typeof props.icon === 'string' && (
                     <Icon
                         color={Colors.LIGHT_GRAY5}
                         size={20}
                         icon={props.icon}
                         style={{ marginLeft: padding, marginRight: padding }}
                     />
+                )}
+                {props.icon && typeof props.icon !== 'string' && (
+                    <div
+                        style={{
+                            height: '20px',
+                            width: '20px',
+                            marginLeft: padding,
+                            marginRight: padding,
+                        }}
+                    >
+                        {props.icon}
+                    </div>
                 )}
                 <animated.div
                     style={{

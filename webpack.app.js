@@ -5,7 +5,7 @@ const path = require('path');
 module.exports = {
     entry: './app/main.js',
     target: 'electron-main',
-    mode: 'development',
+    mode: 'production',
     output: {
         path: path.resolve(__dirname, 'build'),
         filename: 'main.js',
@@ -23,16 +23,7 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /worker-.*\.js/,
-                include: [/node_modules\/ace-build/],
-                type: 'asset/resource',
-            },
-            {
-                test: /\.(ts|tsx)$/,
-                include: path.resolve(__dirname, 'src'),
-                loader: 'ts-loader',
-            },
-            {
+                include: [path.resolve(__dirname, 'app')],
                 enforce: 'pre',
                 test: /\.js$/,
                 loader: 'source-map-loader',

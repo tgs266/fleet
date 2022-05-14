@@ -3,25 +3,33 @@
   "version": "2.0.0",
   "author": "Tucker Siegel <tgsiegel@umd.edu>",
   "description": "",
-  "main": "app/main.js",
+  "main": "build/main.js",
   "scripts": {
+    "dev:electron": "webpack watch --config webpack.app.js",
     "start:web": "webpack watch --config webpack.dev.js",
-    "start:electron": "electron .",
-    "build:web": "webpack --config webpack.prod.js",
+    "start:electron": "electron . APP_DEV=true",
     "build:electron": "webpack --config webpack.app.js",
+    "build:web": "webpack --config webpack.prod.js",
     "release:electron": "electron-builder build --publish=never",
     "test": "jest --coverage",
     "prepare": "husky install",
     "pre-commit": "lint-staged"
   },
   "build": {
+    "appId": "com.fleet.app",
+    "productName": "Fleet",
+    "copyright": "Tucker Siegel. All Rights Reserved.",
+    "afterAllArtifactBuild": "./scripts/afterbuild.js",
     "files": [
       "app/**/*",
       "build/**/*",
-      "package.json"
+      "resources/**/*",
+      "package.json",
+      "!node_modules"
     ],
-    "appId": "fleet",
     "dmg": {
+      "background": null,
+      "backgroundColor": "#ffffff",
       "contents": [
         {
           "x": 110,
@@ -35,14 +43,24 @@
         }
       ]
     },
+    "nsis": {
+      "artifactName": "${productName}-${version} Installer.${ext}"
+    },
+    "mac": {
+      "category": "public.app-category.developer-tools",
+      "target": "dmg",
+      "icon": "resources/icons/1024w/fleet-logo.png"
+    },
     "linux": {
       "target": [
         "AppImage",
         "deb"
-      ]
+      ],
+      "icon": "resources/icons/1024w/fleet-logo.png"
     },
     "win": {
-      "target": "nsis"
+      "target": "nsis",
+      "icon": "resources/icons/1024w/fleet-logo.png"
     }
   },
   "license": "ISC",
@@ -104,6 +122,7 @@
     "eslint": "^8.11.0",
     "express": "^4.18.1",
     "express-http-proxy": "^1.6.3",
+    "glob": "^8.0.3",
     "history": "^5.3.0",
     "html-webpack-plugin": "^5.5.0",
     "http-proxy-middleware": "^2.0.6",

@@ -6,11 +6,13 @@ import { useSpring, animated, config } from '@react-spring/web';
 import SidebarItem, { SidebarItemProps } from './SidebarItem';
 import Electron from '../services/electron.service';
 import { useAuthContext } from '../contexts/AuthContext';
+import FleetLogo from '../components/FleetLogo';
 
 const SIDEBAR_ITEM_PROPS: SidebarItemProps[] = [
     {
         id: 'home',
-        icon: 'home',
+        icon: <FleetLogo />,
+        // icon: 'home',
         type: 'button',
         title: 'Home',
         target: '/',

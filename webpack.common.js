@@ -70,7 +70,7 @@ module.exports = {
             template: path.resolve(__dirname, 'src', 'index.html'),
         }),
         new CopyWebpackPlugin({
-            patterns: [{ from: path.resolve(__dirname, 'src', 'assets', 'gidole'), to: 'assets' }],
+            patterns: [{ from: path.resolve(__dirname, 'src', 'assets'), to: 'assets' }],
         }),
         new webpack.DefinePlugin({
             'process.env.TEST_ENV': JSON.stringify(false),

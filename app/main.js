@@ -1,17 +1,35 @@
+/* eslint-disable no-restricted-syntax */
 // Modules to control application life and create native browser window
 // eslint-disable-next-line import/no-extraneous-dependencies
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, globalShortcut } = require('electron');
 const path = require('path');
 require('./server');
-// const path = require('path')
+
+const args = process.argv;
+let isDev = false;
+for (const arg of args) {
+    if (arg.includes('APP_DEV')) {
+        const split = arg.split('=');
+        if (split.length === 1) {
+            break;
+        }
+        const trimmed = split[1].trim();
+        if (trimmed.toLowerCase() === 'true') {
+            isDev = true;
+            break;
+        }
+    }
+}
 
 function createWindow() {
     // Create the browser window.
     const mainWindow = new BrowserWindow({
-        width: 800,
+        width: 1000,
         height: 600,
     });
-    // mainWindow.setMenu(null);
+    if (!isDev) {
+        mainWindow.setMenu(null);
+    }
 
     // and load the index.html of the app.
     mainWindow.loadFile(path.join(__dirname, '../build/index.html'));
@@ -38,3 +56,17 @@ app.whenReady().then(() => {
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') app.quit();
 });
+
+if (!isDev) {
+    app.on('ready', () => {
+        // Register a shortcut listener for Ctrl + Shift + I
+        globalShortcut.register(
+            'Control+Shift+I',
+            () =>
+                // When the user presses Ctrl + Shift + I, this function will get called
+                // You can modify this function to do other things, but if you just want
+                // to disable the shortcut, you can just return false
+                false
+        );
+    });
+}
