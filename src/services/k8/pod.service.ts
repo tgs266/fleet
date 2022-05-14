@@ -51,7 +51,7 @@ export default class Pods {
     }
 
     static getRawPod(pod: string, namespace: string): Promise<AxiosResponse<JSONObject>> {
-        return api.get(`/api/v1/raw/pods/${namespace}/${pod}`);
+        return api.get(getBackendApiUrl(`/api/v1/raw/pods/${namespace}/${pod}`));
     }
 
     static updateRawPod(
@@ -59,6 +59,6 @@ export default class Pods {
         namespace: string,
         p: JSONObject
     ): Promise<AxiosResponse<JSONObject>> {
-        return api.put(`/api/v1/raw/pods/${namespace}/${pod}`, p);
+        return api.put(getBackendApiUrl(`/api/v1/raw/pods/${namespace}/${pod}`), p);
     }
 }
