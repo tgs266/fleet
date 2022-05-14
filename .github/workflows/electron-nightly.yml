@@ -9,7 +9,6 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
-        target: [linux, window]
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -31,6 +30,6 @@ jobs:
     - name: Archive production artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: dist-${{ matrix.target }}
+        name: dist-${{ matrix.os }}
         path: |
           dist
