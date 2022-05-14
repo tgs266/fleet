@@ -9,7 +9,7 @@
     "start:electron": "electron .",
     "build:web": "webpack --config webpack.prod.js",
     "build:electron": "webpack --config webpack.app.js",
-    "release:electron": "electron-builder build",
+    "release:electron": "electron-builder build --publish=never",
     "test": "jest --coverage",
     "prepare": "husky install",
     "pre-commit": "lint-staged"
