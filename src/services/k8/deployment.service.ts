@@ -35,7 +35,7 @@ export default class Deployments {
         deployment: string,
         namespace: string
     ): Promise<AxiosResponse<JSONObject>> {
-        return api.get(`/api/v1/raw/deployments/${namespace}/${deployment}`);
+        return api.get(`${getBackendApiUrl('/api/v1/raw/deployments')}/${namespace}/${deployment}`);
     }
 
     static updateRawDeployment(
@@ -43,7 +43,10 @@ export default class Deployments {
         namespace: string,
         dep: JSONObject
     ): Promise<AxiosResponse<JSONObject>> {
-        return api.put(`/api/v1/raw/deployments/${namespace}/${deployment}`, dep);
+        return api.put(
+            `${getBackendApiUrl('/api/v1/raw/deployments')}/${namespace}/${deployment}`,
+            dep
+        );
     }
 
     static restartApp(deployment: string, namespace: string): Promise<AxiosResponse<any>> {

@@ -128,7 +128,7 @@ class DeploymentDetails extends React.Component<IWithRouterProps, IDeploymentDet
                 <EditableResource
                     delete
                     type="deployments"
-                    name={this.props.params.deploymentName}
+                    name={this.props.params.deployment}
                     namespace={this.props.params.namespace}
                 />
                 <DeploymentScaleDialog

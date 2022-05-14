@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useNavContext } from '../layouts/Navigation';
 import { appendToButtons } from '../utils/breadcrumbs';
-import api from '../services/axios.service';
+import api, { getBackendApiUrl } from '../services/axios.service';
 import TextEditDialog from './Dialogs/TextEditDialog';
 import Toaster, { showToastWithActionInterval } from '../services/toast.service';
 import { JSONObject } from '../models/json.model';
@@ -45,12 +45,14 @@ export default function EditableResource(props: {
 
     const get = () => {
         if (props.namespace) {
-            api.get(`/api/v1/raw/${props.type}/${props.namespace}/${props.name}`).then((r) => {
+            api.get(
+                getBackendApiUrl(`/api/v1/raw/${props.type}/${props.namespace}/${props.name}`)
+            ).then((r) => {
                 setValue(r.data);
                 toggle();
             });
         } else {
-            api.get(`/api/v1/raw/${props.type}/${props.name}`).then((r) => {
+            api.get(getBackendApiUrl(`/api/v1/raw/${props.type}/${props.name}`)).then((r) => {
                 setValue(r.data);
                 toggle();
             });
@@ -59,7 +61,10 @@ export default function EditableResource(props: {
 
     const save = (newValue: JSONObject) => {
         if (props.namespace) {
-            api.put(`/api/v1/raw/${props.type}/${props.namespace}/${props.name}`, newValue)
+            api.put(
+                getBackendApiUrl(`/api/v1/raw/${props.type}/${props.namespace}/${props.name}`),
+                newValue
+            )
                 .then(() => {
                     toggle();
                 })
@@ -67,7 +72,7 @@ export default function EditableResource(props: {
                     Toaster.show({ message: err.message, intent: Intent.DANGER });
                 });
         } else {
-            api.put(`/api/v1/raw/${props.type}/${props.name}`, newValue)
+            api.put(getBackendApiUrl(`/api/v1/raw/${props.type}/${props.name}`), newValue)
                 .then(() => {
                     toggle();
                 })
@@ -82,7 +87,9 @@ export default function EditableResource(props: {
 
     const remove = () => {
         if (props.namespace) {
-            api.delete(`/api/v1/raw/${props.type}/${props.namespace}/${props.name}`)
+            api.delete(
+                getBackendApiUrl(`/api/v1/raw/${props.type}/${props.namespace}/${props.name}`)
+            )
                 .then(() => {
                     setIsDeleteOpen(false);
                     handleSuccessNavToast();
@@ -92,7 +99,7 @@ export default function EditableResource(props: {
                     Toaster.show({ message: err.message, intent: Intent.DANGER });
                 });
         } else {
-            api.delete(`/api/v1/raw/${props.type}/${props.name}`)
+            api.delete(getBackendApiUrl(`/api/v1/raw/${props.type}/${props.name}`))
                 .then(() => {
                     setIsDeleteOpen(false);
                     handleSuccessNavToast();
