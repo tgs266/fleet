@@ -136,7 +136,7 @@ export default class Prometheus {
                 switch (queryName) {
                     case 'memoryUsage': {
                         return {
-                            query: `sum(rate(container_memory_usage_bytes{container!="POD",container!="",pod=~"${options.name}",namespace="${options.namespace}"}[${Prometheus.accuracy}]))`,
+                            query: `sum(container_memory_working_set_bytes{container!="POD",container!="",pod=~"${options.name}",namespace="${options.namespace}"})`,
                         };
                     }
                     case 'memoryRequests': {
