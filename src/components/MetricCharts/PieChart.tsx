@@ -61,7 +61,7 @@ export default function PieChart(props: {
                     }}
                 >
                     <SpinnerWrapper
-                        className={props.spinnerClassName ? 'blue-spinner' : props.spinnerClassName}
+                        className={props.spinnerClassName ? props.spinnerClassName : 'blue-spinner'}
                         value={getValue(value, total)}
                         size={SPINNER_SIZE}
                     >
