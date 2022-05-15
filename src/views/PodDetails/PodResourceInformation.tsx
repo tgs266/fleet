@@ -1,68 +1,47 @@
-import { Alignment, Tag } from '@blueprintjs/core';
-import { Classes, Tooltip2 } from '@blueprintjs/popover2';
 import * as React from 'react';
-import LabeledText from '../../components/LabeledText';
-import SpinnerWrapper from '../../components/SpinnerWrapper';
-import Text from '../../components/Text/Text';
 import TitledCard from '../../components/Cards/TitledCard';
-import { PodResources } from '../../models/pod.model';
-import { BytesTo } from '../../utils/conversions';
+import { BytesTo, CPU } from '../../utils/conversions';
+import { JSONObjectType } from '../../models/json.model';
+import { PrometheusRangeQueryResponse, PrometheusResponse } from '../../models/prometheus.model';
+import getLast from '../../utils/metrics';
+import PieChart from '../../components/MetricCharts/PieChart';
 
-const SPINNER_SIZE = 150;
-
-const createSpinnerActual = (className: string, label: string, fraction?: number) => (
-    <SpinnerWrapper className={className} value={fraction} size={SPINNER_SIZE}>
-        <LabeledText alignment={Alignment.CENTER} label={label}>
-            {!fraction || fraction === -1 ? null : `${(fraction * 100).toFixed(2)}%s`}
-        </LabeledText>
-    </SpinnerWrapper>
-);
-
-const createSpinnerBottomLabel = (label: string, usage?: number, capacity?: number) => {
-    if (capacity <= 0) {
-        return (
-            <div style={{ display: 'flex', alignItems: 'center', marginTop: '0.5em' }}>
-                <Text style={{ marginRight: '0.25em' }}>No allocation defined</Text>
-            </div>
-        );
+const extractVal = (md: PrometheusResponse<PrometheusRangeQueryResponse>) => {
+    if (!md) {
+        return null;
     }
-    return (
-        <div style={{ display: 'flex', alignItems: 'center', marginTop: '0.5em' }}>
-            <Text style={{ marginRight: '0.25em' }}>
-                {usage >= 0 ? (
-                    usage.toFixed(2)
-                ) : (
-                    <Tooltip2 content="No usage found" className={Classes.TOOLTIP2_INDICATOR}>
-                        ?
-                    </Tooltip2>
-                )}{' '}
-                / {capacity.toFixed(2)}
-            </Text>
-            <Tag minimal>{label}</Tag>
-        </div>
-    );
+    return md.data.result.length ? Number(getLast(md.data.result[0].values)[1]) : null;
 };
-const createSpinner = (
-    className: string,
-    spinnerLabel: string,
-    typeLabel: string,
-    usage?: number,
-    capacity?: number,
-    fraction?: number
-) => (
-    <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
-        {createSpinnerActual(className, spinnerLabel, fraction)}
-        {createSpinnerBottomLabel(typeLabel, usage, capacity)}
-    </div>
-);
 
 export default function PodResourceInformation(props: {
-    podResources: PodResources;
+    metricsData: JSONObjectType<PrometheusResponse<PrometheusRangeQueryResponse>>;
     style?: React.CSSProperties;
 }) {
-    const { podResources } = props;
+    const { metricsData } = props;
+    let cpuUnit = { magnitude: 1000, suffix: 'Millicores' };
+    let memoryUnit = BytesTo.getUnit(null);
+    let cpuUsage = null;
+    let cpuRequests = null;
+    let cpuLimits = null;
+
+    let memoryUsage = null;
+    let memoryRequests = null;
+    let memoryLimits = null;
+    if (metricsData) {
+        cpuUsage = extractVal(props.metricsData.cpuUsage);
+        cpuRequests = extractVal(props.metricsData.cpuRequests);
+        cpuLimits = extractVal(props.metricsData.cpuLimits);
+
+        memoryUsage = extractVal(props.metricsData.memoryUsage);
+        memoryRequests = extractVal(props.metricsData.memoryRequests);
+        memoryLimits = extractVal(props.metricsData.memoryLimits);
+
+        cpuUnit = CPU.getUnit(cpuUsage);
+        memoryUnit = BytesTo.getUnit(Math.max(memoryUsage, memoryRequests, memoryLimits));
+    }
+
     return (
-        <TitledCard style={props.style} title="Resource Allocations">
+        <TitledCard style={props.style} title="Resource Usage">
             <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
                 <div
                     style={{
@@ -74,22 +53,21 @@ export default function PodResourceInformation(props: {
                 >
                     <div>CPU</div>
                     <div style={{ display: 'flex', justifyContent: 'space-evenly', width: '100%' }}>
-                        {createSpinner(
-                            'blue-spinner',
-                            'REQUESTS',
-                            'Cores',
-                            podResources.cpuUsage / 1000,
-                            podResources.cpuRequests / 1000,
-                            podResources.cpuUsageRequestsFraction
-                        )}
-                        {createSpinner(
-                            'green-spinner',
-                            'LIMIT',
-                            'Cores',
-                            podResources.cpuUsage / 1000,
-                            podResources.cpuLimit / 1000,
-                            podResources.cpuUsageLimitFraction
-                        )}
+                        <PieChart
+                            emptyErrText="No Requests Defined"
+                            innerLabel={cpuRequests ? 'REQUESTS' : ''}
+                            unit={cpuUnit.suffix}
+                            value={CPU.handleUnit(cpuUsage, cpuUnit.magnitude)}
+                            total={CPU.handleUnit(cpuRequests, cpuUnit.magnitude)}
+                        />
+                        <PieChart
+                            spinnerClassName="green-spinner"
+                            emptyErrText="No Limits Defined"
+                            innerLabel={cpuLimits ? 'LIMITS' : ''}
+                            unit={cpuUnit.suffix}
+                            value={CPU.handleUnit(cpuUsage, cpuUnit.magnitude)}
+                            total={CPU.handleUnit(cpuLimits, cpuUnit.magnitude)}
+                        />
                     </div>
                 </div>
                 <div
@@ -102,22 +80,21 @@ export default function PodResourceInformation(props: {
                 >
                     <div>Memory</div>
                     <div style={{ display: 'flex', justifyContent: 'space-evenly', width: '100%' }}>
-                        {createSpinner(
-                            'blue-spinner',
-                            'REQUESTS',
-                            'GB',
-                            BytesTo.gigabytes(podResources.memoryUsage),
-                            BytesTo.gigabytes(podResources.memoryRequests),
-                            podResources.cpuUsageRequestsFraction
-                        )}
-                        {createSpinner(
-                            'green-spinner',
-                            'LIMIT',
-                            'GB',
-                            BytesTo.gigabytes(podResources.memoryUsage),
-                            BytesTo.gigabytes(podResources.memoryLimit),
-                            podResources.cpuUsageLimitFraction
-                        )}
+                        <PieChart
+                            emptyErrText="No Requests Defined"
+                            innerLabel={memoryRequests ? 'REQUESTS' : ''}
+                            unit={memoryUnit.suffix}
+                            value={BytesTo.handleUnit(memoryUsage, memoryUnit.magnitude)}
+                            total={BytesTo.handleUnit(memoryRequests, memoryUnit.magnitude)}
+                        />
+                        <PieChart
+                            spinnerClassName="green-spinner"
+                            emptyErrText="No Limits Defined"
+                            innerLabel={memoryLimits ? 'LIMITS' : ''}
+                            unit={memoryUnit.suffix}
+                            value={BytesTo.handleUnit(memoryUsage, memoryUnit.magnitude)}
+                            total={BytesTo.handleUnit(memoryLimits, memoryUnit.magnitude)}
+                        />
                     </div>
                 </div>
             </div>

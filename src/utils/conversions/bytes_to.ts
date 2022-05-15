@@ -12,6 +12,9 @@ const MAGNITUDES = [
 ];
 
 export const getUnit = (bytes: number) => {
+    if (!bytes) {
+        return MAGNITUDES[3];
+    }
     const idx = Math.floor(Math.log(bytes) / Math.log(MIN_MAG));
     if (idx > MAGNITUDES.length) {
         return MAGNITUDES[5];

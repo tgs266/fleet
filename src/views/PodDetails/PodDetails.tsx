@@ -66,7 +66,27 @@ class PodDetails extends React.Component<IWithRouterProps, IPodDetailsState> {
                     name: this.props.params.podName,
                     namespace: this.props.params.namespace,
                 }),
+                memoryLimits: Prometheus.buildQuery('memoryLimits', {
+                    resource: 'pod',
+                    name: this.props.params.podName,
+                    namespace: this.props.params.namespace,
+                }),
+                memoryRequests: Prometheus.buildQuery('memoryRequests', {
+                    resource: 'pod',
+                    name: this.props.params.podName,
+                    namespace: this.props.params.namespace,
+                }),
                 cpuUsage: Prometheus.buildQuery('cpuUsage', {
+                    resource: 'pod',
+                    name: this.props.params.podName,
+                    namespace: this.props.params.namespace,
+                }),
+                cpuLimits: Prometheus.buildQuery('cpuLimits', {
+                    resource: 'pod',
+                    name: this.props.params.podName,
+                    namespace: this.props.params.namespace,
+                }),
+                cpuRequests: Prometheus.buildQuery('cpuRequests', {
                     resource: 'pod',
                     name: this.props.params.podName,
                     namespace: this.props.params.namespace,
@@ -174,7 +194,9 @@ class PodDetails extends React.Component<IWithRouterProps, IPodDetailsState> {
                         style={{ marginBottom: '1em' }}
                     />
 
-                    {this.state.selectedTab === 'Details' && <Details pod={pod} />}
+                    {this.state.selectedTab === 'Details' && (
+                        <Details metricsData={this.state.metricsData} pod={pod} />
+                    )}
 
                     {this.state.selectedTab === 'Metrics' && (
                         <Metrics metricsData={this.state.metricsData} />

@@ -6,7 +6,7 @@ import { FleetError } from '../../models/base';
 import TitledCard from '../../components/Cards/TitledCard';
 import FillErrorBoundary from '../../components/FillErrorBoundary';
 import RangeQueryLineChart from '../../components/MetricCharts/RangeQueryLineChart';
-import NoMetrics from '../../components/NoMetrics';
+import NoMetrics from '../../components/MetricCharts/NoMetrics';
 import { useNavContext } from '../../layouts/Navigation';
 import Electron from '../../services/electron.service';
 import K8 from '../../services/k8.service';
