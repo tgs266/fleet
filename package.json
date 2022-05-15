@@ -7,7 +7,7 @@
   "scripts": {
     "dev:electron": "webpack watch --config webpack.app.js",
     "start:web": "webpack watch --config webpack.dev.js",
-    "start:electron": "electron . APP_DEV=true",
+    "start:electron": "electron ./app/main.js APP_DEV=true",
     "build:electron": "webpack --config webpack.app.js",
     "build:web": "webpack --config webpack.prod.js",
     "release:electron": "electron-builder build --publish=never",
@@ -72,6 +72,7 @@
     "@types/timsort": "^0.3.0",
     "@typescript-eslint/eslint-plugin": "^5.16.0",
     "@typescript-eslint/parser": "^5.16.0",
+    "concurrently": "^7.1.0",
     "css-loader": "^6.7.1",
     "electron": "^18.2.2",
     "electron-builder": "^23.0.3",

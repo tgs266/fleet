@@ -13,6 +13,7 @@ import TableRow from './TableRow';
 
 export interface ColumnDefinition<T> {
     columnName: string;
+    columnElement?: JSX.Element;
     sortableId?: string;
     searchable?: boolean;
     key: string;
@@ -64,12 +65,16 @@ export default class ResourceTable<T> extends React.Component<IResourceTableProp
                                     sort={sort}
                                     onSortChange={onSortChange}
                                     sortableId={c.sortableId}
+                                    alignment={c.alignment}
                                 >
                                     {c.columnName}
                                 </SortableTableHeaderCell>
                             );
                         }
-                        return <TableCell>{c.columnName}</TableCell>;
+                        if (c.columnElement) {
+                            return <TableCell alignment={c.alignment}>{c.columnElement}</TableCell>;
+                        }
+                        return <TableCell alignment={c.alignment}>{c.columnName}</TableCell>;
                     })}
                 </TableHeader>
                 <TableBody
