@@ -68,8 +68,13 @@ export default function ResourceTable<T>(props: IResourceTableProps<T>) {
         }
     }
 
-    const [selectedNs, setSelectedNs] = useState('_all_');
+    const [selectedNs, setSelectedNsInner] = useState(localStorage.getItem('namespace') || '_all_');
     const ref = React.useRef<HTMLInputElement>();
+
+    const setSelectedNs = (ns: string) => {
+        setSelectedNsInner(ns);
+        localStorage.setItem('namespace', ns);
+    };
 
     const setFilters = () => {
         const filters = [];
