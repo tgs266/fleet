@@ -40,6 +40,7 @@ class DeploymentTable extends ResourceTableView<IDeploymentTableProps, Deploymen
 
     getColumns = () => [
         {
+            type: 'icon',
             key: 'icon',
             alignment: Alignment.LEFT,
             columnName: '',
