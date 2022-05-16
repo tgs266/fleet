@@ -77,19 +77,19 @@ class NamespaceDetails extends React.Component<IWithRouterProps, INamespaceState
                     <Text muted style={{ marginBottom: '0.25em', marginLeft: '0.25em' }}>
                         Deployments
                     </Text>
-                    <DeploymentTable namespace={namespace.name} />
+                    <DeploymentTable lockedNamespace={namespace.name} namespace={namespace.name} />
                 </div>
                 <div style={{ margin: '1em' }}>
                     <Text muted style={{ marginBottom: '0.25em', marginLeft: '0.25em' }}>
                         Pods
                     </Text>
-                    <PodListTable namespace={namespace.name} />
+                    <PodListTable lockedNamespace={namespace.name} namespace={namespace.name} />
                 </div>
                 <div style={{ margin: '1em' }}>
                     <Text muted style={{ marginBottom: '0.25em', marginLeft: '0.25em' }}>
                         Services
                     </Text>
-                    <ServiceTable namespace={namespace.name} />
+                    <ServiceTable lockedNamespace={namespace.name} namespace={namespace.name} />
                 </div>
             </div>
         );

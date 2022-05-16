@@ -7,6 +7,7 @@ import K8 from '../services/k8.service';
 export default function NamespaceSelect(props: {
     style?: React.CSSProperties;
     fill?: boolean;
+    lockedNamespace?: string;
     allowAll?: boolean;
     selected: string;
     setSelected: (ns: string) => void;
@@ -22,6 +23,13 @@ export default function NamespaceSelect(props: {
             setNamespaces(ns);
         });
     }, []);
+
+    const getText = () => {
+        if (props.lockedNamespace) {
+            return props.lockedNamespace;
+        }
+        return props.selected === '_all_' ? 'All Namespaces' : props.selected;
+    };
 
     return (
         <Select
@@ -46,12 +54,13 @@ export default function NamespaceSelect(props: {
             activeItem={props.selected}
         >
             <Button
+                disabled={!!props.lockedNamespace}
                 alignText={Alignment.LEFT}
                 fill={props.fill}
                 style={props.style}
                 rightIcon="double-caret-vertical"
             >
-                {props.selected === '_all_' ? 'All Namespaces' : props.selected}
+                {getText()}
             </Button>
         </Select>
     );

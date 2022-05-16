@@ -4,7 +4,7 @@ import { Tooltip2, Classes } from '@blueprintjs/popover2';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import AgeText from '../../components/AgeText';
-import ResourceTableView from '../../components/ResourceTableView';
+import ResourceTableView, { IResourceTableViewProps } from '../../components/ResourceTableView';
 import { TableSort } from '../../components/SortableTableHeaderCell';
 import { PodMeta } from '../../models/pod.model';
 import K8 from '../../services/k8.service';
@@ -13,7 +13,7 @@ import { buildLinkToPod, buildLinkToNamespace, buildLinkToNode } from '../../uti
 import getOffset from '../../utils/table';
 import { createdAtToOrigination } from '../../utils/time';
 
-interface IPodTableProps {
+interface IPodTableProps extends IResourceTableViewProps {
     namespace?: string;
 }
 

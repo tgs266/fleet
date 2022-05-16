@@ -3,7 +3,7 @@
 import { Classes, Tooltip2 } from '@blueprintjs/popover2';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
-import ResourceTableView from '../../components/ResourceTableView';
+import ResourceTableView, { IResourceTableViewProps } from '../../components/ResourceTableView';
 import { TableSort } from '../../components/SortableTableHeaderCell';
 import { RoleMeta } from '../../models/role.model';
 import K8 from '../../services/k8.service';
@@ -11,7 +11,7 @@ import { buildLinkToNamespace, buildLinkToRole } from '../../utils/routing';
 import getOffset from '../../utils/table';
 import { createdAtToHumanReadable, createdAtToOrigination } from '../../utils/time';
 
-export interface IRoleTableProps {
+export interface IRoleTableProps extends IResourceTableViewProps {
     namespace?: string;
 }
 

@@ -25,6 +25,7 @@ export interface ColumnDefinition<T> {
 
 export interface IResourceTableProps<T> {
     columns: ColumnDefinition<T>[];
+    lockedNamespace?: string;
     namespaced?: boolean;
     data: T[];
     title?: string;
@@ -77,6 +78,9 @@ export default function ResourceTable<T>(props: IResourceTableProps<T>) {
     };
 
     const setFilters = () => {
+        if (!props.onFiltersChange) {
+            return;
+        }
         const filters = [];
         if (ref.current && ref.current.value) {
             filters.push({
@@ -113,6 +117,7 @@ export default function ResourceTable<T>(props: IResourceTableProps<T>) {
                 <div style={{ flexGrow: 1 }} />
                 {props.namespaced && props.onFiltersChange && (
                     <NamespaceSelect
+                        lockedNamespace={props.lockedNamespace}
                         style={{ width: '160px', marginRight: '1em' }}
                         allowAll
                         selected={selectedNs}
