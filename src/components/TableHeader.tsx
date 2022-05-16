@@ -9,8 +9,8 @@ export default function TableHeader(props: {
 }) {
     const { children, style, rowStyle } = props;
     return (
-        <thead style={{ ...style, fontWeight: 'bolder' }}>
-            <tr style={rowStyle}>{children}</tr>
+        <thead style={{ ...style, fontWeight: 'bolder', display: 'table-header-group' }}>
+            <tr style={{ ...rowStyle, display: 'table-row' }}>{children}</tr>
         </thead>
     );
 }

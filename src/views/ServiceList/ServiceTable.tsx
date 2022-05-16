@@ -19,6 +19,10 @@ class ServiceTable extends ResourceTableView<IServiceTableProps, ServiceMeta> {
 
     useFilters = true;
 
+    title = 'Services';
+
+    namespaced = true;
+
     getPullParameters = (sort?: TableSort, page?: number) => {
         const usingSort = sort || this.state.sort;
         const usingPage = page !== null ? page : this.state.page;

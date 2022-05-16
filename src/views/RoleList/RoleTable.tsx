@@ -5,7 +5,6 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 import ResourceTableView from '../../components/ResourceTableView';
 import { TableSort } from '../../components/SortableTableHeaderCell';
-import Text from '../../components/Text/Text';
 import { RoleMeta } from '../../models/role.model';
 import K8 from '../../services/k8.service';
 import { buildLinkToNamespace, buildLinkToRole } from '../../utils/routing';
@@ -20,6 +19,10 @@ class RoleTable extends ResourceTableView<IRoleTableProps, RoleMeta> {
     itemsFcn = K8.roles.getRoles;
 
     useFilters = true;
+
+    title = 'Roles';
+
+    namespaced = true;
 
     getPullParameters = (sort?: TableSort, page?: number) => {
         const usingSort = sort || this.state.sort;
@@ -66,17 +69,6 @@ class RoleTable extends ResourceTableView<IRoleTableProps, RoleMeta> {
             ),
         },
     ];
-
-    render() {
-        return (
-            <div>
-                <Text muted style={{ marginBottom: '0.25em', marginLeft: '0.25em' }}>
-                    Roles
-                </Text>
-                {this.getResourceTable()}
-            </div>
-        );
-    }
 }
 
 export default RoleTable;

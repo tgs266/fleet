@@ -62,11 +62,11 @@ export default function SortableTableHeaderCell(props: {
     }
 
     return (
-        <td style={style} colSpan={colspan}>
+        <th scope="col" style={style} colSpan={colspan}>
             <div onClick={onClick} className="sortable-header-cell" style={{ ...innerStyle }}>
                 {children}
                 {icon}
             </div>
-        </td>
+        </th>
     );
 }

@@ -22,6 +22,10 @@ class PodListTable extends ResourceTableView<IPodTableProps, PodMeta> {
 
     useFilters = true;
 
+    namespaced = true;
+
+    title = 'Pods';
+
     getPullParameters = (sort?: TableSort, page?: number) => {
         const usingSort = sort || this.state.sort;
         const usingPage = page !== null ? page : this.state.page;
@@ -36,6 +40,7 @@ class PodListTable extends ResourceTableView<IPodTableProps, PodMeta> {
 
     getColumns = () => [
         {
+            type: 'icon',
             key: 'icon',
             alignment: Alignment.LEFT,
             columnName: '',

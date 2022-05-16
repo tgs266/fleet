@@ -20,6 +20,10 @@ class ServiceAccountTable extends ResourceTableView<IServiceAccountTableProps, S
 
     useFilters = true;
 
+    title = 'Service Accounts';
+
+    namespaced = true;
+
     getColumns = () => [
         {
             key: 'name',

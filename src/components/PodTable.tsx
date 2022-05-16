@@ -20,6 +20,7 @@ export default function PodTable(props: {
 }) {
     return (
         <ResourceTable<PodMeta>
+            namespaced
             data={props.pods}
             sort={props.sort}
             keyPath="uid"

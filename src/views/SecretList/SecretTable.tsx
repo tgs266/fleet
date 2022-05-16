@@ -21,6 +21,10 @@ class SecretTable extends ResourceTableView<ISecretTableProps, SecretMeta> {
 
     useFilters = true;
 
+    title = 'Secrets';
+
+    namespaced = true;
+
     getPullParameters = (sort?: TableSort, page?: number) => {
         const usingSort = sort || this.state.sort;
         const usingPage = page !== null ? page : this.state.page;

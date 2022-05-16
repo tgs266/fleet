@@ -5,7 +5,6 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 import ResourceTableView from '../../components/ResourceTableView';
 import { TableSort } from '../../components/SortableTableHeaderCell';
-import Text from '../../components/Text/Text';
 import { ClusterRoleBindingMeta } from '../../models/clusterrole.model';
 import K8 from '../../services/k8.service';
 import { buildLinkToClusterRoleBinding } from '../../utils/routing';
@@ -16,6 +15,8 @@ class ClusterRoleBindingTable extends ResourceTableView<unknown, ClusterRoleBind
     itemsFcn = K8.clusterRoleBindings.getClusterRoleBindings;
 
     useFilters = true;
+
+    title = 'Cluster Role Bindings';
 
     getPullParameters = (sort?: TableSort, page?: number) => {
         const usingSort = sort || this.state.sort;
@@ -52,17 +53,6 @@ class ClusterRoleBindingTable extends ResourceTableView<unknown, ClusterRoleBind
             ),
         },
     ];
-
-    render() {
-        return (
-            <div>
-                <Text muted style={{ marginBottom: '0.25em', marginLeft: '0.25em' }}>
-                    Cluster Role Bindings
-                </Text>
-                {this.getResourceTable()}
-            </div>
-        );
-    }
 }
 
 export default ClusterRoleBindingTable;

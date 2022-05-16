@@ -5,7 +5,6 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 import ResourceTableView from '../../components/ResourceTableView';
 import { TableSort } from '../../components/SortableTableHeaderCell';
-import Text from '../../components/Text/Text';
 import { ClusterRoleMeta } from '../../models/clusterrole.model';
 import K8 from '../../services/k8.service';
 import { buildLinkToClusterRole } from '../../utils/routing';
@@ -16,6 +15,8 @@ class ClusterRoleTable extends ResourceTableView<unknown, ClusterRoleMeta> {
     itemsFcn = K8.clusterRoles.getClusterRoles;
 
     useFilters = true;
+
+    title = 'Cluster Roles';
 
     getPullParameters = (sort?: TableSort, page?: number) => {
         const usingSort = sort || this.state.sort;
@@ -52,17 +53,6 @@ class ClusterRoleTable extends ResourceTableView<unknown, ClusterRoleMeta> {
             ),
         },
     ];
-
-    render() {
-        return (
-            <div>
-                <Text muted style={{ marginBottom: '0.25em', marginLeft: '0.25em' }}>
-                    Cluster Roles
-                </Text>
-                {this.getResourceTable()}
-            </div>
-        );
-    }
 }
 
 export default ClusterRoleTable;

@@ -22,6 +22,10 @@ class DeploymentTable extends ResourceTableView<IDeploymentTableProps, Deploymen
 
     useFilters = true;
 
+    namespaced = true;
+
+    title = 'Deployments';
+
     getPullParameters = (sort?: TableSort, page?: number) => {
         const usingSort = sort || this.state.sort;
         const usingPage = page !== null ? page : this.state.page;

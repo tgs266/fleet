@@ -5,7 +5,6 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 import ResourceTableView from '../../components/ResourceTableView';
 import { TableSort } from '../../components/SortableTableHeaderCell';
-import Text from '../../components/Text/Text';
 import { RoleBindingMeta } from '../../models/role.model';
 import K8 from '../../services/k8.service';
 import { buildLinkToNamespace, buildLinkToRoleBinding } from '../../utils/routing';
@@ -20,6 +19,10 @@ class RoleBindingTable extends ResourceTableView<IRoleBindingTableProps, RoleBin
     itemsFcn = K8.roleBindings.getRoleBindings;
 
     useFilters = true;
+
+    title = 'Role Bindings';
+
+    namespaced = true;
 
     getPullParameters = (sort?: TableSort, page?: number) => {
         const usingSort = sort || this.state.sort;
@@ -66,17 +69,6 @@ class RoleBindingTable extends ResourceTableView<IRoleBindingTableProps, RoleBin
             ),
         },
     ];
-
-    render() {
-        return (
-            <div>
-                <Text muted style={{ marginBottom: '0.25em', marginLeft: '0.25em' }}>
-                    Role Bindings
-                </Text>
-                {this.getResourceTable()}
-            </div>
-        );
-    }
 }
 
 export default RoleBindingTable;

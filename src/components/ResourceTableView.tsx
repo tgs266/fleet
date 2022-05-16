@@ -33,6 +33,10 @@ class ResourceTableView<P, T extends BaseMeta> extends React.Component<
 
     useFilters: boolean = false;
 
+    namespaced: boolean = false;
+
+    title: string = null;
+
     constructor(props: any) {
         super(props);
         this.state = {
@@ -136,6 +140,8 @@ class ResourceTableView<P, T extends BaseMeta> extends React.Component<
     getResourceTable = () => (
         <Card style={{ padding: 0, minWidth: '40em' }}>
             <ResourceTable<T>
+                title={this.title}
+                namespaced={this.namespaced}
                 paginationProps={{
                     page: this.state.page,
                     pageSize: this.state.pageSize,
