@@ -105,44 +105,46 @@ export default function ResourceTable<T>(props: IResourceTableProps<T>) {
 
     return (
         <>
-            <div
-                style={{
-                    padding: '1em',
-                    display: 'flex',
-                    alignItems: 'center',
-                    borderBottom: `1px solid ${Colors.LIGHT_GRAY1}`,
-                }}
-            >
-                {title}
-                <div style={{ flexGrow: 1 }} />
-                {props.namespaced && props.onFiltersChange && (
-                    <NamespaceSelect
-                        lockedNamespace={props.lockedNamespace}
-                        style={{ width: '160px', marginRight: '1em' }}
-                        allowAll
-                        selected={selectedNs}
-                        setSelected={setSelectedNs}
-                    />
-                )}
-                {props.onFiltersChange && (
-                    <InputGroup
-                        rightElement={
-                            <Button
-                                minimal
-                                icon="small-cross"
-                                onClick={() => {
-                                    ref.current.value = '';
-                                    setFilters();
-                                }}
-                            />
-                        }
-                        inputRef={ref}
-                        style={{ width: '160px' }}
-                        placeholder="Search..."
-                        onChange={setFilters}
-                    />
-                )}
-            </div>
+            {(props.title || props.namespaced || props.onFiltersChange) && (
+                <div
+                    style={{
+                        padding: '1em',
+                        display: 'flex',
+                        alignItems: 'center',
+                        borderBottom: `1px solid ${Colors.LIGHT_GRAY1}`,
+                    }}
+                >
+                    {title}
+                    <div style={{ flexGrow: 1 }} />
+                    {props.namespaced && props.onFiltersChange && (
+                        <NamespaceSelect
+                            lockedNamespace={props.lockedNamespace}
+                            style={{ width: '160px', marginRight: '1em' }}
+                            allowAll
+                            selected={selectedNs}
+                            setSelected={setSelectedNs}
+                        />
+                    )}
+                    {props.onFiltersChange && (
+                        <InputGroup
+                            rightElement={
+                                <Button
+                                    minimal
+                                    icon="small-cross"
+                                    onClick={() => {
+                                        ref.current.value = '';
+                                        setFilters();
+                                    }}
+                                />
+                            }
+                            inputRef={ref}
+                            style={{ width: '160px' }}
+                            placeholder="Search..."
+                            onChange={setFilters}
+                        />
+                    )}
+                </div>
+            )}
             <Table>
                 <TableHeader>
                     {columns.map((c, idx) => {
