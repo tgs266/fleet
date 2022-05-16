@@ -163,13 +163,13 @@ export default function ResourceTable<T>(props: IResourceTableProps<T>) {
                         }
                         if (c.columnElement) {
                             return (
-                                <TableCell style={styles} head alignment={c.alignment}>
+                                <TableCell key={idx} style={styles} head alignment={c.alignment}>
                                     {c.columnElement}
                                 </TableCell>
                             );
                         }
                         return (
-                            <TableCell style={styles} head alignment={c.alignment}>
+                            <TableCell key={idx} style={styles} head alignment={c.alignment}>
                                 {c.columnName}
                             </TableCell>
                         );
