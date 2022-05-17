@@ -16,7 +16,7 @@ export default function SecretList() {
     });
     return (
         <div style={{ margin: '1em' }}>
-            <SecretTable namespace="_all_" />
+            <SecretTable hotkeys namespace="_all_" />
         </div>
     );
 }

@@ -10,8 +10,6 @@ import { Node } from '../../models/node.model';
 import { TableSort } from '../../components/SortableTableHeaderCell';
 import { Pagination } from '../../models/component.model';
 import { PrometheusRangeQueryResponse, PrometheusResponse } from '../../models/prometheus.model';
-import LabelsTagList from '../../components/LabelsTagList';
-import AnnotationsTagList from '../../components/AnnotationsTagList';
 import { JSONObjectType } from '../../models/json.model';
 import Prometheus from '../../services/prometheus.service';
 import InfoCard from '../../components/Cards/InfoCard';
@@ -175,12 +173,6 @@ class NodeDetails extends React.Component<IWithRouterProps, INodeDetailsState> {
                                 <LabeledText style={{ marginLeft: '2em' }} label="UID">
                                     {node.uid}
                                 </LabeledText>
-                            </div>
-                            <div style={{ marginTop: '0.25em', display: 'flex' }}>
-                                <LabelsTagList obj={node} />
-                            </div>
-                            <div style={{ marginTop: '0.25em', display: 'flex' }}>
-                                <AnnotationsTagList obj={node} />
                             </div>
                         </InfoCard>
                     </div>

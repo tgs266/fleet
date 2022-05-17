@@ -1,8 +1,9 @@
+/* eslint-disable jsx-a11y/no-noninteractive-tabindex */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable react/no-array-index-key */
-import { Alignment, Button, Colors, InputGroup } from '@blueprintjs/core';
+import { Alignment, Button, Colors, InputGroup, useHotkeys } from '@blueprintjs/core';
 import _ from 'lodash';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Filter } from '../models/base';
 import NamespaceSelect from './NamespaceSelect';
 import SortableTableHeaderCell, { TableSort } from './SortableTableHeaderCell';
@@ -26,6 +27,7 @@ export interface ColumnDefinition<T> {
 export interface IResourceTableProps<T> {
     columns: ColumnDefinition<T>[];
     lockedNamespace?: string;
+    hotkeys?: boolean;
     namespaced?: boolean;
     data: T[];
     title?: string;
@@ -99,12 +101,33 @@ export default function ResourceTable<T>(props: IResourceTableProps<T>) {
         props.onFiltersChange(filters);
     };
 
+    let handleKeyDown: React.KeyboardEventHandler<HTMLElement> = null;
+    let handleKeyUp: React.KeyboardEventHandler<HTMLElement> = null;
+
+    if (props.hotkeys) {
+        const hotkeys = useMemo(
+            () => [
+                {
+                    combo: 'ctrl+f',
+                    global: true,
+                    label: 'Search',
+                    onKeyDown: () => ref.current.focus(),
+                },
+            ],
+            []
+        );
+
+        const { handleKeyDown: hkd, handleKeyUp: hku } = useHotkeys(hotkeys);
+        handleKeyDown = hkd;
+        handleKeyUp = hku;
+    }
+
     useEffect(() => {
         setFilters();
     }, [selectedNs]);
 
     return (
-        <>
+        <div tabIndex={0} onKeyDown={handleKeyDown} onKeyUp={handleKeyUp}>
             {(props.title || props.namespaced || props.onFiltersChange) && (
                 <div
                     style={{
@@ -198,6 +221,6 @@ export default function ResourceTable<T>(props: IResourceTableProps<T>) {
                     ))}
                 </TableBody>
             </Table>
-        </>
+        </div>
     );
 }

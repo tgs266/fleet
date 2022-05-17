@@ -27,6 +27,7 @@ export interface IResourceTableViewState<T extends BaseMeta> extends Pagination 
 
 export interface IResourceTableViewProps {
     lockedNamespace?: string;
+    hotkeys?: boolean;
 }
 
 class ResourceTableView<
@@ -145,6 +146,7 @@ class ResourceTableView<
         <Card style={{ padding: 0, minWidth: '40em' }}>
             <ResourceTable<T>
                 title={this.title}
+                hotkeys={this.props.hotkeys}
                 lockedNamespace={this.props.lockedNamespace}
                 namespaced={this.namespaced}
                 paginationProps={{

@@ -21,7 +21,7 @@ export default function DeploymentList() {
     });
     return (
         <div style={{ margin: '1em' }}>
-            <DeploymentTable />
+            <DeploymentTable hotkeys />
         </div>
     );
 }
