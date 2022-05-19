@@ -16,12 +16,12 @@ import EndpointTable from './EndpointTable';
 import TagList from '../../components/TagList';
 import EditableResource from '../../components/EditableResource';
 
-interface IPodDetailsState {
+interface IServiceDetailsState {
     service: Service;
     pollId: NodeJS.Timer;
 }
 
-class ServiceDetails extends React.Component<IWithRouterProps, IPodDetailsState> {
+class ServiceDetails extends React.Component<IWithRouterProps, IServiceDetailsState> {
     static contextType = NavContext;
 
     constructor(props: IWithRouterProps) {

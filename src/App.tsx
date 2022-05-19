@@ -27,10 +27,12 @@ import ClusterRoleDetails from './views/ClusterRoleDetails/ClusterRoleDetails';
 import ClusterRoleBindingList from './views/ClusterRoleBindingList/ClusterRoleBindingList';
 import ClusterRoleBindingDetails from './views/ClusterRoleBindingDetails/ClusterRoleBindingDetails';
 import SecretList from './views/SecretList/SecretList';
+import ReplicaSetList from './views/ReplicaSetList/ReplicaSetList';
 import SecretDetails from './views/SecretDetails/SecretDetails';
 import Shell from './views/Shell/Shell';
 import FleetView from './views/Fleet/FleetView';
 import Clusters from './views/Clusters/Clusters';
+import ReplicaSetDetails from './views/ReplicaSetDetails/ReplicaSetDetails';
 
 function getCookie(name: string) {
     const value = `; ${document.cookie}`;
@@ -109,6 +111,12 @@ function App() {
 
                 <Route path="secrets/" element={<SecretList />} />
                 <Route path="secrets/:namespace/:secretName" element={<SecretDetails />} />
+
+                <Route path="replicasets/" element={<ReplicaSetList />} />
+                <Route
+                    path="replicasets/:namespace/:replicaSetName"
+                    element={<ReplicaSetDetails />}
+                />
             </Route>
         </Routes>
     );

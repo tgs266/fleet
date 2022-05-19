@@ -25,6 +25,16 @@ func BuildFromPodCondition(cond v1.PodCondition) Condition {
 	}
 }
 
+func BuildFromReplicaSetCondition(cond v1a.ReplicaSetCondition) Condition {
+	return Condition{
+		Type:               string(cond.Type),
+		Status:             string(cond.Status),
+		LastTransitionTime: cond.LastTransitionTime.UnixMilli(),
+		Reason:             cond.Reason,
+		Message:            cond.Message,
+	}
+}
+
 func BuildFromDeploymentCondition(cond v1a.DeploymentCondition) Condition {
 	return Condition{
 		Type:               string(cond.Type),

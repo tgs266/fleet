@@ -3,7 +3,7 @@
 import { Classes, Tooltip2 } from '@blueprintjs/popover2';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
-import ResourceTableView from '../../components/ResourceTableView';
+import ResourceTableView, { IResourceTableViewProps } from '../../components/ResourceTableView';
 import { TableSort } from '../../components/SortableTableHeaderCell';
 import { ServiceAccountMeta } from '../../models/serviceaccount.model';
 import K8 from '../../services/k8.service';
@@ -11,7 +11,7 @@ import { buildLinkToNamespace, buildLinkToServiceAccount } from '../../utils/rou
 import getOffset from '../../utils/table';
 import { createdAtToHumanReadable, createdAtToOrigination } from '../../utils/time';
 
-interface IServiceAccountTableProps {
+interface IServiceAccountTableProps extends IResourceTableViewProps {
     namespace?: string;
 }
 
@@ -19,6 +19,10 @@ class ServiceAccountTable extends ResourceTableView<IServiceAccountTableProps, S
     itemsFcn = K8.serviceAccounts.getServiceAccounts;
 
     useFilters = true;
+
+    title = 'Service Accounts';
+
+    namespaced = true;
 
     getColumns = () => [
         {

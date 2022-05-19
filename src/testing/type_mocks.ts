@@ -4,6 +4,7 @@ import { Container, ContainerSpec } from '../models/container.model';
 import { Deployment } from '../models/deployment.model';
 import { Node } from '../models/node.model';
 import { Pod } from '../models/pod.model';
+import { ReplicaSet } from '../models/replicaset.model';
 import { Role, RoleBinding } from '../models/role.model';
 import { Secret } from '../models/secret.model';
 import { ServiceMeta } from '../models/service.model';
@@ -323,7 +324,7 @@ export const generateSystemResources = (): SystemResources => ({
 
 export const generateDeployment = (name: string): Deployment => ({
     name,
-    createdAt: 0,
+    createdAt: 309458748,
     labels: {
         asdf: 'asdf',
     },
@@ -435,4 +436,31 @@ export const generateServiceMeta = (name: string): ServiceMeta => ({
             nodePort: 3,
         },
     ],
+});
+
+export const generateReplicaSet = (name: string): ReplicaSet => ({
+    name,
+    namespace: 'asdf',
+    createdAt: 0,
+    uid: name,
+    annotations: { asdf: 'asdf' },
+    labels: { asdf: 'asdf' },
+    readyReplicas: 2,
+    replicas: 2,
+    owners: [
+        {
+            name: 'asdf',
+            kind: 'Deployment',
+        },
+    ],
+    tolerances: [
+        {
+            key: 'asdf',
+            effect: 'asdf',
+            operator: 'asdf',
+            value: 'asdf',
+            tolerationSeconds: 2,
+        },
+    ],
+    pods: [generatePod('1'), generatePod('2')],
 });

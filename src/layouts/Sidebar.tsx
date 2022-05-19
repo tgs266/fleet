@@ -56,6 +56,11 @@ const SIDEBAR_ITEM_PROPS: SidebarItemProps[] = [
                 id: 'pods',
                 target: '/pods',
             },
+            {
+                title: 'Replica Sets',
+                id: 'replicasets',
+                target: '/replicasets',
+            },
         ],
     },
     {
@@ -126,21 +131,20 @@ export default function Sidebar() {
     const [open, setOpen] = useState(false);
     const [authCtx] = useAuthContext();
 
-    const userName = authCtx
-        ? authCtx.username
-            ? authCtx.username
-            : 'No username found'
-        : 'No username found';
-    const useAuth = authCtx
-        ? authCtx.useAuth !== null && authCtx.useAuth !== undefined
-            ? authCtx.useAuth
-            : null
-        : null;
-    const clusterName = authCtx
-        ? authCtx.cluster
-            ? authCtx.cluster.name
-            : 'No connected cluster'
-        : 'No connected cluster';
+    let userName = 'No username found';
+    if (authCtx && authCtx.username) {
+        userName = authCtx.username;
+    }
+
+    let useAuth = null;
+    if (authCtx) {
+        useAuth = authCtx.useAuth;
+    }
+
+    let clusterName = null;
+    if (authCtx && authCtx.cluster) {
+        clusterName = authCtx.cluster.name;
+    }
 
     let authIntent = null;
     let authString = 'UNKNOWN';

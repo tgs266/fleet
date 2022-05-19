@@ -71,6 +71,13 @@ func initializeSecretRoutes(app *api.API) {
 	app.Get("/api/v1/secrets/:namespace/:name", GetSecret)
 }
 
+func initializeReplicaSetRoutes(app *api.API) {
+	app.Get("/api/v1/replicasets/:namespace/", GetReplicaSets)
+	app.Get("/api/v1/replicasets/:namespace/:name", GetReplicaSet)
+	app.Put("/api/v1/replicasets/:namespace/:name/restart", RestartReplicaSet)
+	app.WebsocketGet("/ws/v1/replicasets/:namespace/:name/events", ReplicaSetEventStream)
+}
+
 func initializeOtherRoutes(app *api.API) {
 	app.Get("/api/v1/auth/", UsingAuth)
 	app.Get("/api/v1/auth/cani", CanI)
@@ -96,8 +103,6 @@ func initializeOtherRoutes(app *api.API) {
 	app.Delete(rawBase+"/:name", RawDelete)
 
 	app.Get("/api/v1/filters/properties", GetFilters)
-
-	// app.Get("/api/v1/cluster/name", GetCurrentClusterName)
 }
 
 func InitializeRoutes(app *api.API) {
@@ -109,6 +114,7 @@ func InitializeRoutes(app *api.API) {
 	initializeRoleRoutes(app)
 	initializeRoleBindingRoutes(app)
 	initializeSecretRoutes(app)
+	initializeReplicaSetRoutes(app)
 	initializeOtherRoutes(app)
 	initializePromRoutes(app)
 }

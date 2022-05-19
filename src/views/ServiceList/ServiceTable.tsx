@@ -3,7 +3,7 @@
 import { Classes, Tooltip2 } from '@blueprintjs/popover2';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
-import ResourceTableView from '../../components/ResourceTableView';
+import ResourceTableView, { IResourceTableViewProps } from '../../components/ResourceTableView';
 import { TableSort } from '../../components/SortableTableHeaderCell';
 import { ServiceMeta } from '../../models/service.model';
 import K8 from '../../services/k8.service';
@@ -11,13 +11,17 @@ import { buildLinkToNamespace, buildLinkToService } from '../../utils/routing';
 import getOffset from '../../utils/table';
 import { createdAtToHumanReadable, createdAtToOrigination } from '../../utils/time';
 
-interface IServiceTableProps {
+interface IServiceTableProps extends IResourceTableViewProps {
     namespace?: string;
 }
 class ServiceTable extends ResourceTableView<IServiceTableProps, ServiceMeta> {
     itemsFcn = K8.services.getServices;
 
     useFilters = true;
+
+    title = 'Services';
+
+    namespaced = true;
 
     getPullParameters = (sort?: TableSort, page?: number) => {
         const usingSort = sort || this.state.sort;

@@ -16,6 +16,22 @@ const app = express();
 
 const clusters = new ClusterManager();
 
+const args = process.argv;
+let isLocal = false;
+let localPort = '8080';
+for (const arg of args) {
+    if (arg.includes('APP_LOCAL')) {
+        const split = arg.split('=');
+        if (split.length === 1) {
+            break;
+        }
+        const trimmed = split[1].trim();
+        isLocal = true;
+        localPort = trimmed;
+        break;
+    }
+}
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(bodyParser.raw());
@@ -115,27 +131,34 @@ app.post('/api/v1/electron/connect', (req, res) => {
         .then((r) => {
             for (const pod of r.body.items) {
                 if (pod.metadata.name.includes('fleet')) {
-                    const forward = new k8s.PortForward(kubeconfig);
-                    const server = net.createServer((socket) => {
-                        forward.portForward(
-                            'fleet',
-                            pod.metadata.name,
-                            [9095],
-                            socket,
-                            null,
-                            socket
-                        );
-                    });
-                    server.listen(0);
+                    let port = 0;
+                    let server = null;
+                    if (isLocal) {
+                        port = localPort;
+                    } else {
+                        const forward = new k8s.PortForward(kubeconfig);
+                        server = net.createServer((socket) => {
+                            forward.portForward(
+                                'fleet',
+                                pod.metadata.name,
+                                [9095],
+                                socket,
+                                null,
+                                socket
+                            );
+                        });
+                        server.listen(0);
+                        port = server.address.port;
+                    }
                     clusters.updateOrAdd({
                         name: context.name,
                         isConnected: true,
-                        port: server.address().port,
+                        port,
                         server,
                     });
                     clusters.setCurrent(context.name, app);
                     axios
-                        .post(`http://127.0.0.1:${server.address().port}/api/v1/auth/login`, {
+                        .post(`http://127.0.0.1:${port}/api/v1/auth/login`, {
                             configFile: YAML.stringify(JSON.parse(kubeconfig.exportConfig())),
                         })
                         .then((r2) => {

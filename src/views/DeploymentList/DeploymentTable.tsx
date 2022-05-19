@@ -4,7 +4,7 @@ import { Alignment, Colors, Icon } from '@blueprintjs/core';
 import { Classes, Tooltip2 } from '@blueprintjs/popover2';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
-import ResourceTableView from '../../components/ResourceTableView';
+import ResourceTableView, { IResourceTableViewProps } from '../../components/ResourceTableView';
 import { TableSort } from '../../components/SortableTableHeaderCell';
 import { DeploymentMeta } from '../../models/deployment.model';
 import K8 from '../../services/k8.service';
@@ -12,7 +12,7 @@ import { buildLinkToDeployment, buildLinkToNamespace } from '../../utils/routing
 import getOffset from '../../utils/table';
 import { createdAtToHumanReadable, createdAtToOrigination } from '../../utils/time';
 
-interface IDeploymentTableProps {
+interface IDeploymentTableProps extends IResourceTableViewProps {
     namespace?: string;
 }
 
@@ -21,6 +21,10 @@ class DeploymentTable extends ResourceTableView<IDeploymentTableProps, Deploymen
     itemsFcn = K8.deployments.getDeployments;
 
     useFilters = true;
+
+    namespaced = true;
+
+    title = 'Deployments';
 
     getPullParameters = (sort?: TableSort, page?: number) => {
         const usingSort = sort || this.state.sort;
@@ -36,6 +40,7 @@ class DeploymentTable extends ResourceTableView<IDeploymentTableProps, Deploymen
 
     getColumns = () => [
         {
+            type: 'icon',
             key: 'icon',
             alignment: Alignment.LEFT,
             columnName: '',

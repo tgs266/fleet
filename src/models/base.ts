@@ -8,6 +8,14 @@ export interface BaseMeta {
     labels: JSONObject;
 }
 
+export interface Tolerance {
+    key: string;
+    operator: string;
+    value: string;
+    effect: string;
+    tolerationSeconds: number;
+}
+
 export interface NamespacedMeta extends BaseMeta {
     namespace: string;
 }

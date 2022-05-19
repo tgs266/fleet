@@ -34,7 +34,7 @@ type Flags struct {
 	oidcClientId     *string
 	oidcClientSecret *string
 	host             *string
-	proxyPort        *string
+	port             *string
 }
 
 func parseFlags() Flags {
@@ -45,7 +45,7 @@ func parseFlags() Flags {
 	oidcClientId := flag.String("oidc-client-id", "", "used for oidc authentication")
 	oidcClientSecret := flag.String("oidc-client-secret", "", "used for oidc authentication")
 	host := flag.String("host", "", "")
-	proxyPort := flag.String("proxyPort", "", "")
+	port := flag.String("port", "9095", "")
 
 	flag.Parse()
 	return Flags{
@@ -56,7 +56,7 @@ func parseFlags() Flags {
 		oidcClientId:     oidcClientId,
 		oidcClientSecret: oidcClientSecret,
 		host:             host,
-		proxyPort:        proxyPort,
+		port:             port,
 	}
 }
 
@@ -119,7 +119,7 @@ func setupBackend(flags Flags) *api.API {
 	return app
 }
 
-func setupApp() *api.API {
+func setupApp() (*api.API, Flags) {
 	logging.Init(logging.LVL_INFO)
 	logging.INFO("initializing fleet")
 
@@ -134,10 +134,10 @@ func setupApp() *api.API {
 		logging.INFO(fmt.Sprintf("serving frontend from %s", path))
 		app.Static("/", path)
 	}
-	return app
+	return app, flags
 }
 
 func main() {
-	app := setupApp()
-	app.Listen(":9095")
+	app, f := setupApp()
+	app.Listen(":" + *f.port)
 }

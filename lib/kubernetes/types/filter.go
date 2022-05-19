@@ -94,10 +94,19 @@ func (f Filters) Execute(list []ComparableType) []ComparableType {
 		return list
 	}
 	for _, v := range list {
+		match := false
 		for _, f := range f {
-			if f.Match(v.Get(f.Property)) {
-				newList = append(newList, v)
+			if f.Property == NamespaceProperty && f.By == ComparableString("_all_") && f.Operator == EqualOperator {
+				match = true
+			} else if f.Match(v.Get(f.Property)) {
+				match = true
+			} else {
+				match = false
+				break
 			}
+		}
+		if match {
+			newList = append(newList, v)
 		}
 	}
 	return newList

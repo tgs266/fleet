@@ -6,12 +6,13 @@ import { setupServer } from 'msw/node';
 import '@testing-library/jest-dom';
 import Layout from '../../layouts/Layout';
 import { generateSecret } from '../../testing/type_mocks';
-import { delay } from '../../testing/utils';
+import { delay, getNs } from '../../testing/utils';
 import Auth from '../../services/auth.service';
 import Secrets from '../../services/k8/secret.service';
 import SecretList from './SecretList';
 
 const server = setupServer(
+    getNs(),
     rest.get(`${Auth.base}/cani`, (req, res, ctx) => res(ctx.json({ allowed: true }))),
     rest.get(`${Secrets.base}/*`, (req, res, ctx) => {
         const count = 50;

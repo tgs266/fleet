@@ -136,12 +136,32 @@ export default class Prometheus {
                 switch (queryName) {
                     case 'memoryUsage': {
                         return {
-                            query: `sum(rate(container_memory_usage_bytes{container!="POD",container!="",pod=~"${options.name}",namespace="${options.namespace}"}[${Prometheus.accuracy}]))`,
+                            query: `sum(container_memory_working_set_bytes{container!="POD",container!="",pod=~"${options.name}",namespace="${options.namespace}"})`,
+                        };
+                    }
+                    case 'memoryRequests': {
+                        return {
+                            query: `sum(kube_pod_container_resource_requests{pod=~"${options.name}",resource="memory",namespace="${options.namespace}"}) by (pod)`,
+                        };
+                    }
+                    case 'memoryLimits': {
+                        return {
+                            query: `sum(kube_pod_container_resource_limits{pod=~"${options.name}",resource="memory",namespace="${options.namespace}"}) by (pod)`,
                         };
                     }
                     case 'cpuUsage': {
                         return {
                             query: `sum(rate(container_cpu_usage_seconds_total{container!="POD",container!="",pod=~"${options.name}",namespace="${options.namespace}"}[${Prometheus.accuracy}]))`,
+                        };
+                    }
+                    case 'cpuRequests': {
+                        return {
+                            query: `sum(kube_pod_container_resource_requests{pod=~"${options.name}",resource="cpu",namespace="${options.namespace}"}) by (pod)`,
+                        };
+                    }
+                    case 'cpuLimits': {
+                        return {
+                            query: `sum(kube_pod_container_resource_limits{pod=~"${options.name}",resource="cpu",namespace="${options.namespace}"}) by (pod)`,
                         };
                     }
                     case 'networkRecieved': {

@@ -5,6 +5,8 @@ import { Alignment } from '@blueprintjs/core';
 export default function TableCell(props: {
     colspan?: number;
     alignment?: Alignment;
+    head?: boolean;
+    scope?: string;
     style?: React.CSSProperties;
     children?: PropTypes.ReactNodeLike;
 }) {
@@ -32,6 +34,12 @@ export default function TableCell(props: {
             default:
                 break;
         }
+    }
+
+    if (props.head) {
+        <th scope={props.scope ? props.scope : 'col'} style={style} colSpan={colspan}>
+            <div style={innerStyle}>{children}</div>
+        </th>;
     }
 
     return (

@@ -83,6 +83,7 @@ class NamespaceTable extends React.Component<unknown, INamespaceTableState> {
         return (
             <Card style={{ padding: 0, minWidth: '40em' }}>
                 <ResourceTable<NamespaceMeta>
+                    title="Namespaces"
                     paginationProps={{
                         page: this.state.page,
                         pageSize: this.state.pageSize,

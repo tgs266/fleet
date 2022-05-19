@@ -15,7 +15,7 @@ function Layout() {
         <div className="fleet fleet-blueprint-theme">
             <div style={{ display: 'flex', width: '100%' }} id="main-container">
                 <AuthContextProvider>
-                    <div style={{ flexBasis: '3em' }}>
+                    <div style={{ flexBasis: '3em', flexShrink: 0 }}>
                         <Sidebar />
                     </div>
                     <NavContextProvider>

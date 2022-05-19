@@ -1,9 +1,12 @@
 /* eslint-disable no-restricted-syntax */
 import * as React from 'react';
+import { useNavigate } from 'react-router';
+import { AxiosError } from 'axios';
+import { FleetError } from '../../models/base';
 import TitledCard from '../../components/Cards/TitledCard';
 import FillErrorBoundary from '../../components/FillErrorBoundary';
 import RangeQueryLineChart from '../../components/MetricCharts/RangeQueryLineChart';
-import NoMetrics from '../../components/NoMetrics';
+import NoMetrics from '../../components/MetricCharts/NoMetrics';
 import { useNavContext } from '../../layouts/Navigation';
 import Electron from '../../services/electron.service';
 import K8 from '../../services/k8.service';
@@ -12,6 +15,8 @@ import ResourceCard from './ResourceCard';
 
 export default function Home() {
     const [, setState] = useNavContext();
+
+    const nav = useNavigate();
 
     const [metrics, setMetrics] = React.useState(null);
     const [interval, setInterval] = React.useState(null);
@@ -95,17 +100,25 @@ export default function Home() {
 
     React.useEffect(() => {
         if (Electron.isElectron) {
-            Electron.getCurrentCluster().then((r) => {
-                setState({
-                    breadcrumbs: [
-                        {
-                            text: `Home`,
-                        },
-                    ],
-                    menu: null,
-                    buttons: [<div>{Electron.isElectron ? `Cluster: ${r.data.name}` : ''}</div>],
+            Electron.getCurrentCluster()
+                .then((r) => {
+                    setState({
+                        breadcrumbs: [
+                            {
+                                text: `Home`,
+                            },
+                        ],
+                        menu: null,
+                        buttons: [
+                            <div>{Electron.isElectron ? `Cluster: ${r.data.name}` : ''}</div>,
+                        ],
+                    });
+                })
+                .catch((err: AxiosError<FleetError>) => {
+                    if (err.response.data.status === 'NO_CLUSTER_SELECTED') {
+                        nav('/clusters');
+                    }
                 });
-            });
         }
     }, []);
 

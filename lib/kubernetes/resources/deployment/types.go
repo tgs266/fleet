@@ -1,10 +1,12 @@
 package deployment
 
 import (
+	"github.com/tgs266/fleet/lib/kubernetes"
 	"github.com/tgs266/fleet/lib/kubernetes/common"
 	"github.com/tgs266/fleet/lib/kubernetes/resources/condition"
 	"github.com/tgs266/fleet/lib/kubernetes/resources/container"
 	"github.com/tgs266/fleet/lib/kubernetes/resources/pod"
+	"github.com/tgs266/fleet/lib/kubernetes/resources/replicaset"
 	"github.com/tgs266/fleet/lib/kubernetes/resources/service"
 	v1 "k8s.io/api/apps/v1"
 	v1c "k8s.io/api/core/v1"
@@ -26,11 +28,12 @@ type DeploymentMeta struct {
 
 type Deployment struct {
 	DeploymentMeta `json:",inline"`
-	Pods           []pod.Pod                 `json:"pods"`
-	ContainerSpecs []container.ContainerSpec `json:"containerSpecs"`
-	Services       []service.ServiceMeta     `json:"services"`
-	ContainerCount int                       `json:"containerCount"`
-	Conditions     []condition.Condition     `json:"conditions"`
+	ReplicaSet     *replicaset.ReplicaSetMeta `json:"replicaSet"`
+	Pods           []pod.Pod                  `json:"pods"`
+	ContainerSpecs []container.ContainerSpec  `json:"containerSpecs"`
+	Services       []service.ServiceMeta      `json:"services"`
+	ContainerCount int                        `json:"containerCount"`
+	Conditions     []condition.Condition      `json:"conditions"`
 }
 
 type DeploymentCreation struct {
@@ -62,7 +65,7 @@ func BuildDeploymentMeta(dep *v1.Deployment) DeploymentMeta {
 	}
 }
 
-func BuildDeployment(dep *v1.Deployment, svcs *v1c.ServiceList, pods *v1c.PodList, podMets *v1beta1.PodMetricsList) *Deployment {
+func BuildDeployment(K8 *kubernetes.K8Client, dep *v1.Deployment, svcs *v1c.ServiceList, pods *v1c.PodList, podMets *v1beta1.PodMetricsList) *Deployment {
 
 	extractedPodMets := pod.ExtractPodMetrics(podMets)
 
@@ -87,8 +90,25 @@ func BuildDeployment(dep *v1.Deployment, svcs *v1c.ServiceList, pods *v1c.PodLis
 		conds = append(conds, condition.BuildFromDeploymentCondition(c))
 	}
 
+	rsMeta := &replicaset.ReplicaSetMeta{}
+	if len(pods.Items) > 0 {
+		podOwners := pods.Items[0].OwnerReferences
+
+		for _, o := range podOwners {
+			if o.Kind == "ReplicaSet" {
+				rs, err := replicaset.Get(K8, dep.Namespace, o.Name)
+				if err != nil {
+					rsMeta = nil
+				} else {
+					rsMeta = &rs.ReplicaSetMeta
+				}
+			}
+		}
+	}
+
 	d := &Deployment{
 		DeploymentMeta: BuildDeploymentMeta(dep),
+		ReplicaSet:     rsMeta,
 		ContainerCount: len(dep.Spec.Template.Spec.Containers),
 		Pods:           decodedPods,
 		ContainerSpecs: decodedSpecs,

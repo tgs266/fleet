@@ -53,8 +53,12 @@ export interface MetricsQueryOptions {
 
 export declare type MetricsQueryName =
     | 'memoryUsage'
+    | 'memoryRequests'
+    | 'memoryLimits'
     | 'memoryCapacity'
     | 'cpuUsage'
+    | 'cpuRequests'
+    | 'cpuLimits'
     | 'cpuCapacity'
     | 'podUsage'
     | 'podCapacity'

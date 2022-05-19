@@ -28,10 +28,12 @@ type RawMapping struct {
 }
 
 var PluralKindToRawMapping = map[string]RawMapping{
-	"deployments":     {"deployments", AppsClientType, true},
+	"deployments": {"deployments", AppsClientType, true},
+	"replicasets": {"replicasets", AppsClientType, true},
+
 	"pods":            {"pods", CoreClientType, true},
 	"services":        {"services", CoreClientType, true},
-	"namespaces":      {"namespaces", CoreClientType, true},
+	"namespaces":      {"namespaces", CoreClientType, false},
 	"serviceaccounts": {"serviceaccounts", CoreClientType, true},
 	"secrets":         {"secrets", CoreClientType, true},
 

@@ -18,20 +18,29 @@ import ResourceTable, {
 } from './ResourceTable';
 import { TableSort } from './SortableTableHeaderCell';
 
-interface IResourceTableViewProps<T extends BaseMeta> extends Pagination {
+export interface IResourceTableViewState<T extends BaseMeta> extends Pagination {
     items: T[];
     sort: TableSort;
     pollId: NodeJS.Timer;
     filters: Filter[];
 }
 
-class ResourceTableView<P, T extends BaseMeta> extends React.Component<
-    P,
-    IResourceTableViewProps<T>
-> {
+export interface IResourceTableViewProps {
+    lockedNamespace?: string;
+    hotkeys?: boolean;
+}
+
+class ResourceTableView<
+    P extends IResourceTableViewProps,
+    T extends BaseMeta
+> extends React.Component<P, IResourceTableViewState<T>> {
     itemsFcn: (...args: any) => Promise<AxiosResponse<PaginationResponse<T>>> = null;
 
     useFilters: boolean = false;
+
+    namespaced: boolean = false;
+
+    title: string = null;
 
     constructor(props: any) {
         super(props);
@@ -136,6 +145,10 @@ class ResourceTableView<P, T extends BaseMeta> extends React.Component<
     getResourceTable = () => (
         <Card style={{ padding: 0, minWidth: '40em' }}>
             <ResourceTable<T>
+                title={this.title}
+                hotkeys={this.props.hotkeys}
+                lockedNamespace={this.props.lockedNamespace}
+                namespaced={this.namespaced}
                 paginationProps={{
                     page: this.state.page,
                     pageSize: this.state.pageSize,

@@ -3,7 +3,7 @@
 import { Classes, Tooltip2 } from '@blueprintjs/popover2';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
-import ResourceTableView from '../../components/ResourceTableView';
+import ResourceTableView, { IResourceTableViewProps } from '../../components/ResourceTableView';
 import { TableSort } from '../../components/SortableTableHeaderCell';
 import { SecretMeta } from '../../models/secret.model';
 import K8 from '../../services/k8.service';
@@ -12,7 +12,7 @@ import getOffset from '../../utils/table';
 import { createdAtToHumanReadable, createdAtToOrigination } from '../../utils/time';
 import { withRouter } from '../../utils/withRouter';
 
-export interface ISecretTableProps {
+export interface ISecretTableProps extends IResourceTableViewProps {
     namespace?: string;
 }
 
@@ -20,6 +20,10 @@ class SecretTable extends ResourceTableView<ISecretTableProps, SecretMeta> {
     itemsFcn = K8.secrets.getSecrets;
 
     useFilters = true;
+
+    title = 'Secrets';
+
+    namespaced = true;
 
     getPullParameters = (sort?: TableSort, page?: number) => {
         const usingSort = sort || this.state.sort;

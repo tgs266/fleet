@@ -16,7 +16,7 @@ export default function ServiceList() {
     });
     return (
         <div style={{ margin: '1em' }}>
-            <ServiceTable namespace="_all_" />
+            <ServiceTable hotkeys namespace="_all_" />
         </div>
     );
 }

@@ -14,7 +14,7 @@ export default function PodList() {
     });
     return (
         <div style={{ margin: '1em' }}>
-            <PodListTable data-testid="podlist" />
+            <PodListTable hotkeys data-testid="podlist" />
         </div>
     );
 }

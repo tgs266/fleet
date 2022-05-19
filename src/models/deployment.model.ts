@@ -1,6 +1,7 @@
 import { Condition, NamespacedMeta } from './base';
 import { ContainerSpec } from './container.model';
 import { Pod } from './pod.model';
+import { ReplicaSetMeta } from './replicaset.model';
 import { Service } from './service.model';
 
 export interface DeploymentMeta extends NamespacedMeta {
@@ -17,6 +18,7 @@ export interface CreateDeployment {
 
 export interface Deployment extends DeploymentMeta {
     containerCount: number;
+    replicaSet?: ReplicaSetMeta;
     pods: Pod[];
     containerSpecs: ContainerSpec[];
     services: Service[];

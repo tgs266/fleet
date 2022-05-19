@@ -28,7 +28,7 @@ export default function Table(props: {
             {props.title && <Text large>{props.title}</Text>}
             <table
                 className={`${props.className} bp4-html-table bp4-html-table-condensed bp4-html-table-striped`}
-                style={style}
+                style={{ ...style }}
             >
                 {children}
             </table>

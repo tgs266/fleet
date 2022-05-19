@@ -1,9 +1,11 @@
+/* eslint-disable jsx-a11y/no-noninteractive-tabindex */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable react/no-array-index-key */
-import { Alignment } from '@blueprintjs/core';
+import { Alignment, Button, Colors, InputGroup, useHotkeys } from '@blueprintjs/core';
 import _ from 'lodash';
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Filter } from '../models/base';
+import NamespaceSelect from './NamespaceSelect';
 import SortableTableHeaderCell, { TableSort } from './SortableTableHeaderCell';
 import Table, { PaginationProps } from './Table';
 import TableBody from './TableBody';
@@ -12,7 +14,9 @@ import TableHeader from './TableHeader';
 import TableRow from './TableRow';
 
 export interface ColumnDefinition<T> {
+    type?: string;
     columnName: string;
+    columnElement?: JSX.Element;
     sortableId?: string;
     searchable?: boolean;
     key: string;
@@ -22,6 +26,9 @@ export interface ColumnDefinition<T> {
 
 export interface IResourceTableProps<T> {
     columns: ColumnDefinition<T>[];
+    lockedNamespace?: string;
+    hotkeys?: boolean;
+    namespaced?: boolean;
     data: T[];
     title?: string;
     keyPath: string;
@@ -36,27 +43,135 @@ export const DEFAULT_SORTABLE_ID = 'name';
 export const DEFAULT_SORTABLE_ASCENDING = false;
 export const DEFAULT_SORTABLE_PAGE_SIZE = 20;
 
+const getStyles = (idx: number, cols: ColumnDefinition<any>[]) => {
+    const c = cols[idx];
+    const style: React.CSSProperties = {};
+    if (c.type === 'icon') {
+        style.width = '16px';
+    }
+    if (idx === 1 && cols[idx - 1].type === 'icon') {
+        style.paddingLeft = 0;
+    }
+    return style;
+};
+
 // eslint-disable-next-line react/prefer-stateless-function
-export default class ResourceTable<T> extends React.Component<IResourceTableProps<T>, unknown> {
-    render() {
-        const { title, keyPath, columns, data, sort, onSortChange, paginationProps } = this.props;
-        let fOps = null;
-        if (this.props.filters) {
-            fOps = [];
-            for (const c of this.props.columns) {
-                if (c.searchable) {
-                    fOps.push({
-                        name: c.columnName,
-                        id: c.sortableId,
-                    });
-                }
+export default function ResourceTable<T>(props: IResourceTableProps<T>) {
+    const { title, keyPath, columns, data, sort, onSortChange, paginationProps } = props;
+    let fOps = null;
+    if (props.filters) {
+        fOps = [];
+        for (const c of props.columns) {
+            if (c.searchable) {
+                fOps.push({
+                    name: c.columnName,
+                    id: c.sortableId,
+                });
             }
         }
+    }
 
-        return (
-            <Table title={title}>
+    const [selectedNs, setSelectedNsInner] = useState(localStorage.getItem('namespace') || '_all_');
+    const ref = React.useRef<HTMLInputElement>();
+
+    const setSelectedNs = (ns: string) => {
+        setSelectedNsInner(ns);
+        localStorage.setItem('namespace', ns);
+    };
+
+    const setFilters = () => {
+        if (!props.onFiltersChange) {
+            return;
+        }
+        const filters = [];
+        if (ref.current && ref.current.value) {
+            filters.push({
+                property: 'name',
+                operator: 'in',
+                value: ref.current.value,
+            });
+        }
+        if (props.namespaced) {
+            filters.push({
+                property: 'namespace',
+                operator: 'eq',
+                value: selectedNs,
+            });
+        }
+        props.onFiltersChange(filters);
+    };
+
+    let handleKeyDown: React.KeyboardEventHandler<HTMLElement> = null;
+    let handleKeyUp: React.KeyboardEventHandler<HTMLElement> = null;
+
+    if (props.hotkeys) {
+        const hotkeys = useMemo(
+            () => [
+                {
+                    combo: 'ctrl+f',
+                    global: true,
+                    label: 'Search',
+                    onKeyDown: () => ref.current.focus(),
+                },
+            ],
+            []
+        );
+
+        const { handleKeyDown: hkd, handleKeyUp: hku } = useHotkeys(hotkeys);
+        handleKeyDown = hkd;
+        handleKeyUp = hku;
+    }
+
+    useEffect(() => {
+        setFilters();
+    }, [selectedNs]);
+
+    return (
+        <div tabIndex={0} onKeyDown={handleKeyDown} onKeyUp={handleKeyUp}>
+            {(props.title || props.namespaced || props.onFiltersChange) && (
+                <div
+                    style={{
+                        padding: '1em',
+                        display: 'flex',
+                        alignItems: 'center',
+                        borderBottom: `1px solid ${Colors.LIGHT_GRAY1}`,
+                    }}
+                >
+                    {title}
+                    <div style={{ flexGrow: 1 }} />
+                    {props.namespaced && props.onFiltersChange && (
+                        <NamespaceSelect
+                            lockedNamespace={props.lockedNamespace}
+                            style={{ width: '160px', marginRight: '1em' }}
+                            allowAll
+                            selected={selectedNs}
+                            setSelected={setSelectedNs}
+                        />
+                    )}
+                    {props.onFiltersChange && (
+                        <InputGroup
+                            rightElement={
+                                <Button
+                                    minimal
+                                    icon="small-cross"
+                                    onClick={() => {
+                                        ref.current.value = '';
+                                        setFilters();
+                                    }}
+                                />
+                            }
+                            inputRef={ref}
+                            style={{ width: '160px' }}
+                            placeholder="Search..."
+                            onChange={setFilters}
+                        />
+                    )}
+                </div>
+            )}
+            <Table>
                 <TableHeader>
                     {columns.map((c, idx) => {
+                        const styles = getStyles(idx, columns);
                         if (c.sortableId) {
                             return (
                                 <SortableTableHeaderCell
@@ -64,38 +179,49 @@ export default class ResourceTable<T> extends React.Component<IResourceTableProp
                                     sort={sort}
                                     onSortChange={onSortChange}
                                     sortableId={c.sortableId}
+                                    alignment={c.alignment}
+                                    style={styles}
                                 >
                                     {c.columnName}
                                 </SortableTableHeaderCell>
                             );
                         }
-                        return <TableCell>{c.columnName}</TableCell>;
+                        if (c.columnElement) {
+                            return (
+                                <TableCell key={idx} style={styles} head alignment={c.alignment}>
+                                    {c.columnElement}
+                                </TableCell>
+                            );
+                        }
+                        return (
+                            <TableCell key={idx} style={styles} head alignment={c.alignment}>
+                                {c.columnName}
+                            </TableCell>
+                        );
                     })}
                 </TableHeader>
-                <TableBody
-                    filterOptions={fOps}
-                    onFilterAdd={(f) => {
-                        this.props.filters.push(f);
-                        this.props.onFiltersChange(this.props.filters);
-                    }}
-                    onFilterRemove={(idx) => {
-                        this.props.filters.splice(idx, 1);
-                        this.props.onFiltersChange(this.props.filters);
-                    }}
-                    filters={this.props.filters}
-                    paginationProps={paginationProps}
-                >
-                    {data.map((row) => (
-                        <TableRow key={_.get(row, keyPath)}>
-                            {columns.map((c) => (
-                                <TableCell alignment={c.alignment} key={c.key}>
-                                    {c.columnFunction(row)}
-                                </TableCell>
-                            ))}
-                        </TableRow>
-                    ))}
+                <TableBody paginationProps={paginationProps}>
+                    {data &&
+                        data.map((row) => (
+                            <TableRow key={_.get(row, keyPath)}>
+                                {columns.map((c, idx) => {
+                                    const styles = getStyles(idx, columns);
+                                    return (
+                                        <TableCell
+                                            style={styles}
+                                            head={idx === 1}
+                                            scope="row"
+                                            alignment={c.alignment}
+                                            key={c.key}
+                                        >
+                                            {c.columnFunction(row)}
+                                        </TableCell>
+                                    );
+                                })}
+                            </TableRow>
+                        ))}
                 </TableBody>
             </Table>
-        );
-    }
+        </div>
+    );
 }

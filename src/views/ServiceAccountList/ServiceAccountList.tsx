@@ -16,7 +16,7 @@ export default function ServiceAccountList() {
     });
     return (
         <div style={{ margin: '1em' }}>
-            <ServiceAccountTable />
+            <ServiceAccountTable hotkeys />
         </div>
     );
 }

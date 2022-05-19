@@ -1,6 +1,8 @@
 /* eslint-disable react/no-unstable-nested-components */
 import * as React from 'react';
-import { Alignment, ButtonGroup, Button, Card, Intent, Tag } from '@blueprintjs/core';
+import { AxiosError } from 'axios';
+import { Tooltip2 } from '@blueprintjs/popover2';
+import { Alignment, ButtonGroup, Button, Card, Intent, Tag, Icon } from '@blueprintjs/core';
 import { useNavContext } from '../../layouts/Navigation';
 import Electron from '../../services/electron.service';
 import { ElectronCluster } from '../../models/cluster.model';
@@ -8,6 +10,7 @@ import ResourceTable from '../../components/ResourceTable';
 import Toaster from '../../services/toast.service';
 import { useAuthContext } from '../../contexts/AuthContext';
 import Auth from '../../services/auth.service';
+import { FleetError } from '../../models/base';
 
 export default function Clusters() {
     const [, setState] = useNavContext();
@@ -135,6 +138,11 @@ export default function Clusters() {
                     },
                     {
                         columnName: '',
+                        columnElement: (
+                            <Tooltip2 content="These are clusters found in your kubernetes config file.">
+                                <Icon icon="help" />
+                            </Tooltip2>
+                        ),
                         key: 'connect',
                         alignment: Alignment.RIGHT,
                         columnFunction: (row: ElectronCluster) => {
@@ -145,13 +153,24 @@ export default function Clusters() {
                                         intent={row.isConnected ? Intent.DANGER : Intent.SUCCESS}
                                         onClick={() => {
                                             if (!row.isConnected) {
-                                                Electron.connectToCluster(row).then((r) => {
-                                                    window.localStorage.setItem(
-                                                        'jwe',
-                                                        r.data.token
-                                                    );
-                                                    getData();
-                                                });
+                                                Electron.connectToCluster(row)
+                                                    .then((r) => {
+                                                        window.localStorage.setItem(
+                                                            'jwe',
+                                                            r.data.token
+                                                        );
+                                                        getData();
+                                                        Toaster.show({
+                                                            intent: Intent.SUCCESS,
+                                                            message: `Successfully connected to remote cluster "${row.name}"`,
+                                                        });
+                                                    })
+                                                    .catch((err: AxiosError<FleetError>) => {
+                                                        Toaster.show({
+                                                            intent: Intent.DANGER,
+                                                            message: `Connection to remote cluster failed. Please try again. (Error status ${err.response.data.status})`,
+                                                        });
+                                                    });
                                             } else {
                                                 Electron.disconnectFromCluster(row.name).then(
                                                     () => {
@@ -171,9 +190,17 @@ export default function Clusters() {
                                                     getData();
                                                 });
                                             } else {
-                                                Electron.start(row).then(() => {
-                                                    getData();
-                                                });
+                                                Electron.start(row)
+                                                    .then(() => {
+                                                        getData();
+                                                    })
+                                                    .catch(() => {
+                                                        Toaster.show({
+                                                            intent: Intent.DANGER,
+                                                            message:
+                                                                'Could not resume connection with remote cluster.',
+                                                        });
+                                                    });
                                             }
                                         }}
                                         disabled={!row.isConnected}
