@@ -324,7 +324,7 @@ export const generateSystemResources = (): SystemResources => ({
 
 export const generateDeployment = (name: string): Deployment => ({
     name,
-    createdAt: 0,
+    createdAt: 309458748,
     labels: {
         asdf: 'asdf',
     },

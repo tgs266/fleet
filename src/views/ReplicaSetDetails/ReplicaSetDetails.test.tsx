@@ -21,11 +21,11 @@ afterAll(() => server.close());
 
 test('renders without crashing', async () => {
     const wrapper = render(
-        <MemoryRouter initialEntries={['/repliacsets/test/test']}>
+        <MemoryRouter initialEntries={['/replicasets/test/test']}>
             <Routes>
                 <Route path="/" element={<Layout />}>
                     <Route
-                        path="repliacsets/:namespace/:repliacSetName"
+                        path="replicasets/:namespace/:replicaSetName"
                         element={<ReplicaSetDetails />}
                     />
                 </Route>

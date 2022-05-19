@@ -201,24 +201,25 @@ export default function ResourceTable<T>(props: IResourceTableProps<T>) {
                     })}
                 </TableHeader>
                 <TableBody paginationProps={paginationProps}>
-                    {data.map((row) => (
-                        <TableRow key={_.get(row, keyPath)}>
-                            {columns.map((c, idx) => {
-                                const styles = getStyles(idx, columns);
-                                return (
-                                    <TableCell
-                                        style={styles}
-                                        head={idx === 1}
-                                        scope="row"
-                                        alignment={c.alignment}
-                                        key={c.key}
-                                    >
-                                        {c.columnFunction(row)}
-                                    </TableCell>
-                                );
-                            })}
-                        </TableRow>
-                    ))}
+                    {data &&
+                        data.map((row) => (
+                            <TableRow key={_.get(row, keyPath)}>
+                                {columns.map((c, idx) => {
+                                    const styles = getStyles(idx, columns);
+                                    return (
+                                        <TableCell
+                                            style={styles}
+                                            head={idx === 1}
+                                            scope="row"
+                                            alignment={c.alignment}
+                                            key={c.key}
+                                        >
+                                            {c.columnFunction(row)}
+                                        </TableCell>
+                                    );
+                                })}
+                            </TableRow>
+                        ))}
                 </TableBody>
             </Table>
         </div>

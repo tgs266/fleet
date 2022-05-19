@@ -5,12 +5,13 @@ import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import '@testing-library/jest-dom';
 import Layout from '../../layouts/Layout';
-import { delay } from '../../testing/utils';
+import { delay, getNs } from '../../testing/utils';
 import ServiceAccounts from '../../services/k8/serviceaccount.service';
 import ServiceAccountList from './ServiceAccountList';
 import { generateServiceAccount } from '../../testing/type_mocks';
 
 const server = setupServer(
+    getNs(),
     rest.get(`${ServiceAccounts.base}/*`, (req, res, ctx) => {
         const count = 50;
         const items = [];

@@ -5,7 +5,7 @@ import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import '@testing-library/jest-dom';
 import Layout from '../../layouts/Layout';
-import { delay } from '../../testing/utils';
+import { delay, getNs } from '../../testing/utils';
 import { RoleBindingMeta } from '../../models/role.model';
 import RoleBindings from '../../services/k8/rolebinding.service';
 import RoleBindingList from './RoleBindingList';
@@ -23,6 +23,7 @@ const generateRoleBinding = (name: string): RoleBindingMeta => ({
 });
 
 const server = setupServer(
+    getNs(),
     rest.get(`${RoleBindings.base}/*`, (req, res, ctx) => {
         const count = 50;
         const items = [];

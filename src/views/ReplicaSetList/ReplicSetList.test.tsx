@@ -8,11 +8,12 @@ import Layout from '../../layouts/Layout';
 import { generateReplicaSet } from '../../testing/type_mocks';
 import ReplicaSetList from './ReplicaSetList';
 import ReplicaSetTable from './ReplicaSetTable';
-import { delay } from '../../testing/utils';
+import { delay, getNs } from '../../testing/utils';
 import Auth from '../../services/auth.service';
 import ReplicaSets from '../../services/k8/replicaset.service';
 
 const server = setupServer(
+    getNs(),
     rest.get(`${Auth.base}/cani`, (req, res, ctx) => res(ctx.json({ allowed: true }))),
     rest.get(`${ReplicaSets.base}/*`, (req, res, ctx) => {
         const count = 50;
