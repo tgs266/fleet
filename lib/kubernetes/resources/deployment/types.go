@@ -90,16 +90,18 @@ func BuildDeployment(K8 *kubernetes.K8Client, dep *v1.Deployment, svcs *v1c.Serv
 		conds = append(conds, condition.BuildFromDeploymentCondition(c))
 	}
 
-	podOwners := pods.Items[0].OwnerReferences
-
 	rsMeta := &replicaset.ReplicaSetMeta{}
-	for _, o := range podOwners {
-		if o.Kind == "ReplicaSet" {
-			rs, err := replicaset.Get(K8, dep.Namespace, o.Name)
-			if err != nil {
-				rsMeta = nil
-			} else {
-				rsMeta = &rs.ReplicaSetMeta
+	if len(pods.Items) > 0 {
+		podOwners := pods.Items[0].OwnerReferences
+
+		for _, o := range podOwners {
+			if o.Kind == "ReplicaSet" {
+				rs, err := replicaset.Get(K8, dep.Namespace, o.Name)
+				if err != nil {
+					rsMeta = nil
+				} else {
+					rsMeta = &rs.ReplicaSetMeta
+				}
 			}
 		}
 	}

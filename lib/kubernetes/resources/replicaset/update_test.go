@@ -43,7 +43,7 @@ func TestRestart(t *testing.T) {
 				},
 			},
 			targetNamespace: "namespace1",
-			targetName:      "dep1",
+			targetName:      "set1",
 			expectedCount:   1,
 		},
 	}
