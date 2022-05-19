@@ -1,6 +1,6 @@
 {
   "name": "fleet",
-  "version": "2.0.0-nightly",
+  "version": "2.0.1-0",
   "author": "Tucker Siegel <tgsiegel@umd.edu>",
   "description": "",
   "main": "build/main.js",
