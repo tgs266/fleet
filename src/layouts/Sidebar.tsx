@@ -56,6 +56,11 @@ const SIDEBAR_ITEM_PROPS: SidebarItemProps[] = [
                 id: 'pods',
                 target: '/pods',
             },
+            {
+                title: 'Replica Sets',
+                id: 'replicasets',
+                target: '/replicasets',
+            },
         ],
     },
     {

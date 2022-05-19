@@ -42,5 +42,5 @@ func Get(K8 *kubernetes.K8Client, namespace string, name string) (*Deployment, e
 	// we dont care about metrics error because that shouldnt kill the app
 	mets := <-metricsChannel.List
 
-	return BuildDeployment(dep, svcs, pods, mets), nil
+	return BuildDeployment(K8, dep, svcs, pods, mets), nil
 }

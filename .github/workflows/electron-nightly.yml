@@ -23,7 +23,7 @@ jobs:
 
     - name: Set Version
       run: |
-        yarn version --new-version nightly-${{ steps.date.outputs.date }}
+        yarn version --prerelease --preid nightly-${{ steps.date.outputs.date }}
 
     - name: Build web
       run: |

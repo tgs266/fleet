@@ -42,6 +42,7 @@ const createAccordionTitle = (pod: Pod): JSX.Element => {
 };
 
 export default function PodContainer(props: {
+    rightElement?: JSX.Element;
     pods: Pod[];
     readyReplicas?: number;
     replicas?: number;
@@ -73,8 +74,9 @@ export default function PodContainer(props: {
     return (
         <div style={style}>
             <Card style={{ borderRadius: '3px 3px 0px 0px' }}>
-                <div style={{ display: 'flex' }}>
-                    <h3 style={{ margin: 0 }}>Pods</h3>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <h3 style={{ margin: 0, marginRight: '1em' }}>Pods</h3>
+                    {props.rightElement}
                     <div style={{ flexGrow: 1 }} />
                     <h3 style={{ margin: 0 }}>
                         {(readyReplicas && replicas && (
@@ -86,24 +88,25 @@ export default function PodContainer(props: {
                     </h3>
                 </div>
             </Card>
-            {pods.map((pod) => (
-                <Accordion
-                    key={pod.uid}
-                    className="pod-container-child"
-                    title={createAccordionTitle(pod)}
-                    rightElement={
-                        <Popover2 content={menu(pod)} position={Position.BOTTOM_LEFT}>
-                            <Button minimal style={{ marginLeft: '0.5em' }} icon="more" />
-                        </Popover2>
-                    }
-                >
-                    <Card style={{ padding: 0, backgroundColor: Colors.LIGHT_GRAY4 }}>
-                        <div style={{ margin: '5px 0' }}>
-                            <PodContainerTable pod={pod} />
-                        </div>
-                    </Card>
-                </Accordion>
-            ))}
+            {pods &&
+                pods.map((pod) => (
+                    <Accordion
+                        key={pod.uid}
+                        className="pod-container-child"
+                        title={createAccordionTitle(pod)}
+                        rightElement={
+                            <Popover2 content={menu(pod)} position={Position.BOTTOM_LEFT}>
+                                <Button minimal style={{ marginLeft: '0.5em' }} icon="more" />
+                            </Popover2>
+                        }
+                    >
+                        <Card style={{ padding: 0, backgroundColor: Colors.LIGHT_GRAY4 }}>
+                            <div style={{ margin: '5px 0' }}>
+                                <PodContainerTable pod={pod} />
+                            </div>
+                        </Card>
+                    </Accordion>
+                ))}
         </div>
     );
 }

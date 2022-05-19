@@ -1,6 +1,7 @@
 /* eslint-disable react/sort-comp */
 import * as React from 'react';
-import { Button, Intent, MenuItem } from '@blueprintjs/core';
+import { Link } from 'react-router-dom';
+import { Button, Intent, MenuItem, Tag } from '@blueprintjs/core';
 import { IWithRouterProps, withRouter } from '../../utils/withRouter';
 import K8 from '../../services/k8.service';
 import { IBreadcrumb, NavContext } from '../../layouts/Navigation';
@@ -14,6 +15,8 @@ import DeploymentScaleDialog from './DeploymentScaleDialog';
 import PodContainer from '../../components/PodContainer';
 import ConditionTable from '../../components/ConditionTable';
 import EditableResource from '../../components/EditableResource';
+import { buildLinkToReplicaSet } from '../../utils/routing';
+import Text from '../../components/Text/Text';
 
 interface IDeploymentDetailsState {
     deployment: Deployment;
@@ -144,6 +147,26 @@ class DeploymentDetails extends React.Component<IWithRouterProps, IDeploymentDet
                     <ConditionTable conditions={deployment.conditions} ignoreProbe />
                 </div>
                 <PodContainer
+                    rightElement={
+                        <div>
+                            {deployment.replicaSet && (
+                                <Tag round>
+                                    <Text small>
+                                        Replica Set:{' '}
+                                        <Link
+                                            style={{ color: 'white' }}
+                                            to={buildLinkToReplicaSet(
+                                                deployment.replicaSet.namespace,
+                                                deployment.replicaSet.name
+                                            )}
+                                        >
+                                            {deployment.replicaSet.name}
+                                        </Link>
+                                    </Text>
+                                </Tag>
+                            )}
+                        </div>
+                    }
                     style={{ margin: '1em', marginTop: 0 }}
                     pods={deployment.pods}
                     readyReplicas={deployment.readyReplicas}
