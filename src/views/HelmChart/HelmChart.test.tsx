@@ -50,7 +50,7 @@ test('renders without crashing', async () => {
 
 test('renders without crashing 2', async () => {
     await server.use(
-        rest.get(`${Helm.base}/releases/*`, (req, res, ctx) =>
+        rest.get(`${Helm.base}/charts/*`, (req, res, ctx) =>
             res(
                 ctx.json({
                     name: 'string',
