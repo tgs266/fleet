@@ -22,6 +22,7 @@ export default function Code(props: ITextProps) {
                     fontSize: props.fontSize || '14px',
                     alignItems: 'center',
                     whiteSpace: 'break-spaces',
+                    backgroundColor: '#5F6B7C1a',
                     ...props.textBlockStyle,
                 }}
             >

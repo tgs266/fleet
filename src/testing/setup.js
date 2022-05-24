@@ -25,6 +25,8 @@ jest.mock('use-resize-observer', () => ({
     })),
 }));
 
+// jest.mock("monaco-editor/esm/vs/editor/editor.api.js");
+
 class ResizeObserver {
     observe() {
         // do nothing

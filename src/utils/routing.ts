@@ -35,11 +35,24 @@ export const buildLinkToClusterRole = (roleName: string) => `/clusterroles/${rol
 export const buildLinkToClusterRoleBinding = (roleBindingName: string) =>
     `/clusterrolebindings/${roleBindingName}`;
 
-export const buildLinkToOwner = (owner: Owner, ns: string) => {
-    switch (owner.kind.toLowerCase()) {
+export const buildGenericLink = (kind: string, name: string, ns: string) => {
+    switch (kind.toLowerCase()) {
         case 'deployment':
-            return { link: buildLinkToDeployment(owner.name, ns), valid: true };
+            return { link: buildLinkToDeployment(name, ns), valid: true };
+        case 'service':
+            return { link: buildLinkToService(ns, name), valid: true };
+        case 'rolebinding':
+            return { link: buildLinkToRoleBinding(ns, name), valid: true };
+        case 'role':
+            return { link: buildLinkToRole(ns, name), valid: true };
+        case 'serviceaccount':
+            return { link: buildLinkToServiceAccount(ns, name), valid: true };
+        case 'secret':
+            return { link: buildLinkToSecret(ns, name), valid: true };
         default:
-            return { link: null, valid: false };
+            return { link: name, valid: false };
     }
 };
+
+export const buildLinkToOwner = (owner: Owner, ns: string) =>
+    buildGenericLink(owner.kind, owner.name, ns);

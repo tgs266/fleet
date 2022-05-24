@@ -38,6 +38,7 @@ export default function Text(props: ITextProps) {
                         fontSize: props.fontSize || '16px',
                         display: 'flex',
                         alignItems: 'center',
+                        backgroundColor: '#5F6B7C1a',
                         ...props.textBlockStyle,
                     }}
                 >

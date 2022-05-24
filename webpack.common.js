@@ -1,7 +1,11 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 const webpack = require('webpack');
+
+const MONACO_DIR = path.resolve(__dirname, './node_modules/monaco-editor');
+const BPJS_DIR = path.resolve(__dirname, './node_modules/@blueprintjs');
 
 module.exports = {
     entry: './src/index.tsx',
@@ -40,8 +44,30 @@ module.exports = {
             },
             {
                 test: /\.css$/,
-                include: path.resolve(__dirname, 'src'),
+                include: MONACO_DIR,
                 use: ['style-loader', 'css-loader'],
+            },
+            {
+                test: /\.css$/,
+                include: BPJS_DIR,
+                use: ['style-loader', 'css-loader'],
+            },
+            {
+                test: /\.css$/,
+                include: [path.resolve(__dirname, 'src')],
+                use: [
+                    {
+                        loader: 'style-loader',
+                    },
+                    {
+                        loader: 'css-loader',
+                    },
+                ],
+            },
+            {
+                test: /\.(s(a|c)ss)$/,
+                include: path.resolve(__dirname, 'src', 'styles'),
+                use: ['style-loader', 'css-loader', 'sass-loader'],
             },
             {
                 test: /\.less$/,
@@ -74,6 +100,11 @@ module.exports = {
         }),
         new webpack.DefinePlugin({
             'process.env.TEST_ENV': JSON.stringify(false),
+        }),
+        new MonacoWebpackPlugin({
+            // available options are documented at https://github.com/Microsoft/monaco-editor-webpack-plugin#options
+            features: ['!gotoSymbol'],
+            languages: ['yaml'],
         }),
     ],
 };

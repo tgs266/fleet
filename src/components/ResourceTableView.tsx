@@ -5,7 +5,7 @@ import { Card } from '@blueprintjs/core';
 import { Tooltip2, Classes } from '@blueprintjs/popover2';
 import { AxiosResponse } from 'axios';
 import React from 'react';
-import { BaseMeta, Filter, PaginationResponse } from '../models/base';
+import { Filter, PaginationResponse } from '../models/base';
 import { Pagination } from '../models/component.model';
 import K8 from '../services/k8.service';
 import getOffset from '../utils/table';
@@ -18,7 +18,7 @@ import ResourceTable, {
 } from './ResourceTable';
 import { TableSort } from './SortableTableHeaderCell';
 
-export interface IResourceTableViewState<T extends BaseMeta> extends Pagination {
+export interface IResourceTableViewState<T> extends Pagination {
     items: T[];
     sort: TableSort;
     pollId: NodeJS.Timer;
@@ -32,7 +32,7 @@ export interface IResourceTableViewProps {
 
 class ResourceTableView<
     P extends IResourceTableViewProps,
-    T extends BaseMeta
+    T extends { name: string; createdAt?: number }
 > extends React.Component<P, IResourceTableViewState<T>> {
     itemsFcn: (...args: any) => Promise<AxiosResponse<PaginationResponse<T>>> = null;
 
@@ -40,12 +40,18 @@ class ResourceTableView<
 
     namespaced: boolean = false;
 
+    useSearch: boolean = true;
+
     title: string = null;
+
+    keypath: string = 'uid';
+
+    poll: boolean = true;
 
     constructor(props: any) {
         super(props);
         this.state = {
-            items: [],
+            items: null,
             sort: {
                 sortableId: DEFAULT_SORTABLE_ID,
                 ascending: DEFAULT_SORTABLE_ASCENDING,
@@ -63,13 +69,15 @@ class ResourceTableView<
             this.setState({
                 items: r.data.items,
                 total: r.data.total,
-                pollId: K8.pollFunction(5000, () => this.pull(null, null)),
+                pollId: this.poll ? K8.pollFunction(5000, () => this.pull(null, null)) : null,
             });
         });
     }
 
     componentWillUnmount() {
-        clearInterval(this.state.pollId);
+        if (this.state.pollId) {
+            clearInterval(this.state.pollId);
+        }
     }
 
     getNameColumn = () => ({
@@ -155,12 +163,13 @@ class ResourceTableView<
                     total: this.state.total,
                     onPageChange: this.setPage,
                 }}
+                useSearch={this.useSearch}
                 filters={this.useFilters ? this.state.filters : null}
                 onFiltersChange={this.useFilters ? this.onFilterChange : null}
                 onSortChange={this.sortChange}
                 sort={this.state.sort}
                 data={this.state.items}
-                keyPath="uid"
+                keyPath={this.keypath}
                 columns={this.getColumns()}
             />
         </Card>

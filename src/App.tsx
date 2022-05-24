@@ -33,6 +33,11 @@ import Shell from './views/Shell/Shell';
 import FleetView from './views/Fleet/FleetView';
 import Clusters from './views/Clusters/Clusters';
 import ReplicaSetDetails from './views/ReplicaSetDetails/ReplicaSetDetails';
+import HelmSearch from './views/HelmSearch/HelmSearch';
+import HelmChart from './views/HelmChart/HelmChart';
+import HelmChartInstall from './views/HelmChartInstall/HelmChartInstall';
+import HelmRelease from './views/HelmRelease/HelmRelease';
+import HelmReleaseList from './views/HelmReleaseList/HelmReleaseList';
 
 function getCookie(name: string) {
     const value = `; ${document.cookie}`;
@@ -117,6 +122,13 @@ function App() {
                     path="replicasets/:namespace/:replicaSetName"
                     element={<ReplicaSetDetails />}
                 />
+
+                <Route path="helm/charts/" element={<HelmSearch />} />
+                <Route path="helm/charts/:repo/:name" element={<HelmChart />} />
+                <Route path="helm/charts/:repo/:name/install" element={<HelmChartInstall />} />
+
+                <Route path="helm/releases/" element={<HelmReleaseList />} />
+                <Route path="helm/releases/:name" element={<HelmRelease />} />
             </Route>
         </Routes>
     );
