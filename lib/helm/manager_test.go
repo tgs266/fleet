@@ -1,11 +1,13 @@
 package helm
 
 import (
+	"io/ioutil"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/tgs266/fleet/lib/kubernetes/types"
 	"helm.sh/helm/v3/pkg/chart"
+	kubefake "helm.sh/helm/v3/pkg/kube/fake"
 	"helm.sh/helm/v3/pkg/release"
 	"helm.sh/helm/v3/pkg/storage"
 	"helm.sh/helm/v3/pkg/storage/driver"
@@ -68,6 +70,7 @@ func TestSearchRelease(t *testing.T) {
 
 	m, _ := New()
 	m.cfg.Releases = storage
+	m.cfg.KubeClient = &kubefake.PrintingKubeClient{Out: ioutil.Discard}
 
 	_, e := m.SearchReleases(&types.DataSelector{
 		Filters: types.Filters{
@@ -112,6 +115,7 @@ func TestGetRelease(t *testing.T) {
 
 	m, _ := New()
 	m.cfg.Releases = storage
+	m.cfg.KubeClient = &kubefake.PrintingKubeClient{Out: ioutil.Discard}
 
 	_, e := m.GetRelease("asdf")
 	assert.Nil(t, e)
