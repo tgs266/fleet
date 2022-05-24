@@ -5,9 +5,9 @@ import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import '@testing-library/jest-dom';
 import Layout from '../../layouts/Layout';
-import Helm from '../../services/Helm.service';
 import { delay, getNs } from '../../testing/utils';
 import HelmRelease from './HelmRelease';
+import Helm from '../../services/helm.service';
 
 const server = setupServer(
     getNs(),
