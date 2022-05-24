@@ -25,6 +25,7 @@ export interface ColumnDefinition<T> {
 }
 
 export interface IResourceTableProps<T> {
+    useSearch?: boolean;
     columns: ColumnDefinition<T>[];
     lockedNamespace?: string;
     hotkeys?: boolean;
@@ -104,7 +105,7 @@ export default function ResourceTable<T>(props: IResourceTableProps<T>) {
     let handleKeyDown: React.KeyboardEventHandler<HTMLElement> = null;
     let handleKeyUp: React.KeyboardEventHandler<HTMLElement> = null;
 
-    if (props.hotkeys) {
+    if (props.hotkeys && props.useSearch) {
         const hotkeys = useMemo(
             () => [
                 {
@@ -148,7 +149,7 @@ export default function ResourceTable<T>(props: IResourceTableProps<T>) {
                             setSelected={setSelectedNs}
                         />
                     )}
-                    {props.onFiltersChange && (
+                    {props.onFiltersChange && props.useSearch && (
                         <InputGroup
                             rightElement={
                                 <Button

@@ -6,4 +6,5 @@ src/index.html
 jest.config.js
 build/*
 *.css
+*.scss
 *.less

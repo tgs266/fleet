@@ -6,6 +6,7 @@ import InfoCard from '../../components/Cards/InfoCard';
 import Label from '../../components/Label';
 import LabeledText from '../../components/LabeledText';
 import PortTag from '../../components/Port/PortTag';
+import TagList from '../../components/TagList';
 import Text from '../../components/Text/Text';
 import { Container } from '../../models/container.model';
 import CONSTANTS from '../../utils/constants';
@@ -51,19 +52,21 @@ export default function PodContainerInfoCard(props: { container: Container }) {
             </div>
             <div style={{ marginTop: '0.25em', display: 'flex' }}>
                 <Label label="ENVIRONMENT VARIABLES">
-                    {container.envVars &&
-                        container.envVars.map((variable, key) => (
-                            <Tag
-                                key={key}
-                                style={{ marginRight: '0.25' }}
-                                intent={Intent.NONE}
-                                round
-                            >
-                                <Text small>
-                                    {variable.name}: {variable.value}
-                                </Text>
-                            </Tag>
-                        ))}
+                    <TagList>
+                        {container.envVars &&
+                            container.envVars.map((variable, key) => (
+                                <Tag
+                                    key={key}
+                                    style={{ marginRight: '0.25' }}
+                                    intent={Intent.NONE}
+                                    round
+                                >
+                                    <Text small>
+                                        {variable.name}: {variable.value}
+                                    </Text>
+                                </Tag>
+                            ))}
+                    </TagList>
                 </Label>
             </div>
         </InfoCard>

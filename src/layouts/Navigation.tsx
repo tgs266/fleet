@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Button, ButtonGroup, Card, Menu, Position } from '@blueprintjs/core';
 import { Popover2 } from '@blueprintjs/popover2';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export interface IBreadcrumb {
     text: string;
@@ -31,6 +31,7 @@ export function useNavContext(): [INavContext, React.Dispatch<React.SetStateActi
 }
 
 export default function Navigation() {
+    const nav = useNavigate();
     const createBreadcrumb = (breadcrumb: IBreadcrumb, key: number, count: number) => (
         <h3 className={key !== count - 1 ? 'hover-link' : null} key={key} style={{ margin: 0 }}>
             <Link
@@ -64,6 +65,12 @@ export default function Navigation() {
                 zIndex: 100000,
             }}
         >
+            <Button
+                minimal
+                icon="arrow-left"
+                style={{ marginRight: '15px' }}
+                onClick={() => nav(-1)}
+            />
             {breadcrumbs &&
                 state.breadcrumbs.map((r, idx) =>
                     createBreadcrumb(r, idx, state.breadcrumbs.length)

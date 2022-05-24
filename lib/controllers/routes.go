@@ -78,6 +78,15 @@ func initializeReplicaSetRoutes(app *api.API) {
 	app.WebsocketGet("/ws/v1/replicasets/:namespace/:name/events", ReplicaSetEventStream)
 }
 
+func initializeHelmRoutes(app *api.API) {
+	app.Get("/api/v1/helm/charts", HelmSearch)
+	app.Get("/api/v1/helm/charts/:repo/:name", HelmGet)
+	app.Post("/api/v1/helm/charts/install", HelmInstall)
+
+	app.Get("/api/v1/helm/releases/", HelmSearchReleases)
+	app.Get("/api/v1/helm/releases/:name", HelmGetRelease)
+}
+
 func initializeOtherRoutes(app *api.API) {
 	app.Get("/api/v1/auth/", UsingAuth)
 	app.Get("/api/v1/auth/cani", CanI)
@@ -117,4 +126,5 @@ func InitializeRoutes(app *api.API) {
 	initializeReplicaSetRoutes(app)
 	initializeOtherRoutes(app)
 	initializePromRoutes(app)
+	initializeHelmRoutes(app)
 }

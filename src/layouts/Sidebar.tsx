@@ -7,6 +7,7 @@ import SidebarItem, { SidebarItemProps } from './SidebarItem';
 import Electron from '../services/electron.service';
 import { useAuthContext } from '../contexts/AuthContext';
 import FleetLogo from '../components/FleetLogo';
+import HelmLogo from '../components/HelmLogo';
 
 const SIDEBAR_ITEM_PROPS: SidebarItemProps[] = [
     {
@@ -115,6 +116,25 @@ const SIDEBAR_ITEM_PROPS: SidebarItemProps[] = [
                 title: 'Roles',
                 id: 'roles',
                 target: '/roles',
+            },
+        ],
+    },
+    {
+        id: 'helm',
+        icon: <HelmLogo />,
+        type: 'menu',
+        title: 'Helm',
+        activeRule: (loc) => loc.startsWith('/helm'),
+        items: [
+            {
+                title: 'Charts',
+                id: 'charts',
+                target: '/helm/charts',
+            },
+            {
+                title: 'Releases',
+                id: 'releases',
+                target: '/helm/releases',
             },
         ],
     },

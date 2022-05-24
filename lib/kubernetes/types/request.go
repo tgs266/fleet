@@ -16,6 +16,10 @@ const (
 	NamespaceProperty = "namespace"
 	StatusProperty    = "status"
 	LastSeenProperty  = "lastSeen"
+
+	// helm
+	RepoProperty      = "repo"
+	ChartNameProperty = "chart"
 )
 
 var AllProperties = map[Property]string{
@@ -27,7 +31,7 @@ var AllProperties = map[Property]string{
 }
 
 func getProperty(value string) Property {
-	if value == NameProperty || value == CreatedAtProperty || value == NamespaceProperty || value == StatusProperty {
+	if value == NameProperty || value == CreatedAtProperty || value == NamespaceProperty || value == StatusProperty || value == RepoProperty || value == ChartNameProperty {
 		return Property(value)
 	}
 	panic("invalid sort property")
