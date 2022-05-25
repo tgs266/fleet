@@ -8,7 +8,7 @@ export default function ClusterRoleList() {
     setOnce(setState, {
         breadcrumbs: [
             {
-                text: 'roles',
+                text: 'Roles',
             },
         ],
         buttons: [],

@@ -8,7 +8,7 @@ export default function PodList() {
     setOnce(setState, {
         breadcrumbs: [
             {
-                text: 'pods',
+                text: 'Pods',
             },
         ],
     });

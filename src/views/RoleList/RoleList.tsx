@@ -9,7 +9,7 @@ export default function RoleList() {
     setOnce(setState, {
         breadcrumbs: [
             {
-                text: 'roles',
+                text: 'Roles',
             },
         ],
         buttons: [],

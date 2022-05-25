@@ -46,7 +46,7 @@ class ImageDetails extends React.Component<IWithRouterProps, IContainerSpecDetai
         setState({
             breadcrumbs: [
                 {
-                    text: 'deployments',
+                    text: 'Deployments',
                     link: '/deployments',
                 },
                 {

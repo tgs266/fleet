@@ -41,7 +41,7 @@ class ReplicaSetDetails extends React.Component<IWithRouterProps, IReplicaSetDet
         setState({
             breadcrumbs: [
                 {
-                    text: 'replica sets',
+                    text: 'Replica Sets',
                     link: '/replicasets',
                 },
                 {

@@ -9,7 +9,7 @@ export default function RoleBindingList() {
     setOnce(setState, {
         breadcrumbs: [
             {
-                text: 'role bindings',
+                text: 'Role Bindings',
             },
         ],
         buttons: [],

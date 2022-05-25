@@ -31,7 +31,7 @@ class Shell extends React.Component<IWithRouterProps, IShellState> {
         setState({
             breadcrumbs: [
                 {
-                    text: 'pods',
+                    text: 'Pods',
                 },
                 {
                     text: this.props.params.podName,

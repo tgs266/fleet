@@ -58,7 +58,7 @@ class ServiceAccountDetails extends React.Component<IWithRouterProps, IServiceAc
         setState({
             breadcrumbs: [
                 {
-                    text: 'service accounts',
+                    text: 'Service Accounts',
                     link: '/serviceaccounts',
                 },
                 {

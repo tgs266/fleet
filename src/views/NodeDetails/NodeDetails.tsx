@@ -48,7 +48,7 @@ class NodeDetails extends React.Component<IWithRouterProps, INodeDetailsState> {
         setState({
             breadcrumbs: [
                 {
-                    text: 'nodes',
+                    text: 'Nodes',
                     link: '/nodes',
                 },
                 {

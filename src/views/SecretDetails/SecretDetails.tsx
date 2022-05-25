@@ -34,7 +34,7 @@ class SecretDetails extends React.Component<IWithRouterProps, ISecretDetailsStat
         setState({
             breadcrumbs: [
                 {
-                    text: 'secrets',
+                    text: 'Secrets',
                     link: '/secrets',
                 },
                 {

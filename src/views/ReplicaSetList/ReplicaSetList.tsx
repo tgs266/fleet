@@ -8,7 +8,7 @@ export default function ServiceList() {
     setOnce(setState, {
         breadcrumbs: [
             {
-                text: 'replica sets',
+                text: 'Replica Sets',
             },
         ],
         buttons: [],

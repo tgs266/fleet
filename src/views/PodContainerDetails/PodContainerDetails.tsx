@@ -41,7 +41,7 @@ class PodContainer extends React.Component<IWithRouterProps, IPodContainerState>
         setState({
             breadcrumbs: [
                 {
-                    text: 'pods',
+                    text: 'Pods',
                 },
                 {
                     text: this.props.params.podName,

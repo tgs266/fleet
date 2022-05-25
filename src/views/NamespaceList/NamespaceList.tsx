@@ -8,7 +8,7 @@ export default function NamespaceList() {
     setOnce(setState, {
         breadcrumbs: [
             {
-                text: 'namespaces',
+                text: 'Namespaces',
             },
         ],
         buttons: [],

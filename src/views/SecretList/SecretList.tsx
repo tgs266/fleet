@@ -8,7 +8,7 @@ export default function SecretList() {
     setOnce(setState, {
         breadcrumbs: [
             {
-                text: 'secrets',
+                text: 'Secrets',
             },
         ],
         buttons: [],

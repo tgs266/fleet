@@ -52,7 +52,7 @@ class DeploymentDetails extends React.Component<IWithRouterProps, IDeploymentDet
         setState({
             breadcrumbs: [
                 {
-                    text: 'deployments',
+                    text: 'Deployments',
                     link: '/deployments',
                 },
                 {

@@ -28,7 +28,7 @@ class NamespaceDetails extends React.Component<IWithRouterProps, INamespaceState
         setState({
             breadcrumbs: [
                 {
-                    text: 'namespaces',
+                    text: 'Namespaces',
                     link: '/namespaces',
                 },
                 {

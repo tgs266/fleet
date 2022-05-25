@@ -8,7 +8,7 @@ export default function NodeList() {
     setOnce(setState, {
         breadcrumbs: [
             {
-                text: 'nodes',
+                text: 'Nodes',
             },
         ],
     });

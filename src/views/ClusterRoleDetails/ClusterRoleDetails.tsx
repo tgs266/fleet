@@ -36,7 +36,7 @@ class ClusterRoleDetails extends React.Component<IWithRouterProps, IClusterRoleD
         setState({
             breadcrumbs: [
                 {
-                    text: 'cluster roles',
+                    text: 'Cluster Roles',
                     link: '/roles',
                 },
                 {

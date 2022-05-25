@@ -37,7 +37,7 @@ class RoleDetails extends React.Component<IWithRouterProps, IRoleDetailsState> {
         setState({
             breadcrumbs: [
                 {
-                    text: 'roles',
+                    text: 'Roles',
                     link: '/roles',
                 },
                 {

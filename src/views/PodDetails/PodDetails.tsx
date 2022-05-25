@@ -48,7 +48,7 @@ class PodDetails extends React.Component<IWithRouterProps, IPodDetailsState> {
         setState({
             breadcrumbs: [
                 {
-                    text: 'pods',
+                    text: 'Pods',
                     link: '/pods',
                 },
                 {

@@ -45,7 +45,7 @@ class ClusterRoleBindingDetails extends React.Component<
         setState({
             breadcrumbs: [
                 {
-                    text: 'cluster role bindings',
+                    text: 'Cluster Role Bindings',
                     link: '/clusterrolebindings',
                 },
                 {

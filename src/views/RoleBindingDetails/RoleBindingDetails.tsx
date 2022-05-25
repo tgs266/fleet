@@ -42,7 +42,7 @@ class RoleBindingDetails extends React.Component<IWithRouterProps, IRoleBindingS
         setState({
             breadcrumbs: [
                 {
-                    text: 'role bindings',
+                    text: 'Role Bindings',
                     link: '/rolebindings',
                 },
                 {

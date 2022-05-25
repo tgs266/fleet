@@ -10,7 +10,7 @@ export default function DeploymentList() {
     setOnce(setState, {
         breadcrumbs: [
             {
-                text: 'deployments',
+                text: 'Deployments',
             },
         ],
         buttons: [

@@ -8,7 +8,7 @@ export default function ClusterRoleBindingList() {
     setOnce(setState, {
         breadcrumbs: [
             {
-                text: 'cluster role bindings',
+                text: 'Cluster Role Bindings',
             },
         ],
         buttons: [],
