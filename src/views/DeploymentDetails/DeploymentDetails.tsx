@@ -6,6 +6,7 @@ import { IWithRouterProps, withRouter } from '../../utils/withRouter';
 import K8 from '../../services/k8.service';
 import { IBreadcrumb, NavContext } from '../../layouts/Navigation';
 import Toaster from '../../services/toast.service';
+import SSE from '../../services/sse.service';
 import { Deployment } from '../../models/deployment.model';
 import DeploymentEvents from './DeploymentEvents';
 import DeploymentInfoCard from './DeploymentInfoCard';
@@ -17,10 +18,11 @@ import ConditionTable from '../../components/ConditionTable';
 import EditableResource from '../../components/EditableResource';
 import { buildLinkToReplicaSet } from '../../utils/routing';
 import Text from '../../components/Text/Text';
+import { getBackendApiUrl } from '../../services/axios.service';
 
 interface IDeploymentDetailsState {
     deployment: Deployment;
-    pollId: NodeJS.Timer;
+    sse: SSE;
     isScaleDialogOpen: boolean;
 }
 
@@ -39,7 +41,7 @@ class DeploymentDetails extends React.Component<IWithRouterProps, IDeploymentDet
         this.state = {
             isScaleDialogOpen: false,
             deployment: null,
-            pollId: null,
+            sse: null,
         };
     }
 
@@ -75,25 +77,18 @@ class DeploymentDetails extends React.Component<IWithRouterProps, IDeploymentDet
             ],
             menu: this.getMenu(),
         });
-        K8.deployments.getDeployment(this.deployment, this.namespace).then((response) => {
-            this.setState({
-                deployment: response.data,
-                pollId: K8.poll(
-                    1000,
-                    K8.deployments.getDeployment,
-                    (r) => {
-                        this.deployment = r.data.name;
-                        this.setState({ deployment: r.data });
-                    },
-                    this.deployment,
-                    this.namespace
-                ),
-            });
+        const x = new SSE(
+            `${getBackendApiUrl('/sse/v1/deployments')}/${this.namespace}/${this.deployment}`,
+            1000
+        );
+        x.subscribe<Deployment>((data: Deployment) => {
+            this.setState({ deployment: data });
         });
+        this.setState({ sse: x });
     }
 
     componentWillUnmount() {
-        clearInterval(this.state.pollId);
+        this.state.sse.close();
     }
 
     refresh = () => {

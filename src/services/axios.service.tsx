@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 /* eslint-disable import/no-cycle */
 /* eslint-disable no-param-reassign */
 /* eslint-disable react/no-render-return-value */
@@ -51,11 +52,8 @@ function isPromise(p: any) {
     return false;
 }
 
-export function handleError(error: AxiosError<FleetError>) {
-    if (error.config.url.includes('metrics')) {
-        return;
-    }
-    if (error.response.data.status === 'NO_FLEET_DEP_FOUND') {
+export function handleFleetError(error: FleetError) {
+    if (error.status === 'NO_FLEET_DEP_FOUND') {
         let d = document.createElement('div');
         document.body.appendChild(d);
         ReactDOM.render(
@@ -71,9 +69,9 @@ export function handleError(error: AxiosError<FleetError>) {
         return;
     }
     // no server running - indicates electron
-    if (error.response.data.status === 'NO_CLUSTER_SELECTED' && Electron.isElectron) {
+    if (error.status === 'NO_CLUSTER_SELECTED' && Electron.isElectron) {
         window.location.href = `${window.location.pathname}#/clusters`;
-    } else if (error.response.data.status === 'KUBERNETES_CONFIG') {
+    } else if (error.status === 'KUBERNETES_CONFIG') {
         const containerElement = document.createElement('div');
         document.body.appendChild(containerElement);
         ReactDOM.render(
@@ -94,8 +92,7 @@ export function handleError(error: AxiosError<FleetError>) {
             containerElement
         );
     } else if (
-        (error.response.data.status === 'UNAUTHORIZED' ||
-            error.response.data.status === 'UNAUTHORIZED_EXPIRED') &&
+        (error.status === 'UNAUTHORIZED' || error.status === 'UNAUTHORIZED_EXPIRED') &&
         !Electron.isElectron
     ) {
         localStorage.removeItem('jwe');
@@ -104,7 +101,7 @@ export function handleError(error: AxiosError<FleetError>) {
             document.body.appendChild(dialog);
             ReactDOM.render(
                 React.createElement(AuthDialog, {
-                    mode: error.response.data.status,
+                    mode: error.status,
                     onClose: () => {
                         ReactDOM.unmountComponentAtNode(dialog);
                         dialog = null;
@@ -115,14 +112,23 @@ export function handleError(error: AxiosError<FleetError>) {
             );
         }
     } else if (
-        (error.response.data.status === 'UNAUTHORIZED' ||
-            error.response.data.status === 'UNAUTHORIZED_EXPIRED') &&
+        (error.status === 'UNAUTHORIZED' || error.status === 'UNAUTHORIZED_EXPIRED') &&
         Electron.isElectron
     ) {
         window.location.href = `${window.location.pathname}#/clusters`;
     } else {
-        Toaster.show({ message: error.response.data.message, intent: Intent.DANGER });
+        Toaster.show({ message: error.message, intent: Intent.DANGER });
     }
+}
+
+export function handleError(error: AxiosError<FleetError>) {
+    if (error.config.url.includes('metrics')) {
+        return;
+    }
+    if (error.response.data) {
+        return handleFleetError(error.response.data);
+    }
+    Toaster.show({ message: 'Unknown error occured', intent: Intent.DANGER });
 }
 
 api.interceptors.response.use(

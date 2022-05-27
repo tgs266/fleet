@@ -22,10 +22,11 @@ import TableHeader from '../../components/TableHeader';
 import TableRow from '../../components/TableRow';
 import EventTable from '../../components/EventTable';
 import Toaster from '../../services/toast.service';
+import SSE from '../../services/sse.service';
 
 interface IReplicaSetDetailsState {
     replicaSet: ReplicaSet;
-    pollId: NodeJS.Timer;
+    sse: SSE;
 }
 
 class ReplicaSetDetails extends React.Component<IWithRouterProps, IReplicaSetDetailsState> {
@@ -33,7 +34,7 @@ class ReplicaSetDetails extends React.Component<IWithRouterProps, IReplicaSetDet
 
     constructor(props: IWithRouterProps) {
         super(props);
-        this.state = { replicaSet: null, pollId: null };
+        this.state = { replicaSet: null, sse: null };
     }
 
     componentDidMount() {
@@ -76,18 +77,15 @@ class ReplicaSetDetails extends React.Component<IWithRouterProps, IReplicaSetDet
             .then((response) => {
                 this.setState({ replicaSet: response.data });
             });
-        K8.replicaSets
-            .getReplicaSet(this.props.params.replicaSetName, this.props.params.namespace)
-            .then((response) => {
-                this.setState({
-                    replicaSet: response.data,
-                    pollId: K8.pollFunction(1000, this.pull),
-                });
-            });
+        this.setState({
+            sse: K8.replicaSets
+                .sse(this.props.params.replicaSetName, this.props.params.namespace)
+                .subscribe<ReplicaSet>((data) => this.setState({ replicaSet: data })),
+        });
     }
 
     componentWillUnmount() {
-        clearInterval(this.state.pollId);
+        this.state.sse.close();
     }
 
     getLinkToOwner = (owner: Owner) => {

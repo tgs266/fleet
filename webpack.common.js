@@ -17,6 +17,11 @@ module.exports = {
     },
     resolve: {
         extensions: ['.js', '.jsx', '.json', '.ts', '.tsx'],
+        fallback: {
+            util: require.resolve('util/'),
+            http: require.resolve('stream-http'),
+            https: require.resolve('https-browserify'),
+        },
     },
     devServer: {
         static: './build',
@@ -27,11 +32,6 @@ module.exports = {
     },
     module: {
         rules: [
-            {
-                test: /worker-.*\.js/,
-                include: [/node_modules\/ace-build/],
-                type: 'asset/resource',
-            },
             {
                 test: /\.(ts|tsx)$/,
                 include: path.resolve(__dirname, 'src'),
@@ -100,6 +100,7 @@ module.exports = {
         }),
         new webpack.DefinePlugin({
             'process.env.TEST_ENV': JSON.stringify(false),
+            'process.env.NODE_DEBUG': null, // for util
         }),
         new MonacoWebpackPlugin({
             // available options are documented at https://github.com/Microsoft/monaco-editor-webpack-plugin#options

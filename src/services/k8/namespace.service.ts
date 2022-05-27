@@ -5,6 +5,7 @@ import { Filter, PaginationResponse } from '../../models/base';
 import { NamespaceMeta as NS } from '../../models/namespace.model';
 import getSortBy, { parseFilters } from '../../utils/sort';
 import api, { getBackendApiUrl } from '../axios.service';
+import SSE from '../sse.service';
 
 export default class Namespaces {
     static base = `/api/v1/namespaces`;
@@ -22,5 +23,13 @@ export default class Namespaces {
 
     static getNamespace(name: string): Promise<AxiosResponse<NS>> {
         return api.get(`${getBackendApiUrl(Namespaces.base)}/${name}`);
+    }
+
+    static sse(name: string, interval: number = 1000): SSE {
+        const x = new SSE(
+            `${getBackendApiUrl(Namespaces.base.replace('/api/', '/sse/'))}/${name}`,
+            interval
+        );
+        return x;
     }
 }

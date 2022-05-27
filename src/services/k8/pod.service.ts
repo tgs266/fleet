@@ -5,6 +5,7 @@ import { JSONObject } from '../../models/json.model';
 import { Pod, PodMeta } from '../../models/pod.model';
 import getSortBy, { parseFilters } from '../../utils/sort';
 import api, { getBackendApiUrl, getWSUrl } from '../axios.service';
+import SSE from '../sse.service';
 import getWebsocket from '../websocket';
 
 export default class Pods {
@@ -24,6 +25,14 @@ export default class Pods {
         return api.get(`${getBackendApiUrl(Pods.base)}/${namespace || '_all_'}`, {
             params: { sortBy: getSortBy(sort), offset, pageSize, filterBy: parseFilters(filters) },
         });
+    }
+
+    static sse(name: string, namespace: string, interval: number = 1000): SSE {
+        const x = new SSE(
+            `${getBackendApiUrl(Pods.base.replace('/api/', '/sse/'))}/${namespace}/${name}`,
+            interval
+        );
+        return x;
     }
 
     static restartPod(podName: string, namespace?: string): Promise<AxiosResponse<any>> {

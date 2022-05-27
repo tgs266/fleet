@@ -15,10 +15,11 @@ import { Role } from '../../models/role.model';
 import TitledCard from '../../components/Cards/TitledCard';
 import RuleTable from '../../components/RuleTable';
 import EditableResource from '../../components/EditableResource';
+import SSE from '../../services/sse.service';
 
 interface IRoleDetailsState {
     role: Role;
-    pollId: NodeJS.Timer;
+    sse: SSE;
 }
 
 class RoleDetails extends React.Component<IWithRouterProps, IRoleDetailsState> {
@@ -28,7 +29,7 @@ class RoleDetails extends React.Component<IWithRouterProps, IRoleDetailsState> {
         super(props);
         this.state = {
             role: null,
-            pollId: null,
+            sse: null,
         };
     }
 
@@ -49,26 +50,15 @@ class RoleDetails extends React.Component<IWithRouterProps, IRoleDetailsState> {
             ],
             menu: null,
         });
-        K8.roles
-            .getRole(this.props.params.roleName, this.props.params.namespace)
-            .then((response) => {
-                this.setState({
-                    role: response.data,
-                    pollId: K8.poll(
-                        1000,
-                        K8.roles.getRole,
-                        (r) => {
-                            this.setState({ role: r.data });
-                        },
-                        this.props.params.roleName,
-                        this.props.params.namespace
-                    ),
-                });
-            });
+        this.setState({
+            sse: K8.roles
+                .sse(this.props.params.roleName, this.props.params.namespace)
+                .subscribe<Role>((data) => this.setState({ role: data })),
+        });
     }
 
     componentWillUnmount() {
-        clearInterval(this.state.pollId);
+        this.state.sse.close();
     }
 
     pull = () => {

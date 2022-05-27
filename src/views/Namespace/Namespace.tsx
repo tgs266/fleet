@@ -9,10 +9,11 @@ import ServiceTable from '../ServiceList/ServiceTable';
 import { IWithRouterProps, withRouter } from '../../utils/withRouter';
 import K8 from '../../services/k8.service';
 import { NamespaceMeta } from '../../models/namespace.model';
+import SSE from '../../services/sse.service';
 
 interface INamespaceState {
     namespace: NamespaceMeta;
-    pollId: NodeJS.Timer;
+    sse: SSE;
 }
 
 class NamespaceDetails extends React.Component<IWithRouterProps, INamespaceState> {
@@ -20,7 +21,7 @@ class NamespaceDetails extends React.Component<IWithRouterProps, INamespaceState
 
     constructor(props: IWithRouterProps) {
         super(props);
-        this.state = { namespace: null, pollId: null };
+        this.state = { namespace: null, sse: null };
     }
 
     componentDidMount() {
@@ -41,16 +42,15 @@ class NamespaceDetails extends React.Component<IWithRouterProps, INamespaceState
         K8.namespaces.getNamespace(this.props.params.namespace).then((response) => {
             this.setState({ namespace: response.data });
         });
-        K8.namespaces.getNamespace(this.props.params.namespace).then((response) => {
-            this.setState({
-                namespace: response.data,
-                pollId: K8.pollFunction(5000, this.pull),
-            });
+        this.setState({
+            sse: K8.namespaces
+                .sse(this.props.params.namespace)
+                .subscribe<NamespaceMeta>((data) => this.setState({ namespace: data })),
         });
     }
 
     componentWillUnmount() {
-        clearInterval(this.state.pollId);
+        this.state.sse.close();
     }
 
     pull = () => {

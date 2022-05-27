@@ -15,10 +15,11 @@ import TitledCard from '../../components/Cards/TitledCard';
 import EndpointTable from './EndpointTable';
 import TagList from '../../components/TagList';
 import EditableResource from '../../components/EditableResource';
+import SSE from '../../services/sse.service';
 
 interface IServiceDetailsState {
     service: Service;
-    pollId: NodeJS.Timer;
+    sse: SSE;
 }
 
 class ServiceDetails extends React.Component<IWithRouterProps, IServiceDetailsState> {
@@ -26,7 +27,7 @@ class ServiceDetails extends React.Component<IWithRouterProps, IServiceDetailsSt
 
     constructor(props: IWithRouterProps) {
         super(props);
-        this.state = { service: null, pollId: null };
+        this.state = { service: null, sse: null };
     }
 
     componentDidMount() {
@@ -49,18 +50,15 @@ class ServiceDetails extends React.Component<IWithRouterProps, IServiceDetailsSt
             .then((response) => {
                 this.setState({ service: response.data });
             });
-        K8.services
-            .getService(this.props.params.serviceName, this.props.params.namespace)
-            .then((response) => {
-                this.setState({
-                    service: response.data,
-                    pollId: K8.pollFunction(1000, this.pull),
-                });
-            });
+        this.setState({
+            sse: K8.serviceAccounts
+                .sse(this.props.params.serviceName, this.props.params.namespace)
+                .subscribe<Service>((data) => this.setState({ service: data })),
+        });
     }
 
     componentWillUnmount() {
-        clearInterval(this.state.pollId);
+        this.state.sse.close();
     }
 
     pull = () => {

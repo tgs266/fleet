@@ -17,13 +17,14 @@ import EditableResource from '../../components/EditableResource';
 import TabControlBar from '../../components/TabControlBar';
 import Details from './Tabs/Details';
 import Prometheus from '../../services/prometheus.service';
+import SSE from '../../services/sse.service';
 import { JSONObjectType } from '../../models/json.model';
 import { PrometheusRangeQueryResponse, PrometheusResponse } from '../../models/prometheus.model';
 import Metrics from './Tabs/Metrics';
 
 interface IPodDetailsState {
     pod: Pod;
-    pollId: NodeJS.Timer;
+    sse: SSE;
     metricsPollId: NodeJS.Timer;
     selectedTab: string;
     metricsData: JSONObjectType<PrometheusResponse<PrometheusRangeQueryResponse>>;
@@ -36,7 +37,7 @@ class PodDetails extends React.Component<IWithRouterProps, IPodDetailsState> {
         super(props);
         this.state = {
             pod: null,
-            pollId: null,
+            sse: null,
             metricsData: null,
             metricsPollId: null,
             selectedTab: 'Details',
@@ -107,24 +108,15 @@ class PodDetails extends React.Component<IWithRouterProps, IPodDetailsState> {
             },
             (t) => this.setState({ metricsPollId: t })
         );
-        K8.pods.getPod(this.props.params.podName, this.props.params.namespace).then((response) => {
-            this.setState({
-                pod: response.data,
-                pollId: K8.poll(
-                    1000,
-                    K8.pods.getPod,
-                    (r) => {
-                        this.setState({ pod: r.data });
-                    },
-                    this.props.params.podName,
-                    this.props.params.namespace
-                ),
-            });
+        this.setState({
+            sse: K8.pods
+                .sse(this.props.params.podName, this.props.params.namespace)
+                .subscribe<Pod>((data) => this.setState({ pod: data })),
         });
     }
 
     componentWillUnmount() {
-        clearInterval(this.state.pollId);
+        this.state.sse.close();
         clearInterval(this.state.metricsPollId);
     }
 

@@ -14,10 +14,11 @@ import { ClusterRole } from '../../models/clusterrole.model';
 import RuleTable from '../../components/RuleTable';
 import TitledCard from '../../components/Cards/TitledCard';
 import EditableResource from '../../components/EditableResource';
+import SSE from '../../services/sse.service';
 
 interface IClusterRoleDetailsState {
     role: ClusterRole;
-    pollId: NodeJS.Timer;
+    sse: SSE;
 }
 
 class ClusterRoleDetails extends React.Component<IWithRouterProps, IClusterRoleDetailsState> {
@@ -27,7 +28,7 @@ class ClusterRoleDetails extends React.Component<IWithRouterProps, IClusterRoleD
         super(props);
         this.state = {
             role: null,
-            pollId: null,
+            sse: null,
         };
     }
 
@@ -48,23 +49,15 @@ class ClusterRoleDetails extends React.Component<IWithRouterProps, IClusterRoleD
             ],
             menu: null,
         });
-        K8.clusterRoles.getClusterRole(this.props.params.roleName).then((response) => {
-            this.setState({
-                role: response.data,
-                pollId: K8.poll(
-                    1000,
-                    K8.clusterRoles.getClusterRole,
-                    (r) => {
-                        this.setState({ role: r.data });
-                    },
-                    this.props.params.roleName
-                ),
-            });
+        this.setState({
+            sse: K8.clusterRoles
+                .sse(this.props.params.roleName)
+                .subscribe<ClusterRole>((data) => this.setState({ role: data })),
         });
     }
 
     componentWillUnmount() {
-        clearInterval(this.state.pollId);
+        this.state.sse.close();
     }
 
     pull = () => {

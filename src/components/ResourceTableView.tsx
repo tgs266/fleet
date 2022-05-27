@@ -7,7 +7,6 @@ import { AxiosResponse } from 'axios';
 import React from 'react';
 import { Filter, PaginationResponse } from '../models/base';
 import { Pagination } from '../models/component.model';
-import K8 from '../services/k8.service';
 import getOffset from '../utils/table';
 import { createdAtToOrigination, createdAtToHumanReadable } from '../utils/time';
 import ResourceTable, {
@@ -46,8 +45,6 @@ class ResourceTableView<
 
     keypath: string = 'uid';
 
-    poll: boolean = true;
-
     constructor(props: any) {
         super(props);
         this.state = {
@@ -69,7 +66,6 @@ class ResourceTableView<
             this.setState({
                 items: r.data.items,
                 total: r.data.total,
-                pollId: this.poll ? K8.pollFunction(5000, () => this.pull(null, null)) : null,
             });
         });
     }

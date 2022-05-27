@@ -3,6 +3,7 @@ import * as React from 'react';
 import { Button } from '@blueprintjs/core';
 import { IWithRouterProps, withRouter } from '../../utils/withRouter';
 import K8 from '../../services/k8.service';
+import SSE from '../../services/sse.service';
 import { IBreadcrumb, NavContext } from '../../layouts/Navigation';
 import InfoCard from '../../components/Cards/InfoCard';
 import LabeledText from '../../components/LabeledText';
@@ -15,7 +16,7 @@ import SecretAccordionList from './SecretAccordionList';
 
 interface ISecretDetailsState {
     secret: Secret;
-    pollId: NodeJS.Timer;
+    sse: SSE;
 }
 
 class SecretDetails extends React.Component<IWithRouterProps, ISecretDetailsState> {
@@ -25,7 +26,7 @@ class SecretDetails extends React.Component<IWithRouterProps, ISecretDetailsStat
         super(props);
         this.state = {
             secret: null,
-            pollId: null,
+            sse: null,
         };
     }
 
@@ -46,26 +47,15 @@ class SecretDetails extends React.Component<IWithRouterProps, ISecretDetailsStat
             ],
             menu: null,
         });
-        K8.secrets
-            .getSecret(this.props.params.secretName, this.props.params.namespace)
-            .then((response) => {
-                this.setState({
-                    secret: response.data,
-                    pollId: K8.poll(
-                        1000,
-                        K8.secrets.getSecret,
-                        (r) => {
-                            this.setState({ secret: r.data });
-                        },
-                        this.props.params.secretName,
-                        this.props.params.namespace
-                    ),
-                });
-            });
+        this.setState({
+            sse: K8.secrets
+                .sse(this.props.params.secretName, this.props.params.namespace)
+                .subscribe<Secret>((data) => this.setState({ secret: data })),
+        });
     }
 
     componentWillUnmount() {
-        clearInterval(this.state.pollId);
+        this.state.sse.close();
     }
 
     pull = () => {

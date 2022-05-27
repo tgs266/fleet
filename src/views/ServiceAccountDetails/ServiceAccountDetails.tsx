@@ -29,13 +29,14 @@ import {
 import AnnotationsTagList from '../../components/AnnotationsTagList';
 import LabelsTagList from '../../components/LabelsTagList';
 import ServiceAccounts from '../../services/k8/serviceaccount.service';
+import SSE from '../../services/sse.service';
 import RoleBindDialog from './RoleBindDialog';
 import ClusterRoleBindDialog from './ClusterRoleBindDialog';
 import EditableResource from '../../components/EditableResource';
 
 interface IServiceAccountDetailsState {
     serviceAccount: ServiceAccount;
-    pollId: NodeJS.Timer;
+    sse: SSE;
     isRoleBindOpen: boolean;
     isClusterRoleBindOpen: boolean;
 }
@@ -47,7 +48,7 @@ class ServiceAccountDetails extends React.Component<IWithRouterProps, IServiceAc
         super(props);
         this.state = {
             serviceAccount: null,
-            pollId: null,
+            sse: null,
             isRoleBindOpen: false,
             isClusterRoleBindOpen: false,
         };
@@ -70,26 +71,15 @@ class ServiceAccountDetails extends React.Component<IWithRouterProps, IServiceAc
             ],
             menu: null,
         });
-        K8.serviceAccounts
-            .getServiceAccount(this.props.params.serviceAccountName, this.props.params.namespace)
-            .then((response) => {
-                this.setState({
-                    serviceAccount: response.data,
-                    pollId: K8.poll(
-                        1000,
-                        K8.serviceAccounts.getServiceAccount,
-                        (r) => {
-                            this.setState({ serviceAccount: r.data });
-                        },
-                        this.props.params.serviceAccountName,
-                        this.props.params.namespace
-                    ),
-                });
-            });
+        this.setState({
+            sse: K8.serviceAccounts
+                .sse(this.props.params.serviceAccountName, this.props.params.namespace)
+                .subscribe<ServiceAccount>((data) => this.setState({ serviceAccount: data })),
+        });
     }
 
     componentWillUnmount() {
-        clearInterval(this.state.pollId);
+        this.state.sse.close();
     }
 
     toggleRoleBindDialog = () => {

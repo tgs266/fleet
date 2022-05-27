@@ -20,10 +20,11 @@ import TableBody from '../../components/TableBody';
 import TableRow from '../../components/TableRow';
 import Text from '../../components/Text/Text';
 import EditableResource from '../../components/EditableResource';
+import SSE from '../../services/sse.service';
 
 interface IRoleBindingState {
     binding: RoleBinding;
-    pollId: NodeJS.Timer;
+    sse: SSE;
 }
 
 class RoleBindingDetails extends React.Component<IWithRouterProps, IRoleBindingState> {
@@ -33,7 +34,7 @@ class RoleBindingDetails extends React.Component<IWithRouterProps, IRoleBindingS
         super(props);
         this.state = {
             binding: null,
-            pollId: null,
+            sse: null,
         };
     }
 
@@ -54,26 +55,15 @@ class RoleBindingDetails extends React.Component<IWithRouterProps, IRoleBindingS
             ],
             menu: null,
         });
-        K8.roleBindings
-            .getRoleBinding(this.props.params.roleBindingName, this.props.params.namespace)
-            .then((response) => {
-                this.setState({
-                    binding: response.data,
-                    pollId: K8.poll(
-                        1000,
-                        K8.roleBindings.getRoleBinding,
-                        (r) => {
-                            this.setState({ binding: r.data });
-                        },
-                        this.props.params.roleBindingName,
-                        this.props.params.namespace
-                    ),
-                });
-            });
+        this.setState({
+            sse: K8.roleBindings
+                .sse(this.props.params.roleBindingName, this.props.params.namespace)
+                .subscribe<RoleBinding>((data) => this.setState({ binding: data })),
+        });
     }
 
     componentWillUnmount() {
-        clearInterval(this.state.pollId);
+        this.state.sse.close();
     }
 
     pull = () => {

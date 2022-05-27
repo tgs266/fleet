@@ -20,10 +20,11 @@ import TableRow from '../../components/TableRow';
 import Text from '../../components/Text/Text';
 import { ClusterRoleBinding } from '../../models/clusterrole.model';
 import EditableResource from '../../components/EditableResource';
+import SSE from '../../services/sse.service';
 
 interface IClusterRoleBindingState {
     binding: ClusterRoleBinding;
-    pollId: NodeJS.Timer;
+    sse: SSE;
 }
 
 class ClusterRoleBindingDetails extends React.Component<
@@ -36,7 +37,7 @@ class ClusterRoleBindingDetails extends React.Component<
         super(props);
         this.state = {
             binding: null,
-            pollId: null,
+            sse: null,
         };
     }
 
@@ -57,25 +58,17 @@ class ClusterRoleBindingDetails extends React.Component<
             ],
             menu: null,
         });
-        K8.clusterRoleBindings
-            .getClusterRoleBinding(this.props.params.clusterRoleBindingName)
-            .then((response) => {
-                this.setState({
-                    binding: response.data,
-                    pollId: K8.poll(
-                        1000,
-                        K8.clusterRoleBindings.getClusterRoleBinding,
-                        (r) => {
-                            this.setState({ binding: r.data });
-                        },
-                        this.props.params.clusterRoleBindingName
-                    ),
-                });
-            });
+        this.setState({
+            sse: K8.clusterRoleBindings
+                .sse(this.props.params.clusterRoleBindingName)
+                .subscribe<ClusterRoleBinding>((data) => {
+                    this.setState({ binding: data });
+                }),
+        });
     }
 
     componentWillUnmount() {
-        clearInterval(this.state.pollId);
+        this.state.sse.close();
     }
 
     pull = () => {
