@@ -8,12 +8,20 @@ import Layout from '../../layouts/Layout';
 import { generateReplicaSet } from '../../testing/type_mocks';
 import ReplicaSets from '../../services/k8/replicaset.service';
 import ReplicaSetDetails from './ReplicaSetDetails';
+import SSE from '../../services/sse.service';
 
 const server = setupServer(
     rest.get(`${ReplicaSets.base}/test/test`, (req, res, ctx) =>
         res(ctx.json(generateReplicaSet('test')))
     )
 );
+
+jest.mock('../../services/sse.service');
+const mockSubscribe = jest.fn((call: (input: any) => void) => {
+    call(generateReplicaSet('test'));
+    return { close: () => {} };
+});
+(SSE as any).mockImplementation(() => ({ subscribe: mockSubscribe }));
 
 beforeAll(() => server.listen());
 afterEach(() => server.resetHandlers());

@@ -13,6 +13,7 @@ import { generateDeployment, generatePod, generateServiceMeta } from '../../test
 import Pods from '../../services/k8/pod.service';
 import Services from '../../services/k8/service.service';
 import Namespaces from '../../services/k8/namespace.service';
+import SSE from '../../services/sse.service';
 
 const server = setupServer(
     rest.get(`${Deployments.base}/*`, (req, res, ctx) =>
@@ -49,6 +50,19 @@ const server = setupServer(
     ),
     getNs()
 );
+
+jest.mock('../../services/sse.service');
+const mockSubscribe = jest.fn((call: (input: any) => void) => {
+    call({
+        name: 'test',
+        uid: 'test',
+        createdAt: 245325,
+        labels: {},
+        annotations: {},
+    });
+    return { close: () => {} };
+});
+(SSE as any).mockImplementation(() => ({ subscribe: mockSubscribe }));
 
 beforeAll(() => server.listen());
 afterEach(() => server.resetHandlers());

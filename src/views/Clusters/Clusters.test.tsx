@@ -106,6 +106,12 @@ test('renders with cluster', async () => {
                         isConnected: true,
                         port: '0',
                     },
+                    {
+                        name: 'asdf2',
+                        source: 'asdf',
+                        isConnected: true,
+                        port: '0',
+                    },
                 ])
             )
         )

@@ -9,6 +9,14 @@ import { delay } from '../../testing/utils';
 import { generateClusterRole } from '../../testing/type_mocks';
 import ClusterRoles from '../../services/k8/clusterrole.service';
 import ClusterRoleDetails from './ClusterRoleDetails';
+import SSE from '../../services/sse.service';
+
+jest.mock('../../services/sse.service');
+const mockSubscribe = jest.fn((call: (input: any) => void) => {
+    call(generateClusterRole('test'));
+    return { close: () => {} };
+});
+(SSE as any).mockImplementation(() => ({ subscribe: mockSubscribe }));
 
 const generateClusterRoleWithoutLabelsAndAnnotations = (name: string) => {
     const role = generateClusterRole(name);

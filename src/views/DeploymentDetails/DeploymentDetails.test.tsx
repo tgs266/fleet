@@ -9,6 +9,7 @@ import Layout from '../../layouts/Layout';
 import { generateDeployment } from '../../testing/type_mocks';
 import Deployments from '../../services/k8/deployment.service';
 import { delay } from '../../testing/utils';
+import SSE from '../../services/sse.service';
 
 const server = setupServer(
     rest.get(`${Deployments.base}/test/test`, (req, res, ctx) =>
@@ -21,6 +22,13 @@ const server = setupServer(
     ),
     rest.put(`/api/v1/raw/deployments/test/test`, (req, res, ctx) => res(ctx.status(201)))
 );
+
+jest.mock('../../services/sse.service');
+const mockSubscribe = jest.fn((call: (input: any) => void) => {
+    call(generateDeployment('test'));
+    return { close: () => {} };
+});
+(SSE as any).mockImplementation(() => ({ subscribe: mockSubscribe }));
 
 beforeAll(() => server.listen());
 afterEach(() => server.resetHandlers());

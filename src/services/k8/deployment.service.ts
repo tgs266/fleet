@@ -7,6 +7,7 @@ import { CreateDeployment, Deployment, DeploymentMeta } from '../../models/deplo
 import { JSONObject } from '../../models/json.model';
 import getSortBy, { parseFilters } from '../../utils/sort';
 import api, { getBackendApiUrl, getWSUrl } from '../axios.service';
+import SSE from '../sse.service';
 import getWebsocket from '../websocket';
 
 export default class Deployments {
@@ -29,6 +30,14 @@ export default class Deployments {
         namespace: string
     ): Promise<AxiosResponse<Deployment>> {
         return api.get(`${getBackendApiUrl(Deployments.base)}/${namespace}/${deployment}`);
+    }
+
+    static sse(name: string, namespace: string, interval: number = 1000): SSE {
+        const x = new SSE(
+            `${getBackendApiUrl(Deployments.base.replace('/api/', '/sse/'))}/${namespace}/${name}`,
+            interval
+        );
+        return x;
     }
 
     static getRawDeployment(

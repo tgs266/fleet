@@ -15,6 +15,7 @@ import { RoleBinding } from '../../models/role.model';
 import ClusterRoleBindings from '../../services/k8/clusterrolebinding.service';
 import RoleBindings from '../../services/k8/rolebinding.service';
 import { getText } from './BindDialogShared';
+import SSE from '../../services/sse.service';
 
 const generateServiceAccountWithoutLabelsAndAnnotations = (name: string) => {
     const role = generateServiceAccount(name);
@@ -57,6 +58,13 @@ const generateRoleBinding = (name: string): RoleBinding => ({
         },
     ],
 });
+
+jest.mock('../../services/sse.service');
+const mockSubscribe = jest.fn((call: (input: any) => void) => {
+    call(generateServiceAccount('test'));
+    return { close: () => {} };
+});
+(SSE as any).mockImplementation(() => ({ subscribe: mockSubscribe }));
 
 const server = setupServer(
     rest.get(`${ServiceAccounts.base}/test/test`, (req, res, ctx) =>

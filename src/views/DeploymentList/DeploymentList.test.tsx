@@ -8,7 +8,7 @@ import Layout from '../../layouts/Layout';
 import Deployments from '../../services/k8/deployment.service';
 import DeploymentList from './DeploymentList';
 import { generateDeployment } from '../../testing/type_mocks';
-import { getNs } from '../../testing/utils';
+import { delay, getNs } from '../../testing/utils';
 
 const server = setupServer(
     getNs(),
@@ -41,4 +41,6 @@ test('renders without crashing', async () => {
             </Routes>
         </MemoryRouter>
     );
+
+    await delay(500);
 });

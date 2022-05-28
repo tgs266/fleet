@@ -9,6 +9,14 @@ import { delay } from '../../testing/utils';
 import { generateClusterRoleBinding, generateRoleBinding } from '../../testing/type_mocks';
 import ClusterRoleBindings from '../../services/k8/clusterrolebinding.service';
 import ClusterRoleBindingDetails from './ClusterRoleBindingDetails';
+import SSE from '../../services/sse.service';
+
+jest.mock('../../services/sse.service');
+const mockSubscribe = jest.fn((call: (input: any) => void) => {
+    call(generateClusterRoleBinding('test'));
+    return { close: () => {} };
+});
+(SSE as any).mockImplementation(() => ({ subscribe: mockSubscribe }));
 
 const generateClusterRoleBindingWithoutLabelsAndAnnotations = (name: string) => {
     const role = generateClusterRoleBinding(name);

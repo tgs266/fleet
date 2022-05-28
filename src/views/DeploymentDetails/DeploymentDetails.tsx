@@ -18,7 +18,6 @@ import ConditionTable from '../../components/ConditionTable';
 import EditableResource from '../../components/EditableResource';
 import { buildLinkToReplicaSet } from '../../utils/routing';
 import Text from '../../components/Text/Text';
-import { getBackendApiUrl } from '../../services/axios.service';
 
 interface IDeploymentDetailsState {
     deployment: Deployment;
@@ -77,14 +76,11 @@ class DeploymentDetails extends React.Component<IWithRouterProps, IDeploymentDet
             ],
             menu: this.getMenu(),
         });
-        const x = new SSE(
-            `${getBackendApiUrl('/sse/v1/deployments')}/${this.namespace}/${this.deployment}`,
-            1000
-        );
-        x.subscribe<Deployment>((data: Deployment) => {
-            this.setState({ deployment: data });
+        this.setState({
+            sse: K8.deployments
+                .sse(this.deployment, this.namespace)
+                .subscribe<Deployment>((data: Deployment) => this.setState({ deployment: data })),
         });
-        this.setState({ sse: x });
     }
 
     componentWillUnmount() {
