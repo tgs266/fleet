@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 /* eslint-disable no-restricted-syntax */
 // import EventSourcePolyfill from 'eventsource';
 import { FleetError } from '../models/base';
@@ -17,9 +18,17 @@ export default class SSE {
 
     interval: number;
 
+    id: string;
+
+    paused: boolean;
+
+    closed: boolean;
+
     eventSource: EventSource;
 
     builder: (path: string, headers: JSONObjectType<string>) => EventSource;
+
+    static all: JSONObjectType<SSE> = {};
 
     constructor(
         path: string,
@@ -31,16 +40,23 @@ export default class SSE {
         this.builder = builder;
     }
 
-    subscribe<T>(
-        messageHandler: (data: T) => any,
-        errorHandler: (err: FleetError) => any = handleFleetError
-    ) {
+    headers = () => {
         const headers: JSONObjectType<string> = {};
         const token = localStorage.getItem('jwe');
         if (token) {
             headers.jweToken = token;
         }
-        this.eventSource = this.builder(`${this.path}?interval=${this.interval}`, headers);
+        return headers;
+    };
+
+    subscribe<T>(
+        messageHandler: (data: T) => any,
+        errorHandler: (err: FleetError) => any = handleFleetError
+    ) {
+        this.eventSource = this.builder(`${this.path}?interval=${this.interval}`, this.headers());
+        this.id = (Math.random() * 100000).toString();
+        SSE.all[this.id] = this;
+
         this.eventSource.onmessage = (ev: MessageEvent<string>) => {
             if (ev.data.startsWith('error: ')) {
                 const inner = ev.data.slice(7);
@@ -55,6 +71,44 @@ export default class SSE {
     }
 
     close() {
+        SSE.all[this.id] = null;
         this.eventSource.close();
+        this.closed = true;
+    }
+
+    pause() {
+        if (!this.closed && !this.paused) {
+            console.log('pausing');
+            this.eventSource.close();
+            this.paused = true;
+        }
+    }
+
+    unpause() {
+        if (this.closed || !this.paused) {
+            return;
+        }
+        const tempES = this.builder(`${this.path}?interval=${this.interval}`, this.headers());
+        tempES.onmessage = this.eventSource.onmessage;
+        tempES.onerror = this.eventSource.onerror;
+        this.eventSource = tempES;
+    }
+
+    static closeAll() {
+        for (const id of Object.keys(SSE.all)) {
+            SSE.all[id].close();
+        }
+    }
+
+    static pauseAll() {
+        for (const id of Object.keys(SSE.all)) {
+            SSE.all[id].pause();
+        }
+    }
+
+    static startAll() {
+        for (const id of Object.keys(SSE.all)) {
+            SSE.all[id].unpause();
+        }
     }
 }
