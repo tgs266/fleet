@@ -17,34 +17,18 @@ import EditableResource from '../../components/EditableResource';
 import TabControlBar from '../../components/TabControlBar';
 import Details from './Tabs/Details';
 import Prometheus from '../../services/prometheus.service';
-import SSE from '../../services/sse.service';
-import { JSONObjectType } from '../../models/json.model';
-import { PrometheusRangeQueryResponse, PrometheusResponse } from '../../models/prometheus.model';
 import Metrics from './Tabs/Metrics';
+import ResourceView from '../../components/ResourceView';
 
-interface IPodDetailsState {
-    pod: Pod;
-    sse: SSE;
-    metricsPollId: NodeJS.Timer;
-    selectedTab: string;
-    metricsData: JSONObjectType<PrometheusResponse<PrometheusRangeQueryResponse>>;
-}
-
-class PodDetails extends React.Component<IWithRouterProps, IPodDetailsState> {
+class PodDetails extends ResourceView<Pod, IWithRouterProps, {}> {
     static contextType = NavContext;
 
     constructor(props: IWithRouterProps) {
-        super(props);
-        this.state = {
-            pod: null,
-            sse: null,
-            metricsData: null,
-            metricsPollId: null,
-            selectedTab: 'Details',
-        };
+        super(props, K8.pods, 'podName');
     }
 
     componentDidMount() {
+        super.componentDidMount();
         const [, setState] = this.context;
         setState({
             breadcrumbs: [
@@ -60,6 +44,7 @@ class PodDetails extends React.Component<IWithRouterProps, IPodDetailsState> {
                 <Button key="refresh" data-testid="refresh" icon="refresh" onClick={this.pull} />,
             ],
         });
+        this.setSelectedTab('Details');
         Prometheus.pollQueryRange(
             {
                 memoryUsage: Prometheus.buildQuery('memoryUsage', {
@@ -108,33 +93,17 @@ class PodDetails extends React.Component<IWithRouterProps, IPodDetailsState> {
             },
             (t) => this.setState({ metricsPollId: t })
         );
-        this.setState({
-            sse: K8.pods
-                .sse(this.props.params.podName, this.props.params.namespace)
-                .subscribe<Pod>((data) => this.setState({ pod: data })),
-        });
     }
-
-    componentWillUnmount() {
-        this.state.sse.close();
-        clearInterval(this.state.metricsPollId);
-    }
-
-    pull = () => {
-        K8.pods.getPod(this.props.params.podName, this.props.params.namespace).then((response) => {
-            this.setState({ pod: response.data });
-        });
-    };
 
     setSelectedTab = (selectedTab: string) => {
         this.setState({ selectedTab });
     };
 
     render() {
-        if (!this.state.pod) {
+        if (!this.state.resource) {
             return null;
         }
-        const { pod } = this.state;
+        const { resource: pod } = this.state;
         const statusColor = getStatusColor(pod);
         return (
             <div>

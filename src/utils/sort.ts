@@ -3,7 +3,7 @@ import { TableSort } from '../components/SortableTableHeaderCell';
 import { Filter } from '../models/base';
 
 export default function getSortBy(sort: TableSort) {
-    let sortBy = '';
+    let sortBy = null;
     if (sort) {
         sortBy = `${sort.sortableId},${sort.ascending ? 'a' : 'd'}`;
     }
@@ -18,7 +18,7 @@ export function parseFilters(filters?: Filter[]) {
         }
         return outArr.join('|');
     }
-    return '';
+    return null;
 }
 
 export function groupBy(data: any[], key: string) {

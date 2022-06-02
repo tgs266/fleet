@@ -18,7 +18,7 @@ interface IDeploymentTableProps extends IResourceTableViewProps {
 
 class DeploymentTable extends ResourceTableView<IDeploymentTableProps, DeploymentMeta> {
     // eslint-disable-next-line react/static-property-placement
-    itemsFcn = K8.deployments.getDeployments;
+    itemsFcn = K8.deployments.list.bind(K8.deployments);
 
     useFilters = true;
 
@@ -30,12 +30,12 @@ class DeploymentTable extends ResourceTableView<IDeploymentTableProps, Deploymen
         const usingSort = sort || this.state.sort;
         const usingPage = page !== null ? page : this.state.page;
 
-        return [
-            this.props.namespace,
-            usingSort,
-            getOffset(usingPage, this.state.pageSize, this.state.total),
-            this.state.pageSize,
-        ];
+        return {
+            namespace: this.props.namespace,
+            sort: usingSort,
+            offset: getOffset(usingPage, this.state.pageSize, this.state.total),
+            pageSize: this.state.pageSize,
+        };
     };
 
     getColumns = () => [

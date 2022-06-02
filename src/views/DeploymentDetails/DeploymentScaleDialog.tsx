@@ -42,8 +42,10 @@ export default function DeploymentScaleDialog(props: {
                         onClick={() => {
                             K8.deployments
                                 .scale(
-                                    props.name,
-                                    props.namespace,
+                                    {
+                                        name: props.name,
+                                        namespace: props.namespace,
+                                    },
                                     parseInt(scaleRef.current.value, 10)
                                 )
                                 .then(() => {

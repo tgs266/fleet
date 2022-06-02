@@ -1,82 +1,37 @@
+/* eslint-disable class-methods-use-this */
 /* eslint-disable object-shorthand */
 import { AxiosResponse } from 'axios';
-import { TableSort } from '../../components/SortableTableHeaderCell';
-import { Filter, PaginationResponse } from '../../models/base';
 import { ContainerSpec } from '../../models/container.model';
 import { CreateDeployment, Deployment, DeploymentMeta } from '../../models/deployment.model';
-import { JSONObject } from '../../models/json.model';
-import getSortBy, { parseFilters } from '../../utils/sort';
 import api, { getBackendApiUrl, getWSUrl } from '../axios.service';
-import SSE from '../sse.service';
 import getWebsocket from '../websocket';
+import Resource, { ResourceGetParams } from './resource.service';
 
-export default class Deployments {
+export default class Deployments extends Resource<DeploymentMeta, Deployment> {
     static base = `/api/v1/deployments`;
 
-    static getDeployments(
-        namespace?: string,
-        sort?: TableSort,
-        offset?: number,
-        pageSize?: number,
-        filters?: Filter[]
-    ): Promise<AxiosResponse<PaginationResponse<DeploymentMeta>>> {
-        return api.get(`${getBackendApiUrl(Deployments.base)}/${namespace || '_all_'}`, {
-            params: { sortBy: getSortBy(sort), offset, pageSize, filterBy: parseFilters(filters) },
-        });
-    }
+    base = Deployments.base;
 
-    static getDeployment(
-        deployment: string,
-        namespace: string
-    ): Promise<AxiosResponse<Deployment>> {
-        return api.get(`${getBackendApiUrl(Deployments.base)}/${namespace}/${deployment}`);
-    }
-
-    static sse(name: string, namespace: string, interval: number = 1000): SSE {
-        const x = new SSE(
-            `${getBackendApiUrl(Deployments.base.replace('/api/', '/sse/'))}/${namespace}/${name}`,
-            interval
-        );
-        return x;
-    }
-
-    static getRawDeployment(
-        deployment: string,
-        namespace: string
-    ): Promise<AxiosResponse<JSONObject>> {
-        return api.get(`${getBackendApiUrl('/api/v1/raw/deployments')}/${namespace}/${deployment}`);
-    }
-
-    static updateRawDeployment(
-        deployment: string,
-        namespace: string,
-        dep: JSONObject
-    ): Promise<AxiosResponse<JSONObject>> {
+    restartApp(params: ResourceGetParams): Promise<AxiosResponse<any>> {
         return api.put(
-            `${getBackendApiUrl('/api/v1/raw/deployments')}/${namespace}/${deployment}`,
-            dep
+            `${getBackendApiUrl(Deployments.base)}/${params.namespace}/${params.name}/restart`
         );
     }
 
-    static restartApp(deployment: string, namespace: string): Promise<AxiosResponse<any>> {
-        return api.put(`${getBackendApiUrl(Deployments.base)}/${namespace}/${deployment}/restart`);
-    }
-
-    static updateContainerSpec(
-        deployment: string,
-        namespace: string,
+    updateContainerSpec(
+        params: ResourceGetParams,
         oldSpecName: string,
         newSpec: ContainerSpec
     ): Promise<AxiosResponse<any>> {
         return api.put(
-            `${getBackendApiUrl(
-                Deployments.base
-            )}/${namespace}/${deployment}/container-specs/${oldSpecName}`,
+            `${getBackendApiUrl(Deployments.base)}/${params.namespace}/${
+                params.name
+            }/container-specs/${oldSpecName}`,
             newSpec
         );
     }
 
-    static createDeployment(dep: CreateDeployment): Promise<AxiosResponse<any>> {
+    createDeployment(dep: CreateDeployment): Promise<AxiosResponse<any>> {
         return api.post(`${getBackendApiUrl(Deployments.base)}/`, {
             namespace: dep.namespace,
             name: dep.name,
@@ -85,30 +40,24 @@ export default class Deployments {
         });
     }
 
-    static deleteDeployment(deployment: string, namespace: string): Promise<AxiosResponse<any>> {
-        return api.delete(`${getBackendApiUrl(Deployments.base)}/${namespace}/${deployment}`);
+    scale(params: ResourceGetParams, replicas: number): Promise<AxiosResponse<any>> {
+        return api.put(
+            `${getBackendApiUrl(Deployments.base)}/${params.namespace}/${params.name}/scale`,
+            {
+                replicas,
+            }
+        );
     }
 
-    static scale(
-        deployment: string,
-        namespace: string,
-        replicas: number
-    ): Promise<AxiosResponse<any>> {
-        return api.put(`${getBackendApiUrl(Deployments.base)}/${namespace}/${deployment}/scale`, {
-            replicas,
-        });
-    }
-
-    static openEventWebsocket(
-        deployment: string,
-        namespace: string,
+    openEventWebsocket(
+        params: ResourceGetParams,
         pollInterval: number,
         callback: (event: MessageEvent<string>) => void
     ): WebSocket {
         const token = localStorage.getItem('jwe');
         const ws = getWebsocket(
             getWSUrl(
-                `/ws/v1/deployments/${namespace}/${deployment}/events?pollInterval=${pollInterval}&jwe=${token}`
+                `/ws/v1/deployments/${params.namespace}/${params.name}/events?pollInterval=${pollInterval}&jwe=${token}`
             )
         );
         ws.onmessage = callback;

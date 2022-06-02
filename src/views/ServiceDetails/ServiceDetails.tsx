@@ -3,7 +3,7 @@ import * as React from 'react';
 import { Intent, Tag } from '@blueprintjs/core';
 import { IWithRouterProps, withRouter } from '../../utils/withRouter';
 import K8 from '../../services/k8.service';
-import { IBreadcrumb, NavContext } from '../../layouts/Navigation';
+import { IBreadcrumb } from '../../layouts/Navigation';
 import { Service } from '../../models/service.model';
 import InfoCard from '../../components/Cards/InfoCard';
 import LabeledText from '../../components/LabeledText';
@@ -15,22 +15,15 @@ import TitledCard from '../../components/Cards/TitledCard';
 import EndpointTable from './EndpointTable';
 import TagList from '../../components/TagList';
 import EditableResource from '../../components/EditableResource';
-import SSE from '../../services/sse.service';
+import ResourceView from '../../components/ResourceView';
 
-interface IServiceDetailsState {
-    service: Service;
-    sse: SSE;
-}
-
-class ServiceDetails extends React.Component<IWithRouterProps, IServiceDetailsState> {
-    static contextType = NavContext;
-
+class ServiceDetails extends ResourceView<Service, IWithRouterProps, {}> {
     constructor(props: IWithRouterProps) {
-        super(props);
-        this.state = { service: null, sse: null };
+        super(props, K8.services, 'serviceName');
     }
 
     componentDidMount() {
+        super.componentDidMount();
         const [, setState] = this.context;
         setState({
             breadcrumbs: [
@@ -45,35 +38,13 @@ class ServiceDetails extends React.Component<IWithRouterProps, IServiceDetailsSt
             buttons: [],
             menu: null,
         });
-        K8.services
-            .getService(this.props.params.serviceName, this.props.params.namespace)
-            .then((response) => {
-                this.setState({ service: response.data });
-            });
-        this.setState({
-            sse: K8.serviceAccounts
-                .sse(this.props.params.serviceName, this.props.params.namespace)
-                .subscribe<Service>((data) => this.setState({ service: data })),
-        });
     }
-
-    componentWillUnmount() {
-        this.state.sse.close();
-    }
-
-    pull = () => {
-        K8.services
-            .getService(this.props.params.serviceName, this.props.params.namespace)
-            .then((response) => {
-                this.setState({ service: response.data });
-            });
-    };
 
     render() {
-        if (!this.state.service) {
+        if (!this.state.resource) {
             return null;
         }
-        const { service } = this.state;
+        const { resource: service } = this.state;
         return (
             <div>
                 <EditableResource

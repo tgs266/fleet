@@ -10,25 +10,28 @@ afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 
 test('getServices', () => {
+    const s = new Services(true, true);
     const sort: TableSort = {
         sortableId: 'adsf',
         ascending: true,
     };
-    Services.getServices('_all_', sort);
+    s.list({ namespace: '_all_', sort });
 });
 
 test('getServices2', () => {
+    const s = new Services(true, true);
     const sort: TableSort = {
         sortableId: 'adsf',
         ascending: false,
     };
-    Services.getServices('_all_', sort);
+    s.list({ namespace: '_all_', sort });
 });
 
 test('getServices3', () => {
+    const s = new Services(true, true);
     const sort: TableSort = {
         sortableId: 'adsf',
         ascending: false,
     };
-    Services.getServices('_all_', sort);
+    s.list({ namespace: '_all_', sort });
 });

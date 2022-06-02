@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { RoleBinding } from '../../models/role.model';
 import { BindRequest } from '../../models/serviceaccount.model';
-import RoleBindings from '../../services/k8/rolebinding.service';
+import K8 from '../../services/k8.service';
 import BindDialogShared from './BindDialogShared';
 
 export default function RoleBindDialog(props: {
@@ -15,7 +15,7 @@ export default function RoleBindDialog(props: {
     const [selectedItem, setSelectedItem] = useState<RoleBinding>(null);
 
     useEffect(() => {
-        RoleBindings.getRoleBindings().then((r) => {
+        K8.roleBindings.list().then((r) => {
             setItems(r.data.items);
         });
     }, []);

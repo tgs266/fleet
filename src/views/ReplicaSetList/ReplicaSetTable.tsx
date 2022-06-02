@@ -16,7 +16,7 @@ interface IReplicaSetTable extends IResourceTableViewProps {
     namespace?: string;
 }
 class ReplicaSetTable extends ResourceTableView<IReplicaSetTable, ReplicaSetMeta> {
-    itemsFcn = K8.replicaSets.getReplicaSets;
+    itemsFcn = K8.replicaSets.list.bind(K8.replicaSets);
 
     useFilters = true;
 
@@ -28,12 +28,12 @@ class ReplicaSetTable extends ResourceTableView<IReplicaSetTable, ReplicaSetMeta
         const usingSort = sort || this.state.sort;
         const usingPage = page !== null ? page : this.state.page;
 
-        return [
-            this.props.namespace,
-            usingSort,
-            getOffset(usingPage, this.state.pageSize, this.state.total),
-            this.state.pageSize,
-        ];
+        return {
+            namespace: this.props.namespace,
+            sort: usingSort,
+            offset: getOffset(usingPage, this.state.pageSize, this.state.total),
+            pageSize: this.state.pageSize,
+        };
     };
 
     getColumns = () => [

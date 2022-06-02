@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/websocket/v2"
 	"github.com/tgs266/fleet/lib/api"
 	"github.com/tgs266/fleet/lib/client"
 	"github.com/tgs266/fleet/lib/errors"
@@ -38,6 +39,26 @@ type SSEInfo struct {
 	interval  int
 	name      string
 	namespace string
+}
+
+func getWSDetails(c *websocket.Conn, client *client.ClientManager) (*SSEInfo, error) {
+	err := c.Locals("k8err")
+	if err != nil {
+		return nil, err.(*errors.FleetError)
+	}
+	K8 := c.Locals("k8").(*kubernetes.K8Client)
+	name := c.Params("name")
+	namespace := c.Params("namespace")
+	interval, err2 := strconv.Atoi(c.Query("interval", "5000"))
+	if err != nil {
+		return nil, err2
+	}
+	return &SSEInfo{
+		K8:        K8,
+		name:      name,
+		namespace: namespace,
+		interval:  interval,
+	}, nil
 }
 
 func GetSSEDetails(c *fiber.Ctx, client *client.ClientManager) (*SSEInfo, error) {
@@ -80,6 +101,63 @@ func SendSSEResponse(data interface{}, sseDetails *SSEInfo, w *bufio.Writer) err
 
 	time.Sleep(time.Duration(sseDetails.interval) * time.Millisecond)
 	return nil
+}
+
+func sendWSResponse(data interface{}, conn *websocket.Conn) error {
+	return conn.WriteJSON(data)
+}
+
+func sendErrorAndClose(data interface{}, conn *websocket.Conn) error {
+	conn.WriteJSON(data)
+	return conn.Close()
+}
+
+func NonNamespacedResourceWS[T any](f func(K8 *kubernetes.K8Client, name string) (T, error)) func(c *websocket.Conn, client *client.ClientManager) {
+	return func(c *websocket.Conn, client *client.ClientManager) {
+		sseDetails, err := getWSDetails(c, client)
+		if err != nil {
+			panic(err)
+		}
+		for {
+			data, err := f(sseDetails.K8, sseDetails.name)
+			if err != nil {
+				sendErrorAndClose(err, c)
+				return
+			}
+
+			if err := sendWSResponse(data, c); err != nil {
+				sendErrorAndClose(err, c)
+				return
+			}
+
+			time.Sleep(time.Duration(sseDetails.interval) * time.Millisecond)
+		}
+
+	}
+}
+
+func NamespacedResourceWS[T any](f func(K8 *kubernetes.K8Client, namespace string, name string) (T, error)) func(c *websocket.Conn, client *client.ClientManager) {
+	return func(c *websocket.Conn, client *client.ClientManager) {
+		sseDetails, err := getWSDetails(c, client)
+		if err != nil {
+			panic(err)
+		}
+		for {
+			data, err := f(sseDetails.K8, sseDetails.namespace, sseDetails.name)
+			if err != nil {
+				sendErrorAndClose(err, c)
+				return
+			}
+
+			if err := sendWSResponse(data, c); err != nil {
+				sendErrorAndClose(err, c)
+				return
+			}
+			time.Sleep(time.Duration(sseDetails.interval) * time.Millisecond)
+
+		}
+
+	}
 }
 
 func NamespacedResourceGetterSSE[T any](f func(K8 *kubernetes.K8Client, namespace string, name string) (T, error)) func(c *fiber.Ctx, client *client.ClientManager) error {
@@ -175,6 +253,7 @@ func initializePodRoutes(app *api.API) {
 	app.WebsocketGet("/ws/v1/pods/:namespace/:name/containers/:containerName/exec", PodExec)
 
 	app.Get("/sse/v1/pods/:namespace/:name", NamespacedResourceGetterSSE(pod.Get))
+	app.WebsocketGet("/ws/v1/pods/:namespace/:name", NamespacedResourceWS(pod.Get))
 
 }
 
@@ -189,6 +268,7 @@ func initializeDeploymentRoutes(app *api.API) {
 	app.WebsocketGet("/ws/v1/deployments/:namespace/:name/events", DeploymentEventStream)
 
 	app.Get("/sse/v1/deployments/:namespace/:name", NamespacedResourceGetterSSE(deployment.Get))
+	app.WebsocketGet("/ws/v1/deployments/:namespace/:name", NamespacedResourceWS(deployment.Get))
 
 }
 
@@ -201,6 +281,7 @@ func initializeServiceRoutes(app *api.API) {
 	app.Get("/api/v1/services/:namespace/", GetServices)
 	app.Get("/api/v1/services/:namespace/:name", NamespacedResourceGetter(service.Get))
 	app.Get("/sse/v1/services/:namespace/:name", NamespacedResourceGetterSSE(service.Get))
+	app.WebsocketGet("/ws/v1/services/:namespace/:name", NamespacedResourceWS(service.Get))
 
 }
 
@@ -208,6 +289,7 @@ func initializeServiceAccountRoutes(app *api.API) {
 	app.Get("/api/v1/serviceaccounts/:namespace/", GetServiceAccounts)
 	app.Get("/api/v1/serviceaccounts/:namespace/:name", NamespacedResourceGetter(serviceaccount.Get))
 	app.Get("/sse/v1/serviceaccounts/:namespace/:name", NamespacedResourceGetterSSE(serviceaccount.Get))
+	app.WebsocketGet("/ws/v1/serviceaccounts/:namespace/:name", NamespacedResourceWS(serviceaccount.Get))
 	app.Put("/api/v1/serviceaccounts/:namespace/:name/bind/role", ConnectToRoleBinding)
 	app.Put("/api/v1/serviceaccounts/:namespace/:name/bind/clusterrole", ConnectToClusterRoleBinding)
 	app.Put("/api/v1/serviceaccounts/:namespace/:name/remove/role", DisconnectRoleBinding)
@@ -218,20 +300,25 @@ func initializeRoleRoutes(app *api.API) {
 	app.Get("/api/v1/roles/:namespace/", GetRoles)
 	app.Get("/api/v1/roles/:namespace/:name", NamespacedResourceGetter(role.Get))
 	app.Get("/sse/v1/roles/:namespace/:name", NamespacedResourceGetterSSE(role.Get))
+	app.WebsocketGet("/ws/v1/roles/:namespace/:name", NamespacedResourceWS(role.Get))
 
 	app.Get("/api/v1/clusterroles/", GetClusterRoles)
 	app.Get("/api/v1/clusterroles/:name", NonNamespacedResourceGetter(clusterrole.Get))
 	app.Get("/sse/v1/clusterroles/:name", NonNamespacedResourceGetterSSE(clusterrole.Get))
+	app.WebsocketGet("/ws/v1/clusterroles/:name", NonNamespacedResourceWS(clusterrole.Get))
+
 }
 
 func initializeRoleBindingRoutes(app *api.API) {
 	app.Get("/api/v1/rolebindings/:namespace/", GetRoleBindings)
 	app.Get("/api/v1/rolebindings/:namespace/:name", NamespacedResourceGetter(rolebinding.Get))
 	app.Get("/sse/v1/rolebindings/:namespace/:name", NamespacedResourceGetterSSE(rolebinding.Get))
+	app.WebsocketGet("/ws/v1/rolebindings/:namespace/:name", NamespacedResourceWS(rolebinding.Get))
 
 	app.Get("/api/v1/clusterrolebindings/", GetClusterRoleBindings)
 	app.Get("/api/v1/clusterrolebindings/:name", NonNamespacedResourceGetter(clusterrolebinding.Get))
 	app.Get("/sse/v1/clusterrolebindings/:name", NonNamespacedResourceGetterSSE(clusterrolebinding.Get))
+	app.WebsocketGet("/ws/v1/clusterrolebindings/:name", NonNamespacedResourceWS(clusterrolebinding.Get))
 }
 
 func initializePromRoutes(app *api.API) {
@@ -246,12 +333,14 @@ func initializeSecretRoutes(app *api.API) {
 	app.Get("/api/v1/secrets/:namespace/", GetSecrets)
 	app.Get("/api/v1/secrets/:namespace/:name", NamespacedResourceGetter(secret.Get))
 	app.Get("/sse/v1/secrets/:namespace/:name", NamespacedResourceGetterSSE(secret.Get))
+	app.WebsocketGet("/ws/v1/secrets/:namespace/:name", NamespacedResourceWS(secret.Get))
 }
 
 func initializeReplicaSetRoutes(app *api.API) {
 	app.Get("/api/v1/replicasets/:namespace/", GetReplicaSets)
 	app.Get("/api/v1/replicasets/:namespace/:name", NamespacedResourceGetter(replicaset.Get))
 	app.Get("/sse/v1/replicasets/:namespace/:name", NamespacedResourceGetterSSE(replicaset.Get))
+	app.WebsocketGet("/ws/v1/replicasets/:namespace/:name", NamespacedResourceWS(replicaset.Get))
 	app.Put("/api/v1/replicasets/:namespace/:name/restart", RestartReplicaSet)
 	app.WebsocketGet("/ws/v1/replicasets/:namespace/:name/events", ReplicaSetEventStream)
 }
@@ -278,6 +367,7 @@ func initializeOtherRoutes(app *api.API) {
 	app.Get("/api/v1/namespaces/", GetNamespaces)
 	app.Get("/api/v1/namespaces/:name", NonNamespacedResourceGetter(namespace.Get))
 	app.Get("/sse/v1/namespaces/:name", NonNamespacedResourceGetterSSE(namespace.Get))
+	app.WebsocketGet("/ws/v1/namespaces/:name", NonNamespacedResourceWS(namespace.Get))
 
 	rawBase := "/api/v1/raw/:kind"
 

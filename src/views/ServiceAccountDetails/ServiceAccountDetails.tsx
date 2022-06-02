@@ -28,33 +28,34 @@ import {
 } from '../../utils/routing';
 import AnnotationsTagList from '../../components/AnnotationsTagList';
 import LabelsTagList from '../../components/LabelsTagList';
-import ServiceAccounts from '../../services/k8/serviceaccount.service';
-import SSE from '../../services/sse.service';
 import RoleBindDialog from './RoleBindDialog';
 import ClusterRoleBindDialog from './ClusterRoleBindDialog';
 import EditableResource from '../../components/EditableResource';
+import ResourceView from '../../components/ResourceView';
 
 interface IServiceAccountDetailsState {
-    serviceAccount: ServiceAccount;
-    sse: SSE;
     isRoleBindOpen: boolean;
     isClusterRoleBindOpen: boolean;
 }
 
-class ServiceAccountDetails extends React.Component<IWithRouterProps, IServiceAccountDetailsState> {
+class ServiceAccountDetails extends ResourceView<
+    ServiceAccount,
+    IWithRouterProps,
+    IServiceAccountDetailsState
+> {
     static contextType = NavContext;
 
     constructor(props: IWithRouterProps) {
-        super(props);
+        super(props, K8.serviceAccounts, 'serviceAccountName');
         this.state = {
-            serviceAccount: null,
-            sse: null,
+            ...this.state,
             isRoleBindOpen: false,
             isClusterRoleBindOpen: false,
         };
     }
 
     componentDidMount() {
+        super.componentDidMount();
         const [, setState] = this.context;
         setState({
             breadcrumbs: [
@@ -71,15 +72,6 @@ class ServiceAccountDetails extends React.Component<IWithRouterProps, IServiceAc
             ],
             menu: null,
         });
-        this.setState({
-            sse: K8.serviceAccounts
-                .sse(this.props.params.serviceAccountName, this.props.params.namespace)
-                .subscribe<ServiceAccount>((data) => this.setState({ serviceAccount: data })),
-        });
-    }
-
-    componentWillUnmount() {
-        this.state.sse.close();
     }
 
     toggleRoleBindDialog = () => {
@@ -94,20 +86,15 @@ class ServiceAccountDetails extends React.Component<IWithRouterProps, IServiceAc
         this.setState({ isClusterRoleBindOpen: false, isRoleBindOpen: false });
     };
 
-    pull = () => {
-        K8.serviceAccounts
-            .getServiceAccount(this.props.params.serviceAccountName, this.props.params.namespace)
-            .then((response) => {
-                this.setState({ serviceAccount: response.data });
-            });
-    };
-
     bindTo = (br: BindRequest) => {
-        let call = ServiceAccounts.bindToRole;
+        let call = K8.serviceAccounts.bindToRole;
         if (this.state.isClusterRoleBindOpen) {
-            call = ServiceAccounts.bindToClusterRole;
+            call = K8.serviceAccounts.bindToClusterRole;
         }
-        call(this.props.params.serviceAccountName, this.props.params.namespace, br)
+        call(
+            { name: this.props.params.serviceAccountName, namespace: this.props.params.namespace },
+            br
+        )
             .then(() => {
                 this.closeBothBindDialogs();
                 Toaster.show({
@@ -122,11 +109,14 @@ class ServiceAccountDetails extends React.Component<IWithRouterProps, IServiceAc
     };
 
     disconnect = (mode: string, br: BindRequest) => {
-        let call = ServiceAccounts.disconnectRole;
+        let call = K8.serviceAccounts.disconnectRole;
         if (mode === 'CLUSTER') {
-            call = ServiceAccounts.disconnectClusterRole;
+            call = K8.serviceAccounts.disconnectClusterRole;
         }
-        call(this.props.params.serviceAccountName, this.props.params.namespace, br)
+        call(
+            { name: this.props.params.serviceAccountName, namespace: this.props.params.namespace },
+            br
+        )
             .then(() => {
                 Toaster.show({
                     message: 'Successfully removed binding',
@@ -140,10 +130,10 @@ class ServiceAccountDetails extends React.Component<IWithRouterProps, IServiceAc
     };
 
     render() {
-        if (!this.state.serviceAccount) {
+        if (!this.state.resource) {
             return null;
         }
-        const { serviceAccount } = this.state;
+        const { resource: serviceAccount } = this.state;
         return (
             <div>
                 <EditableResource

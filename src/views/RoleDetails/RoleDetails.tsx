@@ -15,25 +15,17 @@ import { Role } from '../../models/role.model';
 import TitledCard from '../../components/Cards/TitledCard';
 import RuleTable from '../../components/RuleTable';
 import EditableResource from '../../components/EditableResource';
-import SSE from '../../services/sse.service';
+import ResourceView from '../../components/ResourceView';
 
-interface IRoleDetailsState {
-    role: Role;
-    sse: SSE;
-}
-
-class RoleDetails extends React.Component<IWithRouterProps, IRoleDetailsState> {
+class RoleDetails extends ResourceView<Role, IWithRouterProps, {}> {
     static contextType = NavContext;
 
     constructor(props: IWithRouterProps) {
-        super(props);
-        this.state = {
-            role: null,
-            sse: null,
-        };
+        super(props, K8.roles, 'roleName');
     }
 
     componentDidMount() {
+        super.componentDidMount();
         const [, setState] = this.context;
         setState({
             breadcrumbs: [
@@ -50,30 +42,13 @@ class RoleDetails extends React.Component<IWithRouterProps, IRoleDetailsState> {
             ],
             menu: null,
         });
-        this.setState({
-            sse: K8.roles
-                .sse(this.props.params.roleName, this.props.params.namespace)
-                .subscribe<Role>((data) => this.setState({ role: data })),
-        });
     }
-
-    componentWillUnmount() {
-        this.state.sse.close();
-    }
-
-    pull = () => {
-        K8.roles
-            .getRole(this.props.params.roleName, this.props.params.namespace)
-            .then((response) => {
-                this.setState({ role: response.data });
-            });
-    };
 
     render() {
-        if (!this.state.role) {
+        if (!this.state.resource) {
             return null;
         }
-        const { role } = this.state;
+        const { resource: role } = this.state;
         return (
             <div>
                 <EditableResource

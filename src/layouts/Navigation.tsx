@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 import * as React from 'react';
 import { Button, ButtonGroup, Card, Menu, Position } from '@blueprintjs/core';
 import { Popover2 } from '@blueprintjs/popover2';
@@ -80,7 +81,13 @@ export default function Navigation() {
                 {state.buttons}
                 {state.menu && state.menu.length !== 0 && (
                     <Popover2
-                        content={<Menu id="top-menu">{state.menu}</Menu>}
+                        content={
+                            <Menu id="top-menu">
+                                {state.menu.map((item, idx) => (
+                                    <div key={idx}>{item}</div>
+                                ))}
+                            </Menu>
+                        }
                         position={Position.BOTTOM_LEFT}
                     >
                         <Button id="top-menu-more" icon="more" />

@@ -13,25 +13,28 @@ afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 
 test('getDeployment', () => {
+    const d = new Deployments();
     const sort: TableSort = {
         sortableId: 'adsf',
         ascending: true,
     };
-    Deployments.getDeployments('_all_', sort);
+    d.list({ namespace: '_all_', sort });
 });
 
 test('getDeployment2', () => {
+    const d = new Deployments();
     const sort: TableSort = {
         sortableId: 'adsf',
         ascending: false,
     };
-    Deployments.getDeployments('_all_', sort);
+    d.list({ namespace: '_all_', sort });
 });
 
 test('getDeployment3', () => {
+    const d = new Deployments();
     const sort: TableSort = {
         sortableId: 'adsf',
         ascending: false,
     };
-    Deployments.getDeployments(null, sort);
+    d.list({ sort });
 });

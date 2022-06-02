@@ -2,29 +2,22 @@
 import * as React from 'react';
 import EditableResource from '../../components/EditableResource';
 import Text from '../../components/Text/Text';
-import { IBreadcrumb, NavContext } from '../../layouts/Navigation';
+import { IBreadcrumb } from '../../layouts/Navigation';
 import DeploymentTable from '../DeploymentList/DeploymentTable';
 import PodListTable from '../PodList/PodListTable';
 import ServiceTable from '../ServiceList/ServiceTable';
 import { IWithRouterProps, withRouter } from '../../utils/withRouter';
 import K8 from '../../services/k8.service';
 import { NamespaceMeta } from '../../models/namespace.model';
-import SSE from '../../services/sse.service';
+import ResourceView from '../../components/ResourceView';
 
-interface INamespaceState {
-    namespace: NamespaceMeta;
-    sse: SSE;
-}
-
-class NamespaceDetails extends React.Component<IWithRouterProps, INamespaceState> {
-    static contextType = NavContext;
-
+class NamespaceDetails extends ResourceView<NamespaceMeta, IWithRouterProps, {}> {
     constructor(props: IWithRouterProps) {
-        super(props);
-        this.state = { namespace: null, sse: null };
+        super(props, K8.namespaces, 'namespace');
     }
 
     componentDidMount() {
+        super.componentDidMount();
         const [, setState] = this.context;
         setState({
             breadcrumbs: [
@@ -39,31 +32,13 @@ class NamespaceDetails extends React.Component<IWithRouterProps, INamespaceState
             buttons: [],
             menu: null,
         });
-        K8.namespaces.getNamespace(this.props.params.namespace).then((response) => {
-            this.setState({ namespace: response.data });
-        });
-        this.setState({
-            sse: K8.namespaces
-                .sse(this.props.params.namespace)
-                .subscribe<NamespaceMeta>((data) => this.setState({ namespace: data })),
-        });
     }
-
-    componentWillUnmount() {
-        this.state.sse.close();
-    }
-
-    pull = () => {
-        K8.namespaces.getNamespace(this.props.params.namespace).then((response) => {
-            this.setState({ namespace: response.data });
-        });
-    };
 
     render() {
-        if (!this.state.namespace) {
+        if (!this.state.resource) {
             return null;
         }
-        const { namespace } = this.state;
+        const { resource: namespace } = this.state;
         return (
             <div>
                 <EditableResource

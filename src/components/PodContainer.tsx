@@ -65,7 +65,7 @@ export default function PodContainer(props: {
                 icon="reset"
                 text="Restart"
                 onClick={() => {
-                    K8.pods.restartPod(pod.name, pod.namespace);
+                    K8.pods.restartPod({ name: pod.name, namespace: pod.namespace });
                 }}
             />
         </Menu>

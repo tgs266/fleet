@@ -22,6 +22,10 @@ export function getWSUrl(path: string): string {
     return urlJoin(base.replace('http:', 'ws:').replace('https:', 'ws:'), path);
 }
 
+export function convertToWSUrl(path: string): string {
+    return path.replace(window.location.protocol, 'ws:');
+}
+
 export function getBackendApiUrl(path: string): string {
     if (!Electron.isElectron) {
         const currentBase = `${window.location.href.replace(window.location.hash, '')}`;

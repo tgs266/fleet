@@ -33,7 +33,7 @@ afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 
 class RTV extends ResourceTableView<unknown, ClusterRoleBindingMeta> {
-    itemsFcn = K8.clusterRoleBindings.getClusterRoleBindings;
+    itemsFcn = K8.clusterRoleBindings.list.bind(K8.clusterRoleBindings);
 }
 
 test('renders without crashing', async () => {

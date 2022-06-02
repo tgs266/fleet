@@ -3,7 +3,7 @@ import * as React from 'react';
 import { Button, Card, Intent, Tag } from '@blueprintjs/core';
 import { IWithRouterProps, withRouter } from '../../utils/withRouter';
 import K8 from '../../services/k8.service';
-import { IBreadcrumb, NavContext } from '../../layouts/Navigation';
+import { IBreadcrumb } from '../../layouts/Navigation';
 import InfoCard from '../../components/Cards/InfoCard';
 import LabeledText from '../../components/LabeledText';
 import Label from '../../components/Label';
@@ -14,25 +14,15 @@ import { ClusterRole } from '../../models/clusterrole.model';
 import RuleTable from '../../components/RuleTable';
 import TitledCard from '../../components/Cards/TitledCard';
 import EditableResource from '../../components/EditableResource';
-import SSE from '../../services/sse.service';
+import ResourceView from '../../components/ResourceView';
 
-interface IClusterRoleDetailsState {
-    role: ClusterRole;
-    sse: SSE;
-}
-
-class ClusterRoleDetails extends React.Component<IWithRouterProps, IClusterRoleDetailsState> {
-    static contextType = NavContext;
-
+class ClusterRoleDetails extends ResourceView<ClusterRole, IWithRouterProps, {}> {
     constructor(props: IWithRouterProps) {
-        super(props);
-        this.state = {
-            role: null,
-            sse: null,
-        };
+        super(props, K8.clusterRoles, 'roleName');
     }
 
     componentDidMount() {
+        super.componentDidMount();
         const [, setState] = this.context;
         setState({
             breadcrumbs: [
@@ -49,28 +39,13 @@ class ClusterRoleDetails extends React.Component<IWithRouterProps, IClusterRoleD
             ],
             menu: null,
         });
-        this.setState({
-            sse: K8.clusterRoles
-                .sse(this.props.params.roleName)
-                .subscribe<ClusterRole>((data) => this.setState({ role: data })),
-        });
     }
-
-    componentWillUnmount() {
-        this.state.sse.close();
-    }
-
-    pull = () => {
-        K8.clusterRoles.getClusterRole(this.props.params.roleName).then((response) => {
-            this.setState({ role: response.data });
-        });
-    };
 
     render() {
-        if (!this.state.role) {
+        if (!this.state.resource) {
             return null;
         }
-        const { role } = this.state;
+        const { resource: role } = this.state;
         return (
             <div>
                 <EditableResource delete type="clusterroles" name={this.props.params.roleName} />

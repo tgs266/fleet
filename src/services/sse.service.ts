@@ -96,7 +96,10 @@ export default class SSE {
 
     static closeAll() {
         for (const id of Object.keys(SSE.all)) {
-            SSE.all[id].close();
+            if (SSE.all[id]) {
+                SSE.all[id].close();
+                delete SSE.all[id];
+            }
         }
     }
 

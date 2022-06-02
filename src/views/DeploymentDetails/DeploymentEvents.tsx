@@ -36,8 +36,10 @@ class DeploymentEvents extends React.Component<IDeploymentEventProps, IAppEvents
             this.setState({ events: JSON.parse(e.data) as Event[] });
         };
         const ws = K8.deployments.openEventWebsocket(
-            this.props.deploymentName,
-            this.props.namespace,
+            {
+                name: this.props.deploymentName,
+                namespace: this.props.namespace,
+            },
             1000,
             cb
         );

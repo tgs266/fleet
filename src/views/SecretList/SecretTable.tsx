@@ -17,7 +17,7 @@ export interface ISecretTableProps extends IResourceTableViewProps {
 }
 
 class SecretTable extends ResourceTableView<ISecretTableProps, SecretMeta> {
-    itemsFcn = K8.secrets.getSecrets;
+    itemsFcn = K8.secrets.list.bind(K8.secrets);
 
     useFilters = true;
 
@@ -29,12 +29,12 @@ class SecretTable extends ResourceTableView<ISecretTableProps, SecretMeta> {
         const usingSort = sort || this.state.sort;
         const usingPage = page !== null ? page : this.state.page;
 
-        return [
-            this.props.namespace,
-            usingSort,
-            getOffset(usingPage, this.state.pageSize, this.state.total),
-            this.state.pageSize,
-        ];
+        return {
+            namespace: this.props.namespace,
+            sort: usingSort,
+            offset: getOffset(usingPage, this.state.pageSize, this.state.total),
+            pageSize: this.state.pageSize,
+        };
     };
 
     getColumns = () => [
