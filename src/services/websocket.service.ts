@@ -22,9 +22,15 @@ export default class WS {
 
     closed: boolean;
 
+    paused: boolean;
+
     ws: WebSocket;
 
     builder: (path: string, headers: JSONObjectType<string>) => WebSocket;
+
+    messageHandler: (data: any) => any;
+
+    errorHandler: (err: FleetError) => any = handleFleetError;
 
     static all: JSONObjectType<WS> = {};
 
@@ -55,6 +61,9 @@ export default class WS {
         this.id = (Math.random() * 100000).toString();
         WS.all[this.id] = this;
 
+        this.messageHandler = messageHandler;
+        this.errorHandler = errorHandler;
+
         this.ws.onmessage = (ev: MessageEvent<string>) => {
             const data: T = JSON.parse(ev.data);
             messageHandler(data);
@@ -73,11 +82,36 @@ export default class WS {
         this.closed = true;
     }
 
+    pause() {
+        this.ws.close();
+        this.paused = true;
+    }
+
+    start() {
+        this.subscribe(this.messageHandler, this.errorHandler);
+    }
+
     static closeAll() {
         for (const id of Object.keys(WS.all)) {
             if (WS.all[id]) {
                 WS.all[id].close();
                 delete WS.all[id];
+            }
+        }
+    }
+
+    static pauseAll() {
+        for (const id of Object.keys(WS.all)) {
+            if (WS.all[id]) {
+                WS.all[id].pause();
+            }
+        }
+    }
+
+    static startAll() {
+        for (const id of Object.keys(WS.all)) {
+            if (WS.all[id] && WS.all[id].paused) {
+                WS.all[id].start();
             }
         }
     }
