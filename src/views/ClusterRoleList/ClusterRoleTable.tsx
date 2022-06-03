@@ -12,7 +12,7 @@ import getOffset from '../../utils/table';
 import { createdAtToHumanReadable, createdAtToOrigination } from '../../utils/time';
 
 class ClusterRoleTable extends ResourceTableView<unknown, ClusterRoleMeta> {
-    itemsFcn = K8.clusterRoles.getClusterRoles;
+    itemsFcn = K8.clusterRoles.list.bind(K8.clusterRoles);
 
     useFilters = true;
 
@@ -22,11 +22,11 @@ class ClusterRoleTable extends ResourceTableView<unknown, ClusterRoleMeta> {
         const usingSort = sort || this.state.sort;
         const usingPage = page !== null ? page : this.state.page;
 
-        return [
-            usingSort,
-            getOffset(usingPage, this.state.pageSize, this.state.total),
-            this.state.pageSize,
-        ];
+        return {
+            sort: usingSort,
+            offset: getOffset(usingPage, this.state.pageSize, this.state.total),
+            pageSize: this.state.pageSize,
+        };
     };
 
     getColumns = () => [

@@ -15,7 +15,7 @@ export default function NamespaceSelect(props: {
     const [namespaces, setNamespaces] = useState([]);
 
     useEffect(() => {
-        K8.namespaces.getNamespaces().then((r) => {
+        K8.namespaces.list().then((r) => {
             const ns = r.data.items.map((i) => i.name);
             if (props.allowAll) {
                 ns.unshift('_all_');

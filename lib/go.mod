@@ -1,6 +1,6 @@
 module github.com/tgs266/fleet/lib
 
-go 1.17
+go 1.18
 
 require (
 	k8s.io/apimachinery v0.24.0
@@ -35,6 +35,8 @@ require (
 	github.com/go-openapi/jsonreference v0.19.5 // indirect
 	github.com/go-openapi/swag v0.19.14 // indirect
 	github.com/gobwas/glob v0.2.3 // indirect
+	github.com/gofiber/adaptor/v2 v2.1.24 // indirect
+	github.com/gofiber/utils v0.1.2 // indirect
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
 	github.com/google/btree v1.0.1 // indirect
 	github.com/google/gnostic v0.5.7-v3refs // indirect
@@ -71,6 +73,7 @@ require (
 	github.com/prometheus/procfs v0.7.3 // indirect
 	github.com/rubenv/sql-migrate v1.1.1 // indirect
 	github.com/russross/blackfriday v1.5.2 // indirect
+	github.com/sergi/go-diff v1.1.0 // indirect
 	github.com/shopspring/decimal v1.2.0 // indirect
 	github.com/spf13/cast v1.4.1 // indirect
 	github.com/spf13/cobra v1.4.0 // indirect
@@ -80,13 +83,21 @@ require (
 	github.com/xlab/treeprint v0.0.0-20181112141820-a009c3971eca // indirect
 	go.starlark.net v0.0.0-20200306205701-8dd3e2ee1dd5 // indirect
 	golang.org/x/crypto v0.0.0-20220315160706-3147a52a75dd // indirect
+	golang.org/x/exp/typeparams v0.0.0-20220218215828-6cf2b201936e // indirect
+	golang.org/x/mod v0.6.0-dev.0.20220419223038-86c51ed26bb4 // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
+	golang.org/x/tools v0.1.11-0.20220513164230-dfee1649af67 // indirect
+	golang.org/x/tools/gopls v0.8.4 // indirect
+	golang.org/x/vuln v0.0.0-20220503210553-a5481fb0c8be // indirect
 	helm.sh/helm/v3 v3.9.0 // indirect
+	honnef.co/go/tools v0.3.0 // indirect
 	k8s.io/apiextensions-apiserver v0.24.0 // indirect
 	k8s.io/apiserver v0.24.0 // indirect
 	k8s.io/cli-runtime v0.24.0 // indirect
 	k8s.io/component-base v0.24.0 // indirect
 	k8s.io/kubectl v0.24.0 // indirect
+	mvdan.cc/gofumpt v0.3.0 // indirect
+	mvdan.cc/xurls/v2 v2.4.0 // indirect
 	oras.land/oras-go v1.1.0 // indirect
 	sigs.k8s.io/kustomize/api v0.11.4 // indirect
 	sigs.k8s.io/kustomize/kyaml v0.13.6 // indirect
@@ -105,7 +116,7 @@ require (
 	github.com/fasthttp/websocket v1.5.0 // indirect
 	github.com/go-logr/logr v1.2.2 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
-	github.com/gofiber/fiber/v2 v2.30.0 // indirect
+	github.com/gofiber/fiber/v2 v2.34.0 // indirect
 	github.com/gofiber/websocket/v2 v2.0.19 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
@@ -135,7 +146,7 @@ require (
 	github.com/tklauser/go-sysconf v0.3.9 // indirect
 	github.com/tklauser/numcpus v0.3.0 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
-	github.com/valyala/fasthttp v1.34.0 // indirect
+	github.com/valyala/fasthttp v1.37.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
 	github.com/yusufpapurcu/wmi v1.2.2 // indirect
 	golang.org/x/net v0.0.0-20220225172249-27dd8689420f // indirect

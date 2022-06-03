@@ -39,13 +39,19 @@ class NamespaceTable extends React.Component<unknown, INamespaceTableState> {
     }
 
     componentDidMount() {
-        K8.namespaces.getNamespaces(this.state.sort, 0, this.state.pageSize).then((response) => {
-            this.setState({
-                namespaces: response.data.items,
-                total: response.data.total,
-                pollId: K8.pollFunction(5000, () => this.pull(null, null)),
+        K8.namespaces
+            .list({
+                sort: this.state.sort,
+                offset: 0,
+                pageSize: this.state.pageSize,
+            })
+            .then((response) => {
+                this.setState({
+                    namespaces: response.data.items,
+                    total: response.data.total,
+                    pollId: K8.pollFunction(5000, () => this.pull(null, null)),
+                });
             });
-        });
     }
 
     componentWillUnmount() {
@@ -56,11 +62,11 @@ class NamespaceTable extends React.Component<unknown, INamespaceTableState> {
         const usingSort = sort || this.state.sort;
         const usingPage = page !== null ? page : this.state.page;
         K8.namespaces
-            .getNamespaces(
-                usingSort,
-                getOffset(usingPage, this.state.pageSize, this.state.total),
-                this.state.pageSize
-            )
+            .list({
+                sort: usingSort,
+                offset: getOffset(usingPage, this.state.pageSize, this.state.total),
+                pageSize: this.state.pageSize,
+            })
             .then((response) => {
                 this.setState({
                     namespaces: response.data.items,

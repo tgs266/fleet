@@ -10,10 +10,11 @@ import { createdAtToHumanReadable } from '../../utils/time';
 import TableBody from '../../components/TableBody';
 import { NavContext } from '../../layouts/Navigation';
 import { Event } from '../../models/events.model';
+import WS from '../../services/websocket.service';
 
 interface IPodEventsState {
     events: Event[];
-    ws: WebSocket;
+    ws: WS;
     page: number;
 }
 
@@ -35,7 +36,11 @@ class PodEvents extends React.Component<IPodEventsProps, IPodEventsState> {
         const cb = (e: MessageEvent<string>) => {
             this.setState({ events: JSON.parse(e.data) as Event[] });
         };
-        const ws = K8.pods.openEventWebsocket(this.props.podName, this.props.namespace, 1000, cb);
+        const ws = K8.pods.openEventWebsocket(
+            { name: this.props.podName, namespace: this.props.namespace },
+            1000,
+            cb
+        );
         this.setState({ ws });
     }
 

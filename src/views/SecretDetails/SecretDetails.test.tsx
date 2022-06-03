@@ -68,7 +68,6 @@ test('can refresh', async () => {
             </Routes>
         </MemoryRouter>
     );
-
     await waitFor(() => expect(wrapper.queryByTestId('infocard-title').innerHTML).toBe('test'));
 
     await server.use(

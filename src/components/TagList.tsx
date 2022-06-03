@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 import * as React from 'react';
 import { Tag } from '@blueprintjs/core';
 
@@ -20,6 +21,7 @@ export default function TagList(props: {
             {props.children &&
                 props.children.map((child: Tag, idx: number) => (
                     <div
+                        key={idx}
                         style={{
                             ...props.chipStyle,
                             margin: props.spacing || '0.25em',

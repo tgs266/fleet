@@ -96,6 +96,18 @@ func setupBackend(flags Flags) *api.API {
 		}
 		return fiber.ErrUpgradeRequired
 	})
+	app.Use("/sse", func(c *fiber.Ctx) error {
+		authHeader := string(c.Query("Authorization"))
+		jweToken := string(c.Query("jweToken"))
+		impersonate := string(c.Query("Impersonate-User"))
+		impersonateGroups := string(c.Query("Impersonate-Groups"))
+
+		c.Request().Header.Add("Authorization", authHeader)
+		c.Request().Header.Add("jweToken", jweToken)
+		c.Request().Header.Add("Impersonate-User", impersonate)
+		c.Request().Header.Add("Impersonate-Groups", impersonateGroups)
+		return c.Next()
+	})
 
 	logging.INFO("middleware registered")
 

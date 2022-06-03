@@ -40,7 +40,7 @@ class ImageDetails extends React.Component<IWithRouterProps, IContainerSpecDetai
 
     componentDidMount() {
         K8.deployments
-            .getDeployment(this.props.params.deployment, this.props.params.namespace)
+            .get({ name: this.props.params.deployment, namespace: this.props.params.namespace })
             .then(this.setFromResponse);
         const [, setState] = this.context;
         setState({
@@ -64,10 +64,10 @@ class ImageDetails extends React.Component<IWithRouterProps, IContainerSpecDetai
                     data-testid="refresh"
                     onClick={() => {
                         K8.deployments
-                            .getDeployment(
-                                this.props.params.deployment,
-                                this.props.params.namespace
-                            )
+                            .get({
+                                name: this.props.params.deployment,
+                                namespace: this.props.params.namespace,
+                            })
                             .then(this.setFromResponse);
                     }}
                 />,
@@ -97,8 +97,7 @@ class ImageDetails extends React.Component<IWithRouterProps, IContainerSpecDetai
             );
         K8.deployments
             .updateContainerSpec(
-                this.props.params.deployment,
-                this.props.params.namespace,
+                { name: this.props.params.deployment, namespace: this.props.params.namespace },
                 this.state.oldName,
                 this.state.containerSpec
             )

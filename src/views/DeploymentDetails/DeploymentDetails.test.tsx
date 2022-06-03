@@ -49,7 +49,6 @@ test('renders without crashing', async () => {
 
 test('can refresh', async () => {
     const wrapper = await getWrapper();
-
     await server.use(
         rest.get(`${Deployments.base}/test/test`, (req, res, ctx) =>
             res(ctx.json(generateDeployment('test1')))

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { Button, Card, Intent, MenuItem, Tag } from '@blueprintjs/core';
 import { IWithRouterProps, withRouter } from '../../utils/withRouter';
 import K8 from '../../services/k8.service';
-import { IBreadcrumb, NavContext } from '../../layouts/Navigation';
+import { IBreadcrumb } from '../../layouts/Navigation';
 import InfoCard from '../../components/Cards/InfoCard';
 import LabeledText from '../../components/LabeledText';
 import AgeText from '../../components/AgeText';
@@ -22,21 +22,15 @@ import TableHeader from '../../components/TableHeader';
 import TableRow from '../../components/TableRow';
 import EventTable from '../../components/EventTable';
 import Toaster from '../../services/toast.service';
+import ResourceView from '../../components/ResourceView';
 
-interface IReplicaSetDetailsState {
-    replicaSet: ReplicaSet;
-    pollId: NodeJS.Timer;
-}
-
-class ReplicaSetDetails extends React.Component<IWithRouterProps, IReplicaSetDetailsState> {
-    static contextType = NavContext;
-
+class ReplicaSetDetails extends ResourceView<ReplicaSet, IWithRouterProps, {}> {
     constructor(props: IWithRouterProps) {
-        super(props);
-        this.state = { replicaSet: null, pollId: null };
+        super(props, K8.replicaSets, 'replicaSetName');
     }
 
     componentDidMount() {
+        super.componentDidMount();
         const [, setState] = this.context;
         setState({
             breadcrumbs: [
@@ -57,10 +51,10 @@ class ReplicaSetDetails extends React.Component<IWithRouterProps, IReplicaSetDet
                     text="Restart"
                     onClick={() => {
                         K8.replicaSets
-                            .restartReplicaSet(
-                                this.props.params.replicaSetName,
-                                this.props.params.namespace
-                            )
+                            .restartReplicaSet({
+                                name: this.props.params.replicaSetName,
+                                namespace: this.props.params.namespace,
+                            })
                             .then(() => {
                                 Toaster.show({
                                     message: `"${this.props.params.replicaSetName}" is restarting`,
@@ -71,27 +65,10 @@ class ReplicaSetDetails extends React.Component<IWithRouterProps, IReplicaSetDet
                 />,
             ],
         });
-        K8.replicaSets
-            .getReplicaSet(this.props.params.replicaSetName, this.props.params.namespace)
-            .then((response) => {
-                this.setState({ replicaSet: response.data });
-            });
-        K8.replicaSets
-            .getReplicaSet(this.props.params.replicaSetName, this.props.params.namespace)
-            .then((response) => {
-                this.setState({
-                    replicaSet: response.data,
-                    pollId: K8.pollFunction(1000, this.pull),
-                });
-            });
-    }
-
-    componentWillUnmount() {
-        clearInterval(this.state.pollId);
     }
 
     getLinkToOwner = (owner: Owner) => {
-        const linkData = buildLinkToOwner(owner, this.state.replicaSet.namespace);
+        const linkData = buildLinkToOwner(owner, this.state.resource.namespace);
         if (linkData.valid) {
             return (
                 <Link style={{ color: 'white' }} to={linkData.link}>
@@ -102,19 +79,11 @@ class ReplicaSetDetails extends React.Component<IWithRouterProps, IReplicaSetDet
         return owner.name;
     };
 
-    pull = () => {
-        K8.replicaSets
-            .getReplicaSet(this.props.params.replicaSetName, this.props.params.namespace)
-            .then((response) => {
-                this.setState({ replicaSet: response.data });
-            });
-    };
-
     render() {
-        if (!this.state.replicaSet) {
+        if (!this.state.resource) {
             return null;
         }
-        const { replicaSet } = this.state;
+        const { resource: replicaSet } = this.state;
         return (
             <div>
                 <EditableResource

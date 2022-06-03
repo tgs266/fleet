@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { Button, Intent, MenuItem, Tag } from '@blueprintjs/core';
 import { IWithRouterProps, withRouter } from '../../utils/withRouter';
 import K8 from '../../services/k8.service';
-import { IBreadcrumb, NavContext } from '../../layouts/Navigation';
+import { IBreadcrumb } from '../../layouts/Navigation';
 import Toaster from '../../services/toast.service';
 import { Deployment } from '../../models/deployment.model';
 import DeploymentEvents from './DeploymentEvents';
@@ -17,37 +17,34 @@ import ConditionTable from '../../components/ConditionTable';
 import EditableResource from '../../components/EditableResource';
 import { buildLinkToReplicaSet } from '../../utils/routing';
 import Text from '../../components/Text/Text';
+import ResourceView from '../../components/ResourceView';
 
 interface IDeploymentDetailsState {
-    deployment: Deployment;
-    pollId: NodeJS.Timer;
     isScaleDialogOpen: boolean;
 }
 
-class DeploymentDetails extends React.Component<IWithRouterProps, IDeploymentDetailsState> {
+class DeploymentDetails extends ResourceView<
+    Deployment,
+    IWithRouterProps,
+    IDeploymentDetailsState
+> {
     // eslint-disable-next-line react/static-property-placement
-    static contextType = NavContext;
-
     deployment: string;
 
     namespace: string;
 
     constructor(props: IWithRouterProps) {
-        super(props);
+        super(props, K8.deployments, 'deployment');
         this.deployment = this.props.params.deployment;
         this.namespace = this.props.params.namespace;
         this.state = {
+            ...this.state,
             isScaleDialogOpen: false,
-            deployment: null,
-            pollId: null,
         };
     }
 
-    toggleScaleDialog = () => {
-        this.setState({ isScaleDialogOpen: !this.state.isScaleDialogOpen });
-    };
-
     componentDidMount() {
+        super.componentDidMount();
         const [, setState] = this.context;
         setState({
             breadcrumbs: [
@@ -60,12 +57,7 @@ class DeploymentDetails extends React.Component<IWithRouterProps, IDeploymentDet
                 },
             ] as IBreadcrumb[],
             buttons: [
-                <Button
-                    key="refresh"
-                    data-testid="refresh"
-                    icon="refresh"
-                    onClick={this.refresh}
-                />,
+                <Button key="refresh" data-testid="refresh" icon="refresh" onClick={this.pull} />,
                 <Button
                     key="scale"
                     data-testid="scale"
@@ -75,31 +67,10 @@ class DeploymentDetails extends React.Component<IWithRouterProps, IDeploymentDet
             ],
             menu: this.getMenu(),
         });
-        K8.deployments.getDeployment(this.deployment, this.namespace).then((response) => {
-            this.setState({
-                deployment: response.data,
-                pollId: K8.poll(
-                    1000,
-                    K8.deployments.getDeployment,
-                    (r) => {
-                        this.deployment = r.data.name;
-                        this.setState({ deployment: r.data });
-                    },
-                    this.deployment,
-                    this.namespace
-                ),
-            });
-        });
     }
 
-    componentWillUnmount() {
-        clearInterval(this.state.pollId);
-    }
-
-    refresh = () => {
-        K8.deployments.getDeployment(this.deployment, this.namespace).then((response) => {
-            this.setState({ deployment: response.data });
-        });
+    toggleScaleDialog = () => {
+        this.setState({ isScaleDialogOpen: !this.state.isScaleDialogOpen });
     };
 
     getMenu = () => {
@@ -110,7 +81,7 @@ class DeploymentDetails extends React.Component<IWithRouterProps, IDeploymentDet
                 icon="reset"
                 text="Restart"
                 onClick={() => {
-                    K8.deployments.restartApp(name, this.namespace).then(() => {
+                    K8.deployments.restartApp({ name, namespace: this.namespace }).then(() => {
                         Toaster.show({
                             message: `"${name}" is restarting`,
                             intent: Intent.SUCCESS,
@@ -122,10 +93,10 @@ class DeploymentDetails extends React.Component<IWithRouterProps, IDeploymentDet
     };
 
     render() {
-        if (!this.state.deployment) {
+        if (!this.state.resource) {
             return null;
         }
-        const { deployment } = this.state;
+        const { resource: deployment } = this.state;
         return (
             <div>
                 <EditableResource
@@ -177,7 +148,7 @@ class DeploymentDetails extends React.Component<IWithRouterProps, IDeploymentDet
                     services={deployment.services}
                 />
                 <ContainerSpecContainer
-                    refresh={this.refresh}
+                    refresh={this.pull}
                     style={{ margin: '1em', marginTop: 0 }}
                     containerSpecs={deployment.containerSpecs}
                 />

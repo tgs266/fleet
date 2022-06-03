@@ -9,7 +9,7 @@ export function delay(time: number) {
 }
 
 export function getNs() {
-    return rest.get(`${Namespaces.base}/*`, (req, res, ctx) => {
+    return rest.get(`${Namespaces.base}`, (req, res, ctx) => {
         const count = 5;
         const items: NamespaceMeta[] = [];
         for (let i = 0; i < count; i += 1) {

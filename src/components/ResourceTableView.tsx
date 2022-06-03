@@ -7,7 +7,7 @@ import { AxiosResponse } from 'axios';
 import React from 'react';
 import { Filter, PaginationResponse } from '../models/base';
 import { Pagination } from '../models/component.model';
-import K8 from '../services/k8.service';
+import { ResourceListParams } from '../services/k8/resource.service';
 import getOffset from '../utils/table';
 import { createdAtToOrigination, createdAtToHumanReadable } from '../utils/time';
 import ResourceTable, {
@@ -34,7 +34,7 @@ class ResourceTableView<
     P extends IResourceTableViewProps,
     T extends { name: string; createdAt?: number }
 > extends React.Component<P, IResourceTableViewState<T>> {
-    itemsFcn: (...args: any) => Promise<AxiosResponse<PaginationResponse<T>>> = null;
+    itemsFcn: (lp?: ResourceListParams) => Promise<AxiosResponse<PaginationResponse<T>>> = null;
 
     useFilters: boolean = false;
 
@@ -45,8 +45,6 @@ class ResourceTableView<
     title: string = null;
 
     keypath: string = 'uid';
-
-    poll: boolean = true;
 
     constructor(props: any) {
         super(props);
@@ -65,11 +63,10 @@ class ResourceTableView<
     }
 
     componentDidMount() {
-        this.itemsFcn(...this._getPullParametersWrap()).then((r) => {
+        this.itemsFcn(this._getPullParametersWrap()).then((r) => {
             this.setState({
                 items: r.data.items,
                 total: r.data.total,
-                pollId: this.poll ? K8.pollFunction(5000, () => this.pull(null, null)) : null,
             });
         });
     }
@@ -103,23 +100,26 @@ class ResourceTableView<
 
     getColumns = (): ColumnDefinition<T>[] => [this.getNameColumn(), this.getAgeColumn()];
 
-    getPullParameters = (sort?: TableSort, page?: number): any[] => {
+    getPullParameters = (sort?: TableSort, page?: number): ResourceListParams => {
         const usingSort = sort || this.state.sort;
         const usingPage = page !== null ? page : this.state.page;
 
-        return [
-            usingSort,
-            getOffset(usingPage, this.state.pageSize, this.state.total),
-            this.state.pageSize,
-        ];
+        return {
+            sort: usingSort,
+            offset: getOffset(usingPage, this.state.pageSize, this.state.total),
+            pageSize: this.state.pageSize,
+        };
     };
 
-    _getPullParametersWrap = (sort?: TableSort, page?: number): any[] => {
-        const arr = this.getPullParameters(sort, page);
+    _getPullParametersWrap = (sort?: TableSort, page?: number): ResourceListParams => {
+        const data = this.getPullParameters(sort, page);
         if (this.useFilters) {
-            arr.push(this.state.filters);
+            return {
+                ...data,
+                filters: this.state.filters,
+            };
         }
-        return arr;
+        return data;
     };
 
     setStateFromResponse = (response: PaginationResponse<T>, sort?: TableSort, page?: number) => {
@@ -133,7 +133,7 @@ class ResourceTableView<
 
     pull = (sort?: TableSort, page?: number) => {
         const params = this._getPullParametersWrap(sort, page);
-        this.itemsFcn(...params).then((r) => {
+        this.itemsFcn(params).then((r) => {
             this.setStateFromResponse(r.data);
         });
     };

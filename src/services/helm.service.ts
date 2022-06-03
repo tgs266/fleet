@@ -1,43 +1,37 @@
 /* eslint-disable import/no-cycle */
 import axios, { AxiosResponse } from 'axios';
-import { TableSort } from '../components/SortableTableHeaderCell';
-import { Filter, PaginationResponse } from '../models/base';
+import { PaginationResponse } from '../models/base';
 import { Chart, ChartInstall, Release } from '../models/helm.model';
 import { parseFilters } from '../utils/sort';
 import { getBackendApiUrl } from './axios.service';
+import { ResourceListParams } from './k8/resource.service';
 
 export default class Helm {
     static base = `/api/v1/helm`;
 
     static queryCharts(
-        sort?: TableSort,
-        offset?: number,
-        pageSize?: number,
-        filters?: Filter[]
+        params: ResourceListParams
     ): Promise<AxiosResponse<PaginationResponse<Chart>>> {
-        const filterBy = parseFilters(filters);
+        const filterBy = parseFilters(params.filters);
         let sortBy = '';
-        if (sort) {
-            sortBy = `${sort.sortableId},${sort.ascending ? 'a' : 'd'}`;
+        if (params.sort) {
+            sortBy = `${params.sort.sortableId},${params.sort.ascending ? 'a' : 'd'}`;
         }
         return axios.get(`${getBackendApiUrl(Helm.base)}/charts`, {
-            params: { sortBy, offset, pageSize, filterBy },
+            params: { sortBy, offset: params.offset, pageSize: params.pageSize, filterBy },
         });
     }
 
     static queryReleases(
-        sort?: TableSort,
-        offset?: number,
-        pageSize?: number,
-        filters?: Filter[]
+        params: ResourceListParams
     ): Promise<AxiosResponse<PaginationResponse<Release>>> {
-        const filterBy = parseFilters(filters);
+        const filterBy = parseFilters(params.filters);
         let sortBy = '';
-        if (sort) {
-            sortBy = `${sort.sortableId},${sort.ascending ? 'a' : 'd'}`;
+        if (params.sort) {
+            sortBy = `${params.sort.sortableId},${params.sort.ascending ? 'a' : 'd'}`;
         }
         return axios.get(`${getBackendApiUrl(Helm.base)}/releases`, {
-            params: { sortBy, offset, pageSize, filterBy },
+            params: { sortBy, offset: params.offset, pageSize: params.pageSize, filterBy },
         });
     }
 

@@ -29,11 +29,11 @@ class HelmReleaseTable extends ResourceTableView<unknown, Release> {
         const usingSort = sort || this.state.sort;
         const usingPage = page !== null ? page : this.state.page;
 
-        return [
-            usingSort,
-            getOffset(usingPage, this.state.pageSize, this.state.total),
-            this.state.pageSize,
-        ];
+        return {
+            sort: usingSort,
+            offset: getOffset(usingPage, this.state.pageSize, this.state.total),
+            pageSize: this.state.pageSize,
+        };
     };
 
     getColumns = () => [

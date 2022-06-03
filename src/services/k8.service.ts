@@ -19,33 +19,33 @@ import ReplicaSets from './k8/replicaset.service';
 import getWebsocket from './websocket';
 
 export default class K8 {
-    static deployments = Deployments;
+    static deployments = new Deployments(true, true);
 
-    static pods = Pods;
+    static pods = new Pods(true, true);
 
     static images = Images;
 
     static containers = Containers;
 
-    static services = Services;
+    static services = new Services(true, true);
 
     static nodes = Nodes;
 
-    static namespaces = Namespaces;
+    static namespaces = new Namespaces(false, true);
 
-    static serviceAccounts = ServiceAccounts;
+    static serviceAccounts = new ServiceAccounts(true, true);
 
-    static roles = Roles;
+    static roles = new Roles(true, true);
 
-    static clusterRoles = ClusterRoles;
+    static clusterRoles = new ClusterRoles(false, true);
 
-    static roleBindings = RoleBindings;
+    static roleBindings = new RoleBindings(true, true);
 
-    static clusterRoleBindings = ClusterRoleBindings;
+    static clusterRoleBindings = new ClusterRoleBindings(false, true);
 
-    static secrets = Secrets;
+    static secrets = new Secrets(true, true);
 
-    static replicaSets = ReplicaSets;
+    static replicaSets = new ReplicaSets(true, true);
 
     static cluster = Cluster;
 

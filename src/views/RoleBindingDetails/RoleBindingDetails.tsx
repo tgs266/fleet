@@ -5,7 +5,7 @@ import { Alignment, Button, Card, Icon } from '@blueprintjs/core';
 import { Tooltip2 } from '@blueprintjs/popover2';
 import { IWithRouterProps, withRouter } from '../../utils/withRouter';
 import K8 from '../../services/k8.service';
-import { IBreadcrumb, NavContext } from '../../layouts/Navigation';
+import { IBreadcrumb } from '../../layouts/Navigation';
 import InfoCard from '../../components/Cards/InfoCard';
 import LabeledText from '../../components/LabeledText';
 import AgeText from '../../components/AgeText';
@@ -20,24 +20,15 @@ import TableBody from '../../components/TableBody';
 import TableRow from '../../components/TableRow';
 import Text from '../../components/Text/Text';
 import EditableResource from '../../components/EditableResource';
+import ResourceView from '../../components/ResourceView';
 
-interface IRoleBindingState {
-    binding: RoleBinding;
-    pollId: NodeJS.Timer;
-}
-
-class RoleBindingDetails extends React.Component<IWithRouterProps, IRoleBindingState> {
-    static contextType = NavContext;
-
+class RoleBindingDetails extends ResourceView<RoleBinding, IWithRouterProps, {}> {
     constructor(props: IWithRouterProps) {
-        super(props);
-        this.state = {
-            binding: null,
-            pollId: null,
-        };
+        super(props, K8.roleBindings, 'roleBindingName');
     }
 
     componentDidMount() {
+        super.componentDidMount();
         const [, setState] = this.context;
         setState({
             breadcrumbs: [
@@ -54,41 +45,13 @@ class RoleBindingDetails extends React.Component<IWithRouterProps, IRoleBindingS
             ],
             menu: null,
         });
-        K8.roleBindings
-            .getRoleBinding(this.props.params.roleBindingName, this.props.params.namespace)
-            .then((response) => {
-                this.setState({
-                    binding: response.data,
-                    pollId: K8.poll(
-                        1000,
-                        K8.roleBindings.getRoleBinding,
-                        (r) => {
-                            this.setState({ binding: r.data });
-                        },
-                        this.props.params.roleBindingName,
-                        this.props.params.namespace
-                    ),
-                });
-            });
     }
-
-    componentWillUnmount() {
-        clearInterval(this.state.pollId);
-    }
-
-    pull = () => {
-        K8.roleBindings
-            .getRoleBinding(this.props.params.roleBindingName, this.props.params.namespace)
-            .then((response) => {
-                this.setState({ binding: response.data });
-            });
-    };
 
     render() {
-        if (!this.state.binding) {
+        if (!this.state.resource) {
             return null;
         }
-        const { binding } = this.state;
+        const { resource: binding } = this.state;
         return (
             <div>
                 <EditableResource

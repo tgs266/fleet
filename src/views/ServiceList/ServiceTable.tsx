@@ -15,7 +15,7 @@ interface IServiceTableProps extends IResourceTableViewProps {
     namespace?: string;
 }
 class ServiceTable extends ResourceTableView<IServiceTableProps, ServiceMeta> {
-    itemsFcn = K8.services.getServices;
+    itemsFcn = K8.services.list.bind(K8.services);
 
     useFilters = true;
 
@@ -27,12 +27,12 @@ class ServiceTable extends ResourceTableView<IServiceTableProps, ServiceMeta> {
         const usingSort = sort || this.state.sort;
         const usingPage = page !== null ? page : this.state.page;
 
-        return [
-            this.props.namespace,
-            usingSort,
-            getOffset(usingPage, this.state.pageSize, this.state.total),
-            this.state.pageSize,
-        ];
+        return {
+            namespace: this.props.namespace,
+            sort: usingSort,
+            offset: getOffset(usingPage, this.state.pageSize, this.state.total),
+            pageSize: this.state.pageSize,
+        };
     };
 
     getColumns = () => [

@@ -5,7 +5,7 @@ import { Alignment, Button, Card, Icon } from '@blueprintjs/core';
 import { Tooltip2 } from '@blueprintjs/popover2';
 import { IWithRouterProps, withRouter } from '../../utils/withRouter';
 import K8 from '../../services/k8.service';
-import { IBreadcrumb, NavContext } from '../../layouts/Navigation';
+import { IBreadcrumb } from '../../layouts/Navigation';
 import InfoCard from '../../components/Cards/InfoCard';
 import LabeledText from '../../components/LabeledText';
 import AgeText from '../../components/AgeText';
@@ -20,27 +20,15 @@ import TableRow from '../../components/TableRow';
 import Text from '../../components/Text/Text';
 import { ClusterRoleBinding } from '../../models/clusterrole.model';
 import EditableResource from '../../components/EditableResource';
+import ResourceView from '../../components/ResourceView';
 
-interface IClusterRoleBindingState {
-    binding: ClusterRoleBinding;
-    pollId: NodeJS.Timer;
-}
-
-class ClusterRoleBindingDetails extends React.Component<
-    IWithRouterProps,
-    IClusterRoleBindingState
-> {
-    static contextType = NavContext;
-
+class ClusterRoleBindingDetails extends ResourceView<ClusterRoleBinding, IWithRouterProps, {}> {
     constructor(props: IWithRouterProps) {
-        super(props);
-        this.state = {
-            binding: null,
-            pollId: null,
-        };
+        super(props, K8.clusterRoleBindings, 'clusterRoleBindingName');
     }
 
     componentDidMount() {
+        super.componentDidMount();
         const [, setState] = this.context;
         setState({
             breadcrumbs: [
@@ -57,40 +45,13 @@ class ClusterRoleBindingDetails extends React.Component<
             ],
             menu: null,
         });
-        K8.clusterRoleBindings
-            .getClusterRoleBinding(this.props.params.clusterRoleBindingName)
-            .then((response) => {
-                this.setState({
-                    binding: response.data,
-                    pollId: K8.poll(
-                        1000,
-                        K8.clusterRoleBindings.getClusterRoleBinding,
-                        (r) => {
-                            this.setState({ binding: r.data });
-                        },
-                        this.props.params.clusterRoleBindingName
-                    ),
-                });
-            });
     }
-
-    componentWillUnmount() {
-        clearInterval(this.state.pollId);
-    }
-
-    pull = () => {
-        K8.clusterRoleBindings
-            .getClusterRoleBinding(this.props.params.clusterRoleBindingName)
-            .then((response) => {
-                this.setState({ binding: response.data });
-            });
-    };
 
     render() {
-        if (!this.state.binding) {
+        if (!this.state.resource) {
             return null;
         }
-        const { binding } = this.state;
+        const { resource: binding } = this.state;
         return (
             <div>
                 <EditableResource

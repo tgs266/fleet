@@ -15,24 +15,17 @@ import { Role } from '../../models/role.model';
 import TitledCard from '../../components/Cards/TitledCard';
 import RuleTable from '../../components/RuleTable';
 import EditableResource from '../../components/EditableResource';
+import ResourceView from '../../components/ResourceView';
 
-interface IRoleDetailsState {
-    role: Role;
-    pollId: NodeJS.Timer;
-}
-
-class RoleDetails extends React.Component<IWithRouterProps, IRoleDetailsState> {
+class RoleDetails extends ResourceView<Role, IWithRouterProps, {}> {
     static contextType = NavContext;
 
     constructor(props: IWithRouterProps) {
-        super(props);
-        this.state = {
-            role: null,
-            pollId: null,
-        };
+        super(props, K8.roles, 'roleName');
     }
 
     componentDidMount() {
+        super.componentDidMount();
         const [, setState] = this.context;
         setState({
             breadcrumbs: [
@@ -49,41 +42,13 @@ class RoleDetails extends React.Component<IWithRouterProps, IRoleDetailsState> {
             ],
             menu: null,
         });
-        K8.roles
-            .getRole(this.props.params.roleName, this.props.params.namespace)
-            .then((response) => {
-                this.setState({
-                    role: response.data,
-                    pollId: K8.poll(
-                        1000,
-                        K8.roles.getRole,
-                        (r) => {
-                            this.setState({ role: r.data });
-                        },
-                        this.props.params.roleName,
-                        this.props.params.namespace
-                    ),
-                });
-            });
     }
-
-    componentWillUnmount() {
-        clearInterval(this.state.pollId);
-    }
-
-    pull = () => {
-        K8.roles
-            .getRole(this.props.params.roleName, this.props.params.namespace)
-            .then((response) => {
-                this.setState({ role: response.data });
-            });
-    };
 
     render() {
-        if (!this.state.role) {
+        if (!this.state.resource) {
             return null;
         }
-        const { role } = this.state;
+        const { resource: role } = this.state;
         return (
             <div>
                 <EditableResource

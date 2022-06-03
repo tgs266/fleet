@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { RoleBinding } from '../../models/role.model';
 import { BindRequest } from '../../models/serviceaccount.model';
-import ClusterRoleBindings from '../../services/k8/clusterrolebinding.service';
+import K8 from '../../services/k8.service';
 import BindDialogShared from './BindDialogShared';
 
 export default function ClusterRoleBindDialog(props: {
@@ -15,7 +15,7 @@ export default function ClusterRoleBindDialog(props: {
     const [selectedItem, setSelectedItem] = useState<RoleBinding>(null);
 
     useEffect(() => {
-        ClusterRoleBindings.getClusterRoleBindings().then((r2) => {
+        K8.clusterRoleBindings.list().then((r2) => {
             setItems(r2.data.items);
         });
     }, []);

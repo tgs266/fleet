@@ -13,7 +13,7 @@ import ResourceTableView from './ResourceTableView';
 import { delay } from '../testing/utils';
 
 const server = setupServer(
-    rest.get(`${ClusterRoleBindings.base}/*`, (req, res, ctx) => {
+    rest.get(`${ClusterRoleBindings.base}`, (req, res, ctx) => {
         const count = 50;
         const items = [];
         for (let i = 0; i < count; i += 1) {
@@ -33,7 +33,7 @@ afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 
 class RTV extends ResourceTableView<unknown, ClusterRoleBindingMeta> {
-    itemsFcn = K8.clusterRoleBindings.getClusterRoleBindings;
+    itemsFcn = K8.clusterRoleBindings.list.bind(K8.clusterRoleBindings);
 }
 
 test('renders without crashing', async () => {

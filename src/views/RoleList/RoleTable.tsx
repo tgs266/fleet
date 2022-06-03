@@ -16,7 +16,7 @@ export interface IRoleTableProps extends IResourceTableViewProps {
 }
 
 class RoleTable extends ResourceTableView<IRoleTableProps, RoleMeta> {
-    itemsFcn = K8.roles.getRoles;
+    itemsFcn = K8.roles.list.bind(K8.roles);
 
     useFilters = true;
 
@@ -28,12 +28,12 @@ class RoleTable extends ResourceTableView<IRoleTableProps, RoleMeta> {
         const usingSort = sort || this.state.sort;
         const usingPage = page !== null ? page : this.state.page;
 
-        return [
-            this.props.namespace,
-            usingSort,
-            getOffset(usingPage, this.state.pageSize, this.state.total),
-            this.state.pageSize,
-        ];
+        return {
+            namespace: this.props.namespace,
+            sort: usingSort,
+            offset: getOffset(usingPage, this.state.pageSize, this.state.total),
+            pageSize: this.state.pageSize,
+        };
     };
 
     getColumns = () => [

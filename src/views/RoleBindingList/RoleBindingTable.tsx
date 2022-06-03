@@ -16,7 +16,7 @@ interface IRoleBindingTableProps extends IResourceTableViewProps {
 }
 
 class RoleBindingTable extends ResourceTableView<IRoleBindingTableProps, RoleBindingMeta> {
-    itemsFcn = K8.roleBindings.getRoleBindings;
+    itemsFcn = K8.roleBindings.list.bind(K8.roleBindings);
 
     useFilters = true;
 
@@ -28,12 +28,12 @@ class RoleBindingTable extends ResourceTableView<IRoleBindingTableProps, RoleBin
         const usingSort = sort || this.state.sort;
         const usingPage = page !== null ? page : this.state.page;
 
-        return [
-            this.props.namespace,
-            usingSort,
-            getOffset(usingPage, this.state.pageSize, this.state.total),
-            this.state.pageSize,
-        ];
+        return {
+            namespace: this.props.namespace,
+            sort: usingSort,
+            offset: getOffset(usingPage, this.state.pageSize, this.state.total),
+            pageSize: this.state.pageSize,
+        };
     };
 
     getColumns = () => [

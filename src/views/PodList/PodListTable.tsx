@@ -18,7 +18,7 @@ interface IPodTableProps extends IResourceTableViewProps {
 }
 
 class PodListTable extends ResourceTableView<IPodTableProps, PodMeta> {
-    itemsFcn = K8.pods.getPods;
+    itemsFcn = K8.pods.list.bind(K8.pods);
 
     useFilters = true;
 
@@ -30,12 +30,12 @@ class PodListTable extends ResourceTableView<IPodTableProps, PodMeta> {
         const usingSort = sort || this.state.sort;
         const usingPage = page !== null ? page : this.state.page;
 
-        return [
-            this.props.namespace,
-            usingSort,
-            getOffset(usingPage, this.state.pageSize, this.state.total),
-            this.state.pageSize,
-        ];
+        return {
+            namespace: this.props.namespace,
+            sort: usingSort,
+            offset: getOffset(usingPage, this.state.pageSize, this.state.total),
+            pageSize: this.state.pageSize,
+        };
     };
 
     getColumns = () => [
