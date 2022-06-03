@@ -9,7 +9,6 @@ import { delay } from '../../testing/utils';
 import { generateRoleBinding } from '../../testing/type_mocks';
 import RoleBindings from '../../services/k8/rolebinding.service';
 import RoleBindingDetails from './RoleBindingDetails';
-import SSE from '../../services/sse.service';
 
 const generateRoleBindingWithoutLabelsAndAnnotations = (name: string) => {
     const role = generateRoleBinding(name);
@@ -17,13 +16,6 @@ const generateRoleBindingWithoutLabelsAndAnnotations = (name: string) => {
     role.labels = {};
     return role;
 };
-
-jest.mock('../../services/sse.service');
-const mockSubscribe = jest.fn((call: (input: any) => void) => {
-    call(generateRoleBinding('test'));
-    return { close: () => {} };
-});
-(SSE as any).mockImplementation(() => ({ subscribe: mockSubscribe }));
 
 const server = setupServer(
     rest.get(`${RoleBindings.base}/test/test`, (req, res, ctx) =>
@@ -86,7 +78,6 @@ test('can refresh', async () => {
             </Routes>
         </MemoryRouter>
     );
-
     await waitFor(() => expect(wrapper.queryByTestId('infocard-title').innerHTML).toBe('test'));
 
     await server.use(

@@ -10,7 +10,6 @@ import { delay } from '../../testing/utils';
 import { generateSecret } from '../../testing/type_mocks';
 import Roles from '../../services/k8/role.service';
 import Secrets from '../../services/k8/secret.service';
-import SSE from '../../services/sse.service';
 
 const generateSecretWithoutAnnosAndLabels = (name: string) => {
     const role = generateSecret(name);
@@ -18,13 +17,6 @@ const generateSecretWithoutAnnosAndLabels = (name: string) => {
     role.labels = {};
     return role;
 };
-
-jest.mock('../../services/sse.service');
-const mockSubscribe = jest.fn((call: (input: any) => void) => {
-    call(generateSecret('test'));
-    return { close: () => {} };
-});
-(SSE as any).mockImplementation(() => ({ subscribe: mockSubscribe }));
 
 const server = setupServer(
     rest.get(`${Secrets.base}/test/test`, (req, res, ctx) => res(ctx.json(generateSecret('test'))))
@@ -76,7 +68,6 @@ test('can refresh', async () => {
             </Routes>
         </MemoryRouter>
     );
-
     await waitFor(() => expect(wrapper.queryByTestId('infocard-title').innerHTML).toBe('test'));
 
     await server.use(

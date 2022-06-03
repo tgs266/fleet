@@ -5,7 +5,7 @@ import { FleetError } from '../models/base';
 import { JSONObjectType } from '../models/json.model';
 import { handleFleetError } from './axios.service';
 
-export const buildEventSource = (path: string, headers: JSONObjectType<string>) => {
+export const buildWebsocket = (path: string, headers: JSONObjectType<string>) => {
     const u = new URL(path);
     for (const h of Object.keys(headers)) {
         u.searchParams.append(h, headers[h]);
@@ -31,7 +31,7 @@ export default class WS {
     constructor(
         path: string,
         interval: number = 5000,
-        builder: (path: string, headers: JSONObjectType<string>) => WebSocket = buildEventSource
+        builder: (path: string, headers: JSONObjectType<string>) => WebSocket = buildWebsocket
     ) {
         this.path = path;
         this.interval = interval;
@@ -73,42 +73,12 @@ export default class WS {
         this.closed = true;
     }
 
-    // pause() {
-    //     if (!this.closed && !this.paused) {
-    //         console.log('pausing');
-    //         this.eventSource.close();
-    //         this.paused = true;
-    //     }
-    // }
-
-    // unpause() {
-    //     if (this.closed || !this.paused) {
-    //         return;
-    //     }
-    //     const tempES = this.builder(`${this.path}?interval=${this.interval}`, this.headers());
-    //     tempES.onmessage = this.eventSource.onmessage;
-    //     tempES.onerror = this.eventSource.onerror;
-    //     this.eventSource = tempES;
-    // }
-
-    // static closeAll() {
-    //     for (const id of Object.keys(SSE.all)) {
-    //         if (SSE.all[id]) {
-    //             SSE.all[id].close();
-    //             delete SSE.all[id]
-    //         }
-    //     }
-    // }
-
-    // static pauseAll() {
-    //     for (const id of Object.keys(SSE.all)) {
-    //         SSE.all[id].pause();
-    //     }
-    // }
-
-    // static startAll() {
-    //     for (const id of Object.keys(SSE.all)) {
-    //         SSE.all[id].unpause();
-    //     }
-    // }
+    static closeAll() {
+        for (const id of Object.keys(WS.all)) {
+            if (WS.all[id]) {
+                WS.all[id].close();
+                delete WS.all[id];
+            }
+        }
+    }
 }

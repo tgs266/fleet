@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Outlet, useLocation } from 'react-router';
 import { AuthContextProvider } from '../contexts/AuthContext';
 import Auth from '../services/auth.service';
-import SSE from '../services/sse.service';
+import WS from '../services/websocket.service';
 import Navigation, { NavContextProvider } from './Navigation';
 import Sidebar from './Sidebar';
 
@@ -18,13 +18,13 @@ function Layout() {
             clearTimeout(timeout);
         }
         const x = setTimeout(() => {
-            SSE.closeAll();
+            WS.closeAll();
         }, 15 * 1000 * 60);
         setTimeoutNJS(x);
 
         return () => {
             clearTimeout(timeout);
-            SSE.closeAll();
+            WS.closeAll();
         };
     }, [location]);
 

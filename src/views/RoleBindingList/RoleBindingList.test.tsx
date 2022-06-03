@@ -37,7 +37,7 @@ const server = setupServer(
             })
         );
     }),
-    rest.get(`${ClusterRoleBindings.base}/*`, (req, res, ctx) => {
+    rest.get(`${ClusterRoleBindings.base}`, (req, res, ctx) => {
         const count = 50;
         const items = [];
         for (let i = 0; i < count; i += 1) {

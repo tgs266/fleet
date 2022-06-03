@@ -20,7 +20,7 @@ const generateNamespace = (name: string): NamespaceMeta => ({
 });
 
 const server = setupServer(
-    rest.get(`${Namespaces.base}/*`, (req, res, ctx) => {
+    rest.get(`${Namespaces.base}`, (req, res, ctx) => {
         const count = 50;
         const items = [];
         for (let i = 0; i < count; i += 1) {

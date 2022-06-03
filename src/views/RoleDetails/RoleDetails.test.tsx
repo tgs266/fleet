@@ -9,7 +9,6 @@ import Layout from '../../layouts/Layout';
 import { delay } from '../../testing/utils';
 import { generateRole } from '../../testing/type_mocks';
 import Roles from '../../services/k8/role.service';
-import SSE from '../../services/sse.service';
 
 const generateRoleWithoutLabelsAndAnnotations = (name: string) => {
     const role = generateRole(name);
@@ -17,13 +16,6 @@ const generateRoleWithoutLabelsAndAnnotations = (name: string) => {
     role.labels = {};
     return role;
 };
-
-jest.mock('../../services/sse.service');
-const mockSubscribe = jest.fn((call: (input: any) => void) => {
-    call(generateRole('test'));
-    return { close: () => {} };
-});
-(SSE as any).mockImplementation(() => ({ subscribe: mockSubscribe }));
 
 const server = setupServer(
     rest.get(`${Roles.base}/test/test`, (req, res, ctx) => res(ctx.json(generateRole('test'))))

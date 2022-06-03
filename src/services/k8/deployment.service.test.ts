@@ -13,7 +13,7 @@ afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 
 test('getDeployment', () => {
-    const d = new Deployments();
+    const d = new Deployments(true, true);
     const sort: TableSort = {
         sortableId: 'adsf',
         ascending: true,
@@ -22,7 +22,7 @@ test('getDeployment', () => {
 });
 
 test('getDeployment2', () => {
-    const d = new Deployments();
+    const d = new Deployments(true, true);
     const sort: TableSort = {
         sortableId: 'adsf',
         ascending: false,
@@ -31,7 +31,7 @@ test('getDeployment2', () => {
 });
 
 test('getDeployment3', () => {
-    const d = new Deployments();
+    const d = new Deployments(true, true);
     const sort: TableSort = {
         sortableId: 'adsf',
         ascending: false,

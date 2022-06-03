@@ -18,10 +18,13 @@ export default class Pods extends Resource<PodMeta, Pod> {
         pollInterval: number,
         callback: (event: MessageEvent<string>) => void
     ): WS {
-        const ws = this.getWebsocket(
-            `/ws/v1/pods/${params.namespace}/${params.name}/events?pollInterval=${pollInterval}`
-        );
-        ws.ws.onmessage = callback;
-        return ws;
+        if (!process.env.TEST_ENV) {
+            const ws = this.getWebsocket(
+                `/ws/v1/pods/${params.namespace}/${params.name}/events?pollInterval=${pollInterval}`
+            );
+            ws.ws.onmessage = callback;
+            return ws;
+        }
+        return null;
     }
 }

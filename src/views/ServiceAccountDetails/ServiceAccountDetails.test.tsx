@@ -3,6 +3,7 @@ import { MemoryRouter, Route, Routes } from 'react-router';
 import { render, fireEvent, waitFor } from '@testing-library/react';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
+import WS from 'jest-websocket-mock';
 import { act } from 'react-dom/test-utils';
 import '@testing-library/jest-dom';
 import ServiceAccountDetails from './ServiceAccountDetails';
@@ -15,7 +16,6 @@ import { RoleBinding } from '../../models/role.model';
 import ClusterRoleBindings from '../../services/k8/clusterrolebinding.service';
 import RoleBindings from '../../services/k8/rolebinding.service';
 import { getText } from './BindDialogShared';
-import SSE from '../../services/sse.service';
 
 const generateServiceAccountWithoutLabelsAndAnnotations = (name: string) => {
     const role = generateServiceAccount(name);
@@ -59,18 +59,11 @@ const generateRoleBinding = (name: string): RoleBinding => ({
     ],
 });
 
-jest.mock('../../services/sse.service');
-const mockSubscribe = jest.fn((call: (input: any) => void) => {
-    call(generateServiceAccount('test'));
-    return { close: () => {} };
-});
-(SSE as any).mockImplementation(() => ({ subscribe: mockSubscribe }));
-
 const server = setupServer(
     rest.get(`${ServiceAccounts.base}/test/test`, (req, res, ctx) =>
         res(ctx.json(generateServiceAccount('test')))
     ),
-    rest.get(`${ClusterRoleBindings.base}/*`, (req, res, ctx) => {
+    rest.get(`${ClusterRoleBindings.base}`, (req, res, ctx) => {
         const count = 50;
         const items = [];
         for (let i = 0; i < count; i += 1) {
@@ -102,7 +95,10 @@ const server = setupServer(
 );
 
 beforeAll(() => server.listen());
-afterEach(() => server.resetHandlers());
+afterEach(() => {
+    server.resetHandlers();
+    WS.clean();
+});
 afterAll(() => server.close());
 
 test('renders without crashing', async () => {
@@ -156,7 +152,6 @@ test('can refresh', async () => {
             </Routes>
         </MemoryRouter>
     );
-
     await waitFor(() => expect(wrapper.queryByTestId('infocard-title').innerHTML).toBe('test'));
 
     await server.use(
@@ -183,7 +178,6 @@ test('open role bind dialog', async () => {
             </Routes>
         </MemoryRouter>
     );
-
     await waitFor(() => expect(wrapper.queryByTestId('infocard-title').innerHTML).toBe('test'));
     act(() => {
         fireEvent.click(wrapper.queryByTestId('open-role-binding'));
@@ -205,7 +199,6 @@ test('open cluster role bind dialog', async () => {
             </Routes>
         </MemoryRouter>
     );
-
     await waitFor(() => expect(wrapper.queryByTestId('infocard-title').innerHTML).toBe('test'));
     act(() => {
         fireEvent.click(wrapper.queryByTestId('open-cluster-role-binding'));
@@ -228,7 +221,6 @@ test('remove role binding', async () => {
                 </Routes>
             </MemoryRouter>
         );
-
         await waitFor(() => expect(wrapper.queryByTestId('infocard-title').innerHTML).toBe('test'));
         fireEvent.click(wrapper.queryByTestId('remove-role-binding'));
         await delay(1000);

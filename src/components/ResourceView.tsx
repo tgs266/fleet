@@ -44,10 +44,13 @@ export default class ResourceView<T, P extends IWithRouterProps, S> extends Reac
     }
 
     componentDidMount() {
+        this.pull();
         const ws = this.initWs();
-        ws.subscribe<T>((data: T) => {
-            this.setState({ ws, resource: data } as ResourceViewState<T> & S);
-        });
+        if (ws) {
+            ws.subscribe<T>((data: T) => {
+                this.setState({ ws, resource: data } as ResourceViewState<T> & S);
+            });
+        }
     }
 
     componentWillUnmount() {
@@ -59,11 +62,15 @@ export default class ResourceView<T, P extends IWithRouterProps, S> extends Reac
         }
     }
 
-    initWs = () =>
-        this.resourceService.ws({
+    initWs = () => {
+        if (process.env.TEST_ENV) {
+            return null;
+        }
+        return this.resourceService.ws({
             name: this.props.params[this.nameKey],
             namespace: this.props.params.namespace,
         });
+    };
 
     pull = () =>
         this.resourceService

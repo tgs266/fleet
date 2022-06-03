@@ -9,31 +9,27 @@ export default class ServiceAccounts extends Resource<ServiceAccountMeta, Servic
 
     base = ServiceAccounts.base;
 
-    bindToRole(
+    bindToRole = (
         params: ResourceGetParams,
         req: BindRequest
-    ): Promise<AxiosResponse<PaginationResponse<ServiceAccountMeta>>> {
-        return api.put(`${this.getNamespaceNameUrl(params)}/bind/role`, req);
-    }
+    ): Promise<AxiosResponse<PaginationResponse<ServiceAccountMeta>>> =>
+        api.put(`${this.getNamespaceNameUrl(params)}/bind/role`, req);
 
-    bindToClusterRole(
+    bindToClusterRole = (
         params: ResourceGetParams,
         req: BindRequest
-    ): Promise<AxiosResponse<PaginationResponse<ServiceAccountMeta>>> {
-        return api.put(`${this.getNamespaceNameUrl(params)}/bind/clusterrole`, req);
-    }
+    ): Promise<AxiosResponse<PaginationResponse<ServiceAccountMeta>>> =>
+        api.put(`${this.getNamespaceNameUrl(params)}/bind/clusterrole`, req);
 
-    disconnectRole(
+    disconnectRole = (
         params: ResourceGetParams,
         req: BindRequest
-    ): Promise<AxiosResponse<PaginationResponse<ServiceAccountMeta>>> {
-        return api.put(`${this.getNamespaceNameUrl(params)}/remove/role`, req);
-    }
+    ): Promise<AxiosResponse<PaginationResponse<ServiceAccountMeta>>> =>
+        api.put(`${this.getNamespaceNameUrl(params)}/remove/role`, req);
 
-    disconnectClusterRole(
+    disconnectClusterRole = (
         params: ResourceGetParams,
         req: BindRequest
-    ): Promise<AxiosResponse<PaginationResponse<ServiceAccountMeta>>> {
-        return api.put(`${this.getNamespaceNameUrl(params)}/remove/clusterrole`, req);
-    }
+    ): Promise<AxiosResponse<PaginationResponse<ServiceAccountMeta>>> =>
+        api.put(`${this.getNamespaceNameUrl(params)}/remove/clusterrole`, req);
 }

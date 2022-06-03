@@ -10,7 +10,6 @@ import Pods from '../../services/k8/pod.service';
 import { Pod } from '../../models/pod.model';
 import { delay } from '../../testing/utils';
 import { generatePod } from '../../testing/type_mocks';
-import SSE from '../../services/sse.service';
 
 const generatePodWithAnnotationAndLabels = (name: string): Pod => {
     const pod = generatePod(name);
@@ -22,13 +21,6 @@ const generatePodWithAnnotationAndLabels = (name: string): Pod => {
     };
     return pod;
 };
-
-jest.mock('../../services/sse.service');
-const mockSubscribe = jest.fn((call: (input: any) => void) => {
-    call(generatePod('test'));
-    return { close: () => {} };
-});
-(SSE as any).mockImplementation(() => ({ subscribe: mockSubscribe }));
 
 const server = setupServer(
     rest.get(`${Pods.base}/test/test`, (req, res, ctx) => res(ctx.json(generatePod('test')))),
