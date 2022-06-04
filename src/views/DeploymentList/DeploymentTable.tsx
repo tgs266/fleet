@@ -3,9 +3,9 @@
 import { Alignment, Colors, Icon } from '@blueprintjs/core';
 import { Classes, Tooltip2 } from '@blueprintjs/popover2';
 import * as React from 'react';
-import { Link } from 'react-router-dom';
 import ResourceTableView, { IResourceTableViewProps } from '../../components/ResourceTableView';
 import { TableSort } from '../../components/SortableTableHeaderCell';
+import Link from '../../layouts/Link';
 import { DeploymentMeta } from '../../models/deployment.model';
 import K8 from '../../services/k8.service';
 import { buildLinkToDeployment, buildLinkToNamespace } from '../../utils/routing';

@@ -3,7 +3,6 @@
 import * as React from 'react';
 import { Button, Alignment, Menu, Position, MenuItem } from '@blueprintjs/core';
 import { Popover2 } from '@blueprintjs/popover2';
-import { Link } from 'react-router-dom';
 import { useNavigate, useParams } from 'react-router';
 import { ContainerSpec } from '../../models/container.model';
 import { buildLinkToContainerSpec } from '../../utils/routing';
@@ -11,6 +10,7 @@ import TableRow from '../TableRow';
 import TableCell from '../TableCell';
 import PortTags from '../Port/PortTags';
 import ContainerSpecUpdateDialog from './ContainerSpecUpdateDialog';
+import Link from '../../layouts/Link';
 
 export default function ContainerSpecTableRow(props: {
     spec: ContainerSpec;

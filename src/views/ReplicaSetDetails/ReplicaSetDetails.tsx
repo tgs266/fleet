@@ -1,6 +1,5 @@
 /* eslint-disable react/static-property-placement */
 import * as React from 'react';
-import { Link } from 'react-router-dom';
 import { Button, Card, Intent, MenuItem, Tag } from '@blueprintjs/core';
 import { IWithRouterProps, withRouter } from '../../utils/withRouter';
 import K8 from '../../services/k8.service';
@@ -23,6 +22,7 @@ import TableRow from '../../components/TableRow';
 import EventTable from '../../components/EventTable';
 import Toaster from '../../services/toast.service';
 import ResourceView from '../../components/ResourceView';
+import Link from '../../layouts/Link';
 
 class ReplicaSetDetails extends ResourceView<ReplicaSet, IWithRouterProps, {}> {
     constructor(props: IWithRouterProps) {

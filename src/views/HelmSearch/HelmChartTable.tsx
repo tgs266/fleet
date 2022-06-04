@@ -2,13 +2,13 @@
 /* eslint-disable class-methods-use-this */
 import { Intent, Spinner, Card, InputGroup, Tag } from '@blueprintjs/core';
 import React from 'react';
-import { Link } from 'react-router-dom';
 import Text from '../../components/Text/Text';
 import { TableSort } from '../../components/SortableTableHeaderCell';
 import ResourceTableView from '../../components/ResourceTableView';
 import { Chart } from '../../models/helm.model';
 import Helm from '../../services/helm.service';
 import getOffset from '../../utils/table';
+import Link from '../../layouts/Link';
 
 class HelmChartTable extends ResourceTableView<unknown, Chart> {
     itemsFcn = Helm.queryCharts;

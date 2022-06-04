@@ -3,7 +3,7 @@
 import { Alignment, Button, Card, Collapse, Colors, Icon, Menu, MenuItem } from '@blueprintjs/core';
 import { Popover2, Tooltip2 } from '@blueprintjs/popover2';
 import * as React from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import Table from './Table';
 import TableCell from './TableCell';
 import TableHeader from './TableHeader';
@@ -14,6 +14,7 @@ import { buildLinkToContainer } from '../utils/routing';
 import { BytesTo } from '../utils/conversions';
 import ContainerSpecContainer from './ContainerSpec/ContainerSpecContainer';
 import CONSTANTS from '../utils/constants';
+import Link from '../layouts/Link';
 
 export default function PodContainerTable(props: { pod: Pod; accordion?: boolean }) {
     const getColor = (cont: Container) => {

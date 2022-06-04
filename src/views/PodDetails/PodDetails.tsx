@@ -1,7 +1,6 @@
 /* eslint-disable react/static-property-placement */
 import * as React from 'react';
 import { Button } from '@blueprintjs/core';
-import { Link } from 'react-router-dom';
 import { IWithRouterProps, withRouter } from '../../utils/withRouter';
 import K8 from '../../services/k8.service';
 import { Pod } from '../../models/pod.model';
@@ -19,6 +18,7 @@ import Details from './Tabs/Details';
 import Prometheus from '../../services/prometheus.service';
 import Metrics from './Tabs/Metrics';
 import ResourceView from '../../components/ResourceView';
+import Link from '../../layouts/Link';
 
 class PodDetails extends ResourceView<Pod, IWithRouterProps, {}> {
     static contextType = NavContext;

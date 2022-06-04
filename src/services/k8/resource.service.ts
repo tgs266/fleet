@@ -48,8 +48,10 @@ export default class Resource<M, F> {
     getNamespaceNameUrl = (params: ResourceGetParams) =>
         `${this.getNamespaceUrl(params)}/${params.name}`;
 
-    get = (params: ResourceGetParams): Promise<AxiosResponse<F>> =>
-        api.get(this.getNamespaceNameUrl(params));
+    get = (params: ResourceGetParams): Promise<AxiosResponse<F>> => {
+        console.log(this.getNamespaceNameUrl(params));
+        return api.get(this.getNamespaceNameUrl(params));
+    };
 
     list = (
         params: ResourceListParams = EMPTY_LIST_PARAMS
@@ -76,6 +78,11 @@ export default class Resource<M, F> {
     getWebsocket = (path: string, interval: number = 2500) =>
         new WS(convertToWSUrl(path), interval);
 
-    ws = (params: ResourceGetParams, interval: number = 1000): WS =>
-        this.getWebsocket(this.getNamespaceNameUrl(params).replace('/api/', '/ws/'), interval);
+    ws = (params: ResourceGetParams, interval: number = 1000): WS => {
+        console.log(this.getNamespaceNameUrl(params));
+        return this.getWebsocket(
+            this.getNamespaceNameUrl(params).replace('/api/', '/ws/'),
+            interval
+        );
+    };
 }
