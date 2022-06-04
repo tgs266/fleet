@@ -5,7 +5,6 @@
 /* eslint-disable react/prefer-stateless-function */
 import '../../styles/markdown.scss';
 import { Card, Intent, Spinner } from '@blueprintjs/core';
-import { Link } from 'react-router-dom';
 import React from 'react';
 import TitledCard from '../../components/Cards/TitledCard';
 import Text from '../../components/Text/Text';
@@ -21,6 +20,7 @@ import TableCell from '../../components/TableCell';
 import TableBody from '../../components/TableBody';
 import TableRow from '../../components/TableRow';
 import { buildGenericLink } from '../../utils/routing';
+import Link from '../../layouts/Link';
 
 interface IHelmReleaseState {
     release: Release;

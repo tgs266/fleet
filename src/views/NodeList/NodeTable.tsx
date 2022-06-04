@@ -1,11 +1,11 @@
 import { Card, Tag } from '@blueprintjs/core';
 import { Classes, Tooltip2 } from '@blueprintjs/popover2';
 import * as React from 'react';
-import { Link } from 'react-router-dom';
 import Table from '../../components/Table';
 import TableCell from '../../components/TableCell';
 import TableHeader from '../../components/TableHeader';
 import TableRow from '../../components/TableRow';
+import Link from '../../layouts/Link';
 import { NodeMeta } from '../../models/node.model';
 import K8 from '../../services/k8.service';
 import { BytesTo } from '../../utils/conversions';

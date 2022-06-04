@@ -3,7 +3,6 @@ import * as React from 'react';
 import { Alignment, Button, Card, Intent } from '@blueprintjs/core';
 import { AxiosError } from 'axios';
 import { Tooltip2, Classes } from '@blueprintjs/popover2';
-import { Link } from 'react-router-dom';
 import { IWithRouterProps, withRouter } from '../../utils/withRouter';
 import K8 from '../../services/k8.service';
 import { IBreadcrumb, NavContext } from '../../layouts/Navigation';
@@ -32,6 +31,7 @@ import RoleBindDialog from './RoleBindDialog';
 import ClusterRoleBindDialog from './ClusterRoleBindDialog';
 import EditableResource from '../../components/EditableResource';
 import ResourceView from '../../components/ResourceView';
+import Link from '../../layouts/Link';
 
 interface IServiceAccountDetailsState {
     isRoleBindOpen: boolean;

@@ -2,7 +2,6 @@
 import * as React from 'react';
 import { Colors, Card, Button, Position, Menu, MenuItem } from '@blueprintjs/core';
 import { Classes, Popover2, Tooltip2 } from '@blueprintjs/popover2';
-import { Link } from 'react-router-dom';
 import { createdAtToHumanReadable, createdAtToOrigination } from '../../utils/time';
 import Accordion from '../../components/Accordion';
 import { Service } from '../../models/service.model';
@@ -11,6 +10,7 @@ import TableHeader from '../../components/TableHeader';
 import TableCell from '../../components/TableCell';
 import TableRow from '../../components/TableRow';
 import { buildLinkToService } from '../../utils/routing';
+import Link from '../../layouts/Link';
 
 const createAccordionTitle = (service: Service): JSX.Element => (
     <div style={{ display: 'flex', alignItems: 'center' }}>

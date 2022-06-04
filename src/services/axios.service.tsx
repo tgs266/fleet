@@ -23,7 +23,7 @@ export function getWSUrl(path: string): string {
 }
 
 export function convertToWSUrl(path: string): string {
-    return path.replace(window.location.protocol, 'ws:');
+    return path.replace('http:', 'ws:');
 }
 
 export function getBackendApiUrl(path: string): string {

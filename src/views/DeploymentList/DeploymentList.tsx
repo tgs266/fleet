@@ -1,6 +1,6 @@
 import { Button } from '@blueprintjs/core';
 import * as React from 'react';
-import { Link } from 'react-router-dom';
+import Link from '../../layouts/Link';
 import { useNavContext } from '../../layouts/Navigation';
 import setOnce from '../../utils/breadcrumbs';
 import DeploymentTable from './DeploymentTable';

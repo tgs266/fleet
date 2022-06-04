@@ -6,7 +6,6 @@ import '../../styles/markdown.scss';
 import { Intent, Spinner, Card, Tag, Button } from '@blueprintjs/core';
 import { marked } from 'marked';
 import DOMPurify from 'dompurify';
-import { Link } from 'react-router-dom';
 import React from 'react';
 import TitledCard from '../../components/Cards/TitledCard';
 import Text from '../../components/Text/Text';
@@ -16,6 +15,7 @@ import Helm from '../../services/helm.service';
 import LabeledText from '../../components/LabeledText';
 import { IBreadcrumb, NavContext } from '../../layouts/Navigation';
 import TagList from '../../components/TagList';
+import Link from '../../layouts/Link';
 
 interface IHelmChartState {
     chart: Chart;

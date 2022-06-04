@@ -2,7 +2,8 @@
 import * as React from 'react';
 import { Button, ButtonGroup, Card, Menu, Position } from '@blueprintjs/core';
 import { Popover2 } from '@blueprintjs/popover2';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import Link from './Link';
 
 export interface IBreadcrumb {
     text: string;
