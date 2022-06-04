@@ -1,7 +1,6 @@
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable @typescript-eslint/lines-between-class-members */
 import * as React from 'react';
-import { Link } from 'react-router-dom';
 import { Button } from '@blueprintjs/core';
 import { IWithRouterProps, withRouter } from '../../utils/withRouter';
 import K8 from '../../services/k8.service';
@@ -10,6 +9,7 @@ import { IBreadcrumb, NavContext } from '../../layouts/Navigation';
 import PodContainerInfoCard from './PodContainerInfoCard';
 import Accordion from '../../components/Accordion';
 import { buildLinkToContainer } from '../../utils/routing';
+import Link from '../../layouts/Link';
 
 interface IPodContainerState {
     container: Container;

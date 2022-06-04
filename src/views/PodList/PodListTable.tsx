@@ -2,10 +2,10 @@
 import { Alignment, Icon } from '@blueprintjs/core';
 import { Tooltip2, Classes } from '@blueprintjs/popover2';
 import * as React from 'react';
-import { Link } from 'react-router-dom';
 import AgeText from '../../components/AgeText';
 import ResourceTableView, { IResourceTableViewProps } from '../../components/ResourceTableView';
 import { TableSort } from '../../components/SortableTableHeaderCell';
+import Link from '../../layouts/Link';
 import { PodMeta } from '../../models/pod.model';
 import K8 from '../../services/k8.service';
 import { getStatusColor } from '../../utils/pods';

@@ -2,9 +2,9 @@
 /* eslint-disable react/no-unstable-nested-components */
 import { Classes, Tooltip2 } from '@blueprintjs/popover2';
 import * as React from 'react';
-import { Link } from 'react-router-dom';
 import ResourceTableView, { IResourceTableViewProps } from '../../components/ResourceTableView';
 import { TableSort } from '../../components/SortableTableHeaderCell';
+import Link from '../../layouts/Link';
 import { RoleBindingMeta } from '../../models/role.model';
 import K8 from '../../services/k8.service';
 import { buildLinkToNamespace, buildLinkToRoleBinding } from '../../utils/routing';

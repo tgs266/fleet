@@ -1,6 +1,5 @@
 /* eslint-disable react/sort-comp */
 import * as React from 'react';
-import { Link } from 'react-router-dom';
 import { Button, Intent, MenuItem, Tag } from '@blueprintjs/core';
 import { IWithRouterProps, withRouter } from '../../utils/withRouter';
 import K8 from '../../services/k8.service';
@@ -18,6 +17,7 @@ import EditableResource from '../../components/EditableResource';
 import { buildLinkToReplicaSet } from '../../utils/routing';
 import Text from '../../components/Text/Text';
 import ResourceView from '../../components/ResourceView';
+import Link from '../../layouts/Link';
 
 interface IDeploymentDetailsState {
     isScaleDialogOpen: boolean;

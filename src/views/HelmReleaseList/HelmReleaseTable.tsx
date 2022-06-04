@@ -1,7 +1,6 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable class-methods-use-this */
 import { Intent, Spinner, Tag } from '@blueprintjs/core';
-import { Link } from 'react-router-dom';
 import React from 'react';
 import Text from '../../components/Text/Text';
 import { TableSort } from '../../components/SortableTableHeaderCell';
@@ -9,6 +8,7 @@ import ResourceTableView from '../../components/ResourceTableView';
 import Helm from '../../services/helm.service';
 import getOffset from '../../utils/table';
 import { Release } from '../../models/helm.model';
+import Link from '../../layouts/Link';
 
 class HelmReleaseTable extends ResourceTableView<unknown, Release> {
     itemsFcn = Helm.queryReleases;

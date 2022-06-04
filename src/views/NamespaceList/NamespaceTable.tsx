@@ -2,13 +2,13 @@
 import { Card } from '@blueprintjs/core';
 import { Classes, Tooltip2 } from '@blueprintjs/popover2';
 import * as React from 'react';
-import { Link } from 'react-router-dom';
 import ResourceTable, {
     DEFAULT_SORTABLE_ASCENDING,
     DEFAULT_SORTABLE_ID,
     DEFAULT_SORTABLE_PAGE_SIZE,
 } from '../../components/ResourceTable';
 import { TableSort } from '../../components/SortableTableHeaderCell';
+import Link from '../../layouts/Link';
 import { Pagination } from '../../models/component.model';
 import { NamespaceMeta } from '../../models/namespace.model';
 import K8 from '../../services/k8.service';
